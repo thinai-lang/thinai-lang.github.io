@@ -1,0 +1,31 @@
+site_name: Thinai
+site_description: A domain-specific modeling language for domain-driven design
+site_url: https://thinai-lang.github.io/
+repo_url: https://github.com/thinai-lang/thinai-lang.github.io
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  logo: assets/thinai-light.svg
+  favicon: assets/thinai-light.svg
+  features:
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+
+nav:
+  - Home: index.md
+  - Getting started: getting-started.md
+  - Language guides:
+      - Language model: language-model.md
+      - Tactical modeling: tactical-modeling.md
+      - Events and behavior: events-and-behavior.md
+  - Order Fulfillment example: https://github.com/thinai-lang/thinai/tree/main/examples/order-fulfillment
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
