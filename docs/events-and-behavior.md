@@ -34,37 +34,55 @@ Domain events are emitted by aggregate-root behavior:
 
 ```thinai
 bounded context Ordering
+
 in bounded context Ordering {
-    aggregate Order {
-        root entity Order {
-            method place() {
-                emits OrderPlaced
-                transition status from Draft to Placed
-            }
-            identifier id: OrderId
-            status: OrderStatus initial Draft
-        }
-        value object OrderId { raw: string }
-        value object OrderLine { sku: string }
-        enum OrderStatus { Draft, Placed }
-    }
-    repository OrderRepository manages Order.Order
-    factory OrderFactory {
-        method createOrder() returns Order.Order
+  aggregate Order {
+    root entity Order {
+      method place() {
+        emits OrderPlaced
+        transition status from Draft to Placed
+      }
+
+      identifier id: OrderId
+      status: OrderStatus initial Draft
     }
 
-    event OrderPlaced { orderId: OrderId }
-
-    application service OrderApplication {
-        method placeOrder(orderId: OrderId, items: List<OrderLine>) {
-            precondition "The order contains at least one item."
-            invokes Order.Order.place when "The order is ready to be placed."
-            behavior "Place the order while its status is [[Order.Order.status]]."
-        }
-        method createOrder() {
-            invokes OrderFactory.createOrder
-        }
+    value object OrderId {
+      raw: string
     }
+
+    value object OrderLine {
+      sku: string
+    }
+
+    enum OrderStatus {
+      Draft,
+      Placed
+    }
+  }
+
+  repository OrderRepository manages Order.Order
+
+  factory OrderFactory {
+    method createOrder() returns Order.Order
+  }
+
+  event OrderPlaced {
+    orderId: OrderId
+  }
+
+  application service OrderApplication {
+    method placeOrder(orderId: OrderId, items: List<OrderLine>) {
+      precondition "The order contains at least one item."
+      invokes Order.Order.place
+        when "The order is ready to be placed."
+      behavior "Place the order while its status is [[Order.Order.status]]."
+    }
+
+    method createOrder() {
+      invokes OrderFactory.createOrder
+    }
+  }
 }
 ```
 
@@ -112,42 +130,50 @@ services or change aggregates:
 
 ```thinai
 bounded context Ordering
+
 in bounded context Ordering {
-    event OrderPlaced { orderId: string }
-    read model OrderSummary {
-        orderId: string
-        status: string
+  event OrderPlaced {
+    orderId: string
+  }
+
+  read model OrderSummary {
+    orderId: string
+    status: string
+  }
+
+  query repository OrderSummaryRepository serves OrderSummary
+
+  projector OrderSummaryProjector {
+    method onOrderPlaced(source: OrderPlaced) {
+      projects OrderSummary
+      behavior "Copy [[OrderPlaced.orderId]] into [[OrderSummary.orderId]] via [[OrderSummaryRepository]]."
     }
-    query repository OrderSummaryRepository serves OrderSummary
-    projector OrderSummaryProjector {
-        method onOrderPlaced(source: OrderPlaced) {
-            projects OrderSummary
-            behavior "Copy [[OrderPlaced.orderId]] into [[OrderSummary.orderId]] via [[OrderSummaryRepository]]."
-        }
-    }
+  }
 }
 ```
 
 ```thinai
 bounded context Ordering
+
 in bounded context Ordering {
-    event OrderPlaced {
-        orderId: OrderId
-    }
+  event OrderPlaced {
+    orderId: OrderId
+  }
 
-    module Contracts {
-        exposes OrderPlacedV1
-        integration event OrderPlacedV1 {
-            orderId: string
-        }
-    }
+  module Contracts {
+    exposes OrderPlacedV1
 
-    application service OrderApplication {
-        method publishOrderPlaced(source: OrderPlaced) {
-            emits Contracts.OrderPlacedV1
-            behavior "Map the internal event to the public contract."
-        }
+    integration event OrderPlacedV1 {
+      orderId: string
     }
+  }
+
+  application service OrderApplication {
+    method publishOrderPlaced(source: OrderPlaced) {
+      emits Contracts.OrderPlacedV1
+      behavior "Map the internal event to the public contract."
+    }
+  }
 }
 ```
 
@@ -156,15 +182,19 @@ event-triggered. A consumer's method can receive an imported integration event
 and invoke a local command method:
 
 ```thinai
-application service ShipmentApplication {
+bounded context Shipping
+
+in bounded context Shipping {
+  application service ShipmentApplication {
     method createShipment(shipmentId: ShipmentId) {
-        invokes Shipment.Shipment.start
+      invokes Shipment.Shipment.start
     }
 
     method onOrderPlaced(source: Ordering.Contracts.OrderPlacedV1) {
-        invokes createShipment
-        behavior "Map the incoming event to the local command input."
+      invokes createShipment
+      behavior "Map the incoming event to the local command input."
     }
+  }
 }
 ```
 
@@ -199,11 +229,11 @@ must still enforce its own invariant:
 actor Customer
 
 journey PlaceOrder {
-    by Customer {
-        invoke Ordering.OrderApplication.placeOrder
-            with "orderId from [[Ordering.OrderSummary.orderId]] and items from the selected order lines"
-            when "The eligibility result [[Ordering.OrderQueries.canPlaceOrder.result.eligible]] allows this order."
-    }
+  by Customer {
+    invoke Ordering.OrderApplication.placeOrder
+      with "orderId from [[Ordering.OrderSummary.orderId]] and items from the selected order lines"
+      when "The eligibility result [[Ordering.OrderQueries.canPlaceOrder.result.eligible]] allows this order."
+  }
 }
 ```
 

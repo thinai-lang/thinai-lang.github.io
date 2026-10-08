@@ -15,30 +15,38 @@ This example declares a subdomain, bounded context, aggregate, application-servi
 subdomain OrderManagement kind core
 
 bounded context Ordering realizes OrderManagement
+
 in bounded context Ordering {
-    aggregate Order {
-        root entity Order {
-            method place() {
-                emits OrderPlaced
-                transition status from Draft to Placed
-            }
-            identifier id: OrderId
-            status: OrderStatus
-        }
-        value object OrderId {
-            raw: string
-        }
-        enum OrderStatus { Draft, Placed }
-    }
-    repository OrderRepository manages Order.Order
+  aggregate Order {
+    root entity Order {
+      method place() {
+        emits OrderPlaced
+        transition status from Draft to Placed
+      }
 
-    event OrderPlaced
-
-    application service OrderApplication {
-        method placeOrder(id: OrderId) {
-            invokes Order.Order.place
-        }
+      identifier id: OrderId
+      status: OrderStatus
     }
+
+    value object OrderId {
+      raw: string
+    }
+
+    enum OrderStatus {
+      Draft,
+      Placed
+    }
+  }
+
+  repository OrderRepository manages Order.Order
+
+  event OrderPlaced
+
+  application service OrderApplication {
+    method placeOrder(id: OrderId) {
+      invokes Order.Order.place
+    }
+  }
 }
 ```
 
@@ -55,8 +63,9 @@ context can realize one or more subdomains:
 subdomain Fulfillment kind supporting
 
 bounded context Shipping realizes Fulfillment
+
 in bounded context Shipping {
-    // Context members go here.
+  // Context members go here.
 }
 ```
 
@@ -70,22 +79,25 @@ A context map describes relationships between bounded contexts:
 
 ```thinai
 bounded context Ordering
+
 bounded context Shipping
+
 shared kernel CommonTypes {}
 
 context map FulfillmentMap {
-    customer Shipping {
-        integrationPatterns: ["AntiCorruptionLayer"]
-    } -> supplier Ordering {
-        integrationPatterns: ["OpenHostService", "PublishedLanguage"]
-    }
+  customer Shipping {
+    integrationPatterns: ["AntiCorruptionLayer"]
+  } -> supplier Ordering {
+    integrationPatterns: ["OpenHostService", "PublishedLanguage"]
+  }
 
-    partner Ordering <-> partner Shipping
-    separateWays Ordering -x- Shipping
+  partner Ordering <-> partner Shipping
 
-    sharedKernel CommonTypes {
-        participants: [Ordering, Shipping]
-    }
+  separateWays Ordering -x- Shipping
+
+  sharedKernel CommonTypes {
+    participants: [Ordering, Shipping]
+  }
 }
 ```
 
@@ -118,9 +130,9 @@ shared value objects for shared domain concepts.
 
 ```thinai
 shared kernel Common {
-    value object Currency {
-        code: string
-    }
+  value object Currency {
+    code: string
+  }
 }
 ```
 
@@ -137,12 +149,13 @@ import "./context-catalog.tni"
 import "./ordering.tni"
 
 in bounded context Ordering {
-    application service OrderApplication {
-        method placeOrder(id: OrderId) {
-            invokes Order.Order.place
-        }
+  application service OrderApplication {
+    method placeOrder(id: OrderId) {
+      invokes Order.Order.place
     }
-    event OrderPlaced
+  }
+
+  event OrderPlaced
 }
 ```
 

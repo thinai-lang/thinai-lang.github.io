@@ -17,36 +17,48 @@ that aggregate's identifier rather than the entity itself.
 
 ```thinai
 bounded context Ordering
+
 in bounded context Ordering {
-    aggregate Order {
-        root entity Order {
-            method update()
-            identifier id: OrderId
-            status: OrderStatus
-            lines: List<OrderLine>
-            customerMemo?: string
-        }
+  aggregate Order {
+    root entity Order {
+      method update()
 
-        value object OrderId {
-            raw: string
-        }
-
-        entity OrderLine {
-            method ship() {
-                transition status from Open to Shipped
-            }
-            identifier id: OrderLineId
-            sku: string
-            quantity: number
-            status: LineStatus initial Open
-        }
-
-        value object OrderLineId {
-            raw: string
-        }
-        enum OrderStatus { Draft, Placed, Paid }
-        enum LineStatus { Open, Shipped }
+      identifier id: OrderId
+      status: OrderStatus
+      lines: List<OrderLine>
+      customerMemo?: string
     }
+
+    value object OrderId {
+      raw: string
+    }
+
+    entity OrderLine {
+      method ship() {
+        transition status from Open to Shipped
+      }
+
+      identifier id: OrderLineId
+      sku: string
+      quantity: number
+      status: LineStatus initial Open
+    }
+
+    value object OrderLineId {
+      raw: string
+    }
+
+    enum OrderStatus {
+      Draft,
+      Placed,
+      Paid
+    }
+
+    enum LineStatus {
+      Open,
+      Shipped
+    }
+  }
 }
 ```
 
@@ -59,10 +71,11 @@ import "./context-catalog.tni"
 import "./ordering.tni"
 
 bounded context Shipping
+
 in bounded context Shipping {
-    value object OrderId mirrors Ordering.Order.OrderId {
-        raw: string
-    }
+  value object OrderId mirrors Ordering.Order.OrderId {
+    raw: string
+  }
 }
 ```
 
@@ -81,26 +94,31 @@ the entity instances.
 
 ```thinai
 bounded context Ordering
+
 in bounded context Ordering {
-    aggregate Order {
-        root entity Order {
-            constructor(id: OrderId) {
-                precondition "The identifier is non-empty."
-                postcondition "The order has an identifier."
-            }
-            method ensureOwner() returns boolean {
-                invariant "An order has an owner; check [[Order.owner]]."
-            }
-            identifier id: OrderId
-            owner: string
-        }
-        value object OrderId {
-            raw: string
-        }
+  aggregate Order {
+    root entity Order {
+      constructor(id: OrderId) {
+        precondition "The identifier is non-empty."
+        postcondition "The order has an identifier."
+      }
+
+      method ensureOwner() returns boolean {
+        invariant "An order has an owner; check [[Order.owner]]."
+      }
+
+      identifier id: OrderId
+      owner: string
     }
-    factory OrderFactory {
-            method createOrder() returns Order.Order
+
+    value object OrderId {
+      raw: string
     }
+  }
+
+  factory OrderFactory {
+    method createOrder() returns Order.Order
+  }
 }
 ```
 
@@ -128,10 +146,36 @@ transition statement may group changes to multiple enum fields on the same
 entity, with one descriptive `when` guard applying to the whole group:
 
 ```thinai
-method confirmPayment() {
-    transition status from Draft to Placed,
-               paymentStatus from Pending to Confirmed
-        when "The payment has been accepted."
+bounded context Ordering
+
+in bounded context Ordering {
+  aggregate Order {
+    root entity Order {
+      method confirmPayment() {
+        transition status from Draft to Placed,
+                   paymentStatus from Pending to Confirmed
+          when "The payment has been accepted."
+      }
+
+      identifier id: OrderId
+      status: OrderStatus
+      paymentStatus: PaymentStatus
+    }
+
+    value object OrderId {
+      raw: string
+    }
+
+    enum OrderStatus {
+      Draft,
+      Placed
+    }
+
+    enum PaymentStatus {
+      Pending,
+      Confirmed
+    }
+  }
 }
 ```
 
@@ -165,49 +209,61 @@ not return entities. For example:
 
 ```thinai
 bounded context Ordering
+
 in bounded context Ordering {
-    aggregate Order {
-        root entity Order {
-            method update()
-            identifier id: OrderId
-        }
-        value object OrderId {
-            raw: string
-        }
-    }
-    repository OrderRepository manages Order.Order
-    factory OrderFactory {
-        method create() returns Order.Order
-    }
-    read model OrderSearch {
-        orderNumber: string
-        status: string
-    }
-    query repository OrderSearchRepository serves OrderSearch
-    event OrderUpdated
-    projector OrderSearchProjector {
-        method onOrderUpdated(source: OrderUpdated) {
-            projects OrderSearch
-            behavior "Project the changed order into [[OrderSearch]] via [[OrderSearchRepository]]."
-        }
+  aggregate Order {
+    root entity Order {
+      method update()
+
+      identifier id: OrderId
     }
 
-    application service OrderApplication {
-        method updateOrder(id: OrderId) {
-            invokes Order.Order.update
-        }
-        method createOrder() {
-            invokes OrderFactory.create
-        }
+    value object OrderId {
+      raw: string
     }
-    query service OrderQueries {
-        method getOrderStatus(id: OrderId) returns string {
-            behavior "Read [[OrderSearchRepository]] for the selected order."
-        }
-        method searchOrders(term: string) returns List<string> {
-            behavior "Search [[OrderSearchRepository]] for orders matching the term."
-        }
+  }
+
+  repository OrderRepository manages Order.Order
+
+  factory OrderFactory {
+    method create() returns Order.Order
+  }
+
+  read model OrderSearch {
+    orderNumber: string
+    status: string
+  }
+
+  query repository OrderSearchRepository serves OrderSearch
+
+  event OrderUpdated
+
+  projector OrderSearchProjector {
+    method onOrderUpdated(source: OrderUpdated) {
+      projects OrderSearch
+      behavior "Project the changed order into [[OrderSearch]] via [[OrderSearchRepository]]."
     }
+  }
+
+  application service OrderApplication {
+    method updateOrder(id: OrderId) {
+      invokes Order.Order.update
+    }
+
+    method createOrder() {
+      invokes OrderFactory.create
+    }
+  }
+
+  query service OrderQueries {
+    method getOrderStatus(id: OrderId) returns string {
+      behavior "Read [[OrderSearchRepository]] for the selected order."
+    }
+
+    method searchOrders(term: string) returns List<string> {
+      behavior "Search [[OrderSearchRepository]] for orders matching the term."
+    }
+  }
 }
 ```
 
@@ -227,24 +283,25 @@ between two different modules requires both an exposure and a dependency.
 
 ```thinai
 bounded context Shipping
+
 in bounded context Shipping {
-    module Operations {
-        exposes TrackingCode
+  module Operations {
+    exposes TrackingCode
 
-        value object TrackingCode {
-            raw: string
-        }
+    value object TrackingCode {
+      raw: string
     }
+  }
 
-    value object ShipmentRouting {
-        trackingCode: TrackingCode
-    }
+  value object ShipmentRouting {
+    trackingCode: TrackingCode
+  }
 
-    module Fulfillment depends on Operations {
-        value object ShipmentMetadata {
-            trackingCode: TrackingCode
-        }
+  module Fulfillment depends on Operations {
+    value object ShipmentMetadata {
+      trackingCode: TrackingCode
     }
+  }
 }
 ```
 
