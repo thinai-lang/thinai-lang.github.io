@@ -18,12 +18,11 @@
 }
 
 [data-md-color-scheme="slate"] {
-  /* Keep the logo/header pairing consistent while the page content is dark. */
-  --md-primary-fg-color: #edf3f4;
-  --md-primary-fg-color--light: #f6f9fa;
-  --md-primary-fg-color--dark: #d9e6e9;
-  --md-primary-bg-color: #294953;
-  --md-primary-bg-color--light: #42626c;
+  --md-primary-fg-color: #294953;
+  --md-primary-fg-color--light: #355b66;
+  --md-primary-fg-color--dark: #203a42;
+  --md-primary-bg-color: #f6f9fa;
+  --md-primary-bg-color--light: rgb(246 249 250 / 72%);
 
   /* The logo's gold is bright enough for links and accents on dark surfaces. */
   --md-accent-fg-color: #e2b24c;
