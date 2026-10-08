@@ -1,0 +1,123 @@
+{
+  "name": "thinai",
+  "scopeName": "source.thinai",
+  "fileTypes": [
+    ".tni"
+  ],
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "name": "string.quoted.double.thinai",
+      "applyEndPatternLast": true,
+      "begin": "\"",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.thinai"
+        }
+      },
+      "end": "\"",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.thinai"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#linked-reference"
+        },
+        {
+          "include": "#string-character-escape"
+        }
+      ]
+    },
+    {
+      "name": "string.quoted.single.thinai",
+      "applyEndPatternLast": true,
+      "begin": "'",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.thinai"
+        }
+      },
+      "end": "'",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.thinai"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#linked-reference"
+        },
+        {
+          "include": "#string-character-escape"
+        }
+      ]
+    },
+    {
+      "name": "keyword.control.thinai",
+      "match": "\\b(integrationPatterns|postcondition|participants|precondition|separateWays|sharedKernel|application|constructor|integration|identifier|repository|supporting|transition|aggregate|invariant|projector|subdomain|behavior|customer|projects|realizes|supplier|boolean|bounded|context|depends|exposes|factory|generic|initial|invokes|journey|manages|mirrors|partner|returns|service|domain|entity|import|invoke|kernel|method|module|number|object|serves|shared|string|actor|emits|event|model|query|value|core|data|date|enum|from|kind|List|read|root|when|with|map|Map|Set|as|by|in|on|to)\\b|\\B(-x-)\\B"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.block.thinai",
+          "begin": "/\\*",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.thinai"
+            }
+          },
+          "end": "\\*/",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.thinai"
+            }
+          }
+        },
+        {
+          "begin": "//",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.whitespace.comment.leading.thinai"
+            }
+          },
+          "end": "(?=$)",
+          "name": "comment.line.thinai"
+        }
+      ]
+    },
+    "linked-reference": {
+      "name": "meta.reference.thinai",
+      "begin": "(?<!\\\\)((?:\\\\\\\\)*(\\[\\[))",
+      "beginCaptures": {
+        "1": {
+          "name": "constant.character.escape.thinai"
+        },
+        "2": {
+          "name": "punctuation.section.reference.begin.thinai"
+        }
+      },
+      "end": "\\]\\]",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.reference.end.thinai"
+        }
+      },
+      "patterns": [
+        {
+          "name": "variable.other.reference.thinai",
+          "match": "[_a-zA-Z][\\w_]*(?:\\.[_a-zA-Z][\\w_]*)*"
+        }
+      ]
+    },
+    "string-character-escape": {
+      "name": "constant.character.escape.thinai",
+      "match": "\\\\."
+    }
+  }
+}

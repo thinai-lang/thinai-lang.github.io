@@ -1,6 +1,9 @@
-# Thinai Language Docs
+---
+title: Thinai Language Docs
+description: Guides to Thinai, a domain-specific modeling language for domain-driven design.
+---
 
-<p><img src="assets/thinai-light.svg" alt="Thinai logo" width="80"></p>
+<p><img src="/assets/thinai-light.svg" alt="Thinai logo" width="80"></p>
 
 Thinai is a domain-specific modeling language for expressing DDD structures,
 relationships, and behavioral intent in a shared, navigable model. Use these

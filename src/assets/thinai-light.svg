@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title id="title">Thinai language file</title>
+  <defs>
+    <mask id="ridge-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+      <rect width="128" height="128" fill="#fff"/>
+      <rect x="48" y="46" width="32" height="56" fill="#000"/>
+    </mask>
+  </defs>
+  <path d="M10 87c19-1 33-10 46-24 12-5 24-10 34-3 12 7 16 19 28 27-13 10-32 15-54 15S23 96 10 87z" fill="#E2B24C" mask="url(#ridge-cut)"/>
+  <path d="M31 25h66q4 0 4 4v10q0 4-4 4H74v55q0 6-6 6h-8q-6 0-6-6V43H31q-4 0-4-4V29q0-4 4-4z" fill="#4C7888"/>
+</svg>

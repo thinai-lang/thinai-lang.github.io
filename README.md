@@ -1,24 +1,27 @@
 # Thinai documentation site
 
-This repository contains the source for [thinai-lang.github.io](https://thinai-lang.github.io/). Documentation updates are published automatically from `main` with GitHub Actions and MkDocs Material.
+This repository contains the source for [thinai-lang.github.io](https://thinai-lang.github.io/). Documentation updates are built with Astro Starlight and deployed from `main` with GitHub Actions when the repository is public.
+
+The Shiki language grammar at `src/grammars/thinai.tmLanguage.json` is mirrored from `thinai/packages/extension/syntaxes/thinai.tmLanguage.json`. Keep it in sync when Thinai's TextMate grammar changes; `npm test` verifies that Shiki loads and highlights it.
 
 ## Local preview
 
-Install [uv](https://docs.astral.sh/uv/), then sync the locked documentation dependencies:
+Use Node.js 22.12 or later. Install the locked dependencies and run the lexer tests:
 
 ```bash
-uv sync --group docs
+npm ci
+npm test
 ```
 
-Run the lexer tests and preview the current branch locally:
+Preview the current branch locally:
 
 ```bash
-uv run --locked --group docs python -m unittest discover -s tests -v
-uv run --locked --group docs mkdocs serve
+npm run dev
 ```
 
-Open <http://127.0.0.1:8000/>. To verify the production build, run:
+Open <http://localhost:4321/>. To verify the production build, run:
 
 ```bash
-uv run --locked --group docs mkdocs build --strict
+npm run build
+npm run preview
 ```

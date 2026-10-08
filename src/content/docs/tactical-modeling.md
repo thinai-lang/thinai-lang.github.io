@@ -1,4 +1,7 @@
-# Tactical Modeling
+---
+title: Tactical Modeling
+description: Model aggregates, entities, value objects, operations, and modules in Thinai.
+---
 
 Thinai models aggregates, entities, value objects, and related tactical DDD
 declarations. For application services, events, and descriptive domain behavior, see

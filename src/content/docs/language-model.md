@@ -1,4 +1,7 @@
-# Language Model
+---
+title: Language Model
+description: Learn Thinai's strategic DDD concepts, bounded contexts, context maps, and imports.
+---
 
 Thinai models strategic DDD concepts and lets you compose a bounded context
 across multiple `.tni` files.

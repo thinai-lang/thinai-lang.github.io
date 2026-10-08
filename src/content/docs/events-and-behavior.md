@@ -1,4 +1,7 @@
-# Events and Behavior
+---
+title: Events and Behavior
+description: Describe application-service operations, events, and journeys in Thinai.
+---
 
 Thinai models application-service operations, aggregate behavior, domain and
 integration events, and user-started journeys. Behavior specifications remain

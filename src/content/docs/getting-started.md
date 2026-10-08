@@ -1,4 +1,7 @@
-# Getting Started
+---
+title: Getting Started
+description: Explore the Thinai language before its first alpha release.
+---
 
 Thinai is a domain-specific modeling language for domain-driven design. The guides on this site introduce the language and its current syntax.
 
