@@ -57,6 +57,368 @@
       ]
     },
     {
+      "name": "meta.declaration.thinai",
+      "match": "\\b(bounded)\\s+(context)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.control.thinai"
+        },
+        "2": {
+          "name": "keyword.control.thinai"
+        },
+        "3": {
+          "name": "entity.name.namespace.thinai"
+        }
+      }
+    },
+    {
+      "name": "meta.declaration.thinai",
+      "match": "\\b(shared)\\s+(kernel)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.control.thinai"
+        },
+        "2": {
+          "name": "keyword.control.thinai"
+        },
+        "3": {
+          "name": "entity.name.namespace.thinai"
+        }
+      }
+    },
+    {
+      "name": "meta.declaration.thinai",
+      "match": "\\b(context)\\s+(map)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.control.thinai"
+        },
+        "2": {
+          "name": "keyword.control.thinai"
+        },
+        "3": {
+          "name": "entity.name.namespace.thinai"
+        }
+      }
+    },
+    {
+      "name": "meta.declaration.thinai",
+      "match": "\\b(subdomain)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.control.thinai"
+        },
+        "2": {
+          "name": "entity.name.namespace.thinai"
+        }
+      }
+    },
+    {
+      "name": "meta.declaration.thinai",
+      "match": "\\b(module)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.control.thinai"
+        },
+        "2": {
+          "name": "entity.name.namespace.thinai"
+        }
+      }
+    },
+    {
+      "name": "meta.declaration.thinai",
+      "match": "\\b(application)\\s+(service)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.control.thinai"
+        },
+        "2": {
+          "name": "keyword.control.thinai"
+        },
+        "3": {
+          "name": "entity.name.class.thinai"
+        }
+      }
+    },
+    {
+      "name": "meta.declaration.thinai",
+      "match": "\\b(domain)\\s+(service)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.control.thinai"
+        },
+        "2": {
+          "name": "keyword.control.thinai"
+        },
+        "3": {
+          "name": "entity.name.class.thinai"
+        }
+      }
+    },
+    {
+      "name": "meta.declaration.thinai",
+      "match": "\\b(query)\\s+(service)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.control.thinai"
+        },
+        "2": {
+          "name": "keyword.control.thinai"
+        },
+        "3": {
+          "name": "entity.name.class.thinai"
+        }
+      }
+    },
+    {
+      "name": "meta.declaration.thinai",
+      "match": "\\b(query)\\s+(repository)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.control.thinai"
+        },
+        "2": {
+          "name": "keyword.control.thinai"
+        },
+        "3": {
+          "name": "entity.name.interface.thinai"
+        }
+      }
+    },
+    {
+      "name": "meta.declaration.thinai",
+      "match": "\\b(root)\\s+(entity)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.control.thinai"
+        },
+        "2": {
+          "name": "keyword.control.thinai"
+        },
+        "3": {
+          "name": "entity.name.class.thinai"
+        }
+      }
+    },
+    {
+      "name": "meta.declaration.thinai",
+      "match": "\\b(value)\\s+(object)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.control.thinai"
+        },
+        "2": {
+          "name": "keyword.control.thinai"
+        },
+        "3": {
+          "name": "entity.name.type.thinai"
+        }
+      }
+    },
+    {
+      "name": "meta.declaration.thinai",
+      "match": "\\b(data)\\s+(object)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.control.thinai"
+        },
+        "2": {
+          "name": "keyword.control.thinai"
+        },
+        "3": {
+          "name": "entity.name.type.thinai"
+        }
+      }
+    },
+    {
+      "name": "meta.declaration.thinai",
+      "match": "\\b(read)\\s+(model)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.control.thinai"
+        },
+        "2": {
+          "name": "keyword.control.thinai"
+        },
+        "3": {
+          "name": "entity.name.type.thinai"
+        }
+      }
+    },
+    {
+      "name": "meta.declaration.thinai",
+      "match": "\\b(integration)\\s+(event)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.control.thinai"
+        },
+        "2": {
+          "name": "keyword.control.thinai"
+        },
+        "3": {
+          "name": "entity.name.type.thinai"
+        }
+      }
+    },
+    {
+      "name": "meta.declaration.thinai",
+      "match": "\\b(aggregate)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.control.thinai"
+        },
+        "2": {
+          "name": "entity.name.class.thinai"
+        }
+      }
+    },
+    {
+      "name": "meta.declaration.thinai",
+      "match": "\\b(entity)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.control.thinai"
+        },
+        "2": {
+          "name": "entity.name.class.thinai"
+        }
+      }
+    },
+    {
+      "name": "meta.declaration.thinai",
+      "match": "\\b(event)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.control.thinai"
+        },
+        "2": {
+          "name": "entity.name.type.thinai"
+        }
+      }
+    },
+    {
+      "name": "meta.declaration.thinai",
+      "match": "\\b(repository)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.control.thinai"
+        },
+        "2": {
+          "name": "entity.name.interface.thinai"
+        }
+      }
+    },
+    {
+      "name": "meta.declaration.thinai",
+      "match": "\\b(projector)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.control.thinai"
+        },
+        "2": {
+          "name": "entity.name.class.thinai"
+        }
+      }
+    },
+    {
+      "name": "meta.declaration.thinai",
+      "match": "\\b(factory)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.control.thinai"
+        },
+        "2": {
+          "name": "entity.name.class.thinai"
+        }
+      }
+    },
+    {
+      "name": "meta.declaration.thinai",
+      "match": "\\b(method)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.control.thinai"
+        },
+        "2": {
+          "name": "entity.name.function.thinai"
+        }
+      }
+    },
+    {
+      "name": "meta.declaration.thinai",
+      "match": "\\b(journey)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.control.thinai"
+        },
+        "2": {
+          "name": "entity.name.function.thinai"
+        }
+      }
+    },
+    {
+      "name": "meta.declaration.thinai",
+      "match": "\\b(actor)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.control.thinai"
+        },
+        "2": {
+          "name": "entity.name.variable.thinai"
+        }
+      }
+    },
+    {
+      "name": "meta.enum.thinai",
+      "begin": "\\b(enum)\\s+([_a-zA-Z][\\w_]*)\\s*(\\{)",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.control.thinai"
+        },
+        "2": {
+          "name": "entity.name.type.thinai"
+        },
+        "3": {
+          "name": "punctuation.section.block.begin.thinai"
+        }
+      },
+      "end": "\\}",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.block.end.thinai"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "name": "constant.other.enum-member.thinai",
+          "match": "\\b[_a-zA-Z][\\w_]*\\b"
+        },
+        {
+          "name": "punctuation.separator.comma.thinai",
+          "match": ","
+        }
+      ]
+    },
+    {
+      "name": "storage.type.thinai",
+      "match": "\\b(?:string|number|boolean|date|List|Set|Map)\\b"
+    },
+    {
+      "name": "constant.language.thinai",
+      "match": "\\b(?:core|supporting|generic)\\b"
+    },
+    {
+      "name": "keyword.operator.relationship.thinai",
+      "match": "<->|->|-x-"
+    },
+    {
+      "name": "variable.other.property.thinai",
+      "match": "\\b[_a-zA-Z][\\w_]*\\??(?=\\s*:)"
+    },
+    {
       "name": "keyword.control.thinai",
       "match": "\\b(integrationPatterns|postcondition|participants|precondition|separateWays|sharedKernel|application|constructor|integration|identifier|repository|supporting|transition|aggregate|invariant|projector|subdomain|behavior|customer|projects|realizes|supplier|boolean|bounded|context|depends|exposes|factory|generic|initial|invokes|journey|manages|mirrors|partner|returns|service|domain|entity|import|invoke|kernel|method|module|number|object|serves|shared|string|actor|emits|event|model|query|value|core|data|date|enum|from|kind|List|read|root|when|with|map|Map|Set|as|by|in|on|to)\\b|\\B(-x-)\\B"
     }
