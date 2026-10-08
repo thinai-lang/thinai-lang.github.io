@@ -41,7 +41,7 @@ export default defineConfig({
         },
       ],
       expressiveCode: {
-        themes: ['github-light', 'github-dark'],
+        themes: ['catppuccin-latte', 'catppuccin-mocha'],
         customizeTheme: (theme) => {
           const thinaiTheme = theme.type === 'dark' ? thinaiDarkTheme : thinaiLightTheme;
           theme.settings.push(...thinaiTheme.settings);

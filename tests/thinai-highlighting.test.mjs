@@ -48,3 +48,23 @@ test('Shiki colors Thinai declaration roles with the VS Code grammar', async () 
 
   highlighter.dispose();
 });
+
+test('Catppuccin themes give general code blocks a varied syntax palette', async () => {
+  const highlighter = await createHighlighter({
+    themes: ['catppuccin-latte', 'catppuccin-mocha'],
+    langs: ['javascript'],
+  });
+
+  for (const theme of ['catppuccin-latte', 'catppuccin-mocha']) {
+    const html = highlighter.codeToHtml('const greeting = "hello"; console.log(greeting)', {
+      lang: 'javascript',
+      theme,
+    });
+    const colors = new Set([...html.matchAll(/style="color:(#[0-9A-F]{6})/gi)].map((match) => match[1]));
+
+    assert.match(html, new RegExp(`class="shiki ${theme}"`));
+    assert.ok(colors.size >= 4, `${theme} should color multiple JavaScript token roles`);
+  }
+
+  highlighter.dispose();
+});
