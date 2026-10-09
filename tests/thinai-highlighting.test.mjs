@@ -8,26 +8,19 @@ const grammar = JSON.parse(
   await readFile(new URL('../src/grammars/thinai.tmLanguage.json', import.meta.url), 'utf8')
 );
 grammar.aliases = ['tni'];
-const lightTheme = JSON.parse(
-  await readFile(new URL('../src/themes/thinai-light.json', import.meta.url), 'utf8')
-);
-const darkTheme = JSON.parse(
-  await readFile(new URL('../src/themes/thinai-dark.json', import.meta.url), 'utf8')
-);
 
-test('Shiki colors Thinai declaration roles with the VS Code grammar', async () => {
+test('Vitesse themes color Thinai scopes without custom overrides', async () => {
   const highlighter = await createHighlighter({
-    themes: [lightTheme, darkTheme],
+    themes: ['vitesse-light', 'vitesse-dark'],
     langs: [grammar],
   });
 
   const cases = [
-    ['aggregate Order {}', 'aggregate', 'thinai-light', '#cf222e'],
-    ['aggregate Order {}', 'Order', 'thinai-light', '#8250df'],
-    ['value object OrderId {}', 'OrderId', 'thinai-light', '#953800'],
-    ['bounded context Ordering', 'Ordering', 'thinai-dark', '#79c0ff'],
-    ['method placeOrder() {}', 'placeOrder', 'thinai-dark', '#7ee787'],
-    ['enum OrderStatus { Draft, Placed }', 'Draft', 'thinai-light', '#8250df'],
+    ['aggregate Order {}', 'aggregate', 'vitesse-light', '#1E754F'],
+    ['aggregate Order {}', 'aggregate', 'vitesse-dark', '#4D9375'],
+    ['aggregate Order {}', 'Order', 'vitesse-light', '#59873A'],
+    ['bounded context Ordering', 'Ordering', 'vitesse-dark', '#80A665'],
+    ['method placeOrder() {}', 'placeOrder', 'vitesse-dark', '#80A665'],
   ];
 
   for (const [code, token, theme, expectedColor] of cases) {
@@ -42,27 +35,27 @@ test('Shiki colors Thinai declaration roles with the VS Code grammar', async () 
 
   const aliasHtml = highlighter.codeToHtml('entity Item {}', {
     lang: 'tni',
-    theme: 'thinai-light',
+    theme: 'vitesse-light',
   });
   assert.ok(aliasHtml.includes('entity'));
 
   highlighter.dispose();
 });
 
-test('Catppuccin themes give general code blocks a varied syntax palette', async () => {
+test('Vitesse themes color general code blocks', async () => {
   const highlighter = await createHighlighter({
-    themes: ['catppuccin-latte', 'catppuccin-mocha'],
+    themes: ['vitesse-light', 'vitesse-dark'],
     langs: ['javascript'],
   });
 
-  for (const theme of ['catppuccin-latte', 'catppuccin-mocha']) {
+  for (const theme of ['vitesse-light', 'vitesse-dark']) {
     const html = highlighter.codeToHtml('const greeting = "hello"; console.log(greeting)', {
       lang: 'javascript',
       theme,
     });
     const colors = new Set([...html.matchAll(/style="color:(#[0-9A-F]{6})/gi)].map((match) => match[1]));
 
-    assert.match(html, new RegExp(`class="shiki ${theme}"`));
+    assert.ok(html.includes(`class="shiki ${theme}"`));
     assert.ok(colors.size >= 4, `${theme} should color multiple JavaScript token roles`);
   }
 

@@ -4,6 +4,8 @@ This repository contains the source for [thinai-lang.github.io](https://thinai-l
 
 The Shiki language grammar at `src/grammars/thinai.tmLanguage.json` is mirrored from `thinai/packages/extension/syntaxes/thinai.tmLanguage.json`. Keep it in sync when Thinai's TextMate grammar changes; `npm test` verifies that Shiki loads and highlights it.
 
+Code block token colors come from Shiki themes matched against Thinai's TextMate scopes; the grammar describes token roles without hard-coding colors.
+
 ## Local preview
 
 Use Node.js 22.12 or later. Install the locked dependencies and run the lexer tests:

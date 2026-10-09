@@ -7,12 +7,6 @@ const thinaiGrammar = JSON.parse(
   readFileSync(new URL('./src/grammars/thinai.tmLanguage.json', import.meta.url), 'utf8')
 );
 thinaiGrammar.aliases = ['tni'];
-const thinaiLightTheme = JSON.parse(
-  readFileSync(new URL('./src/themes/thinai-light.json', import.meta.url), 'utf8')
-);
-const thinaiDarkTheme = JSON.parse(
-  readFileSync(new URL('./src/themes/thinai-dark.json', import.meta.url), 'utf8')
-);
 
 export default defineConfig({
   site: 'https://thinai-lang.github.io',
@@ -41,12 +35,7 @@ export default defineConfig({
         },
       ],
       expressiveCode: {
-        themes: ['catppuccin-latte', 'catppuccin-mocha'],
-        customizeTheme: (theme) => {
-          const thinaiTheme = theme.type === 'dark' ? thinaiDarkTheme : thinaiLightTheme;
-          theme.settings.push(...thinaiTheme.settings);
-          return theme;
-        },
+        themes: ['vitesse-light', 'vitesse-dark'],
         shiki: {
           langs: [thinaiGrammar],
         },
