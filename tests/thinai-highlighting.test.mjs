@@ -21,6 +21,10 @@ test('Vitesse themes color Thinai scopes without custom overrides', async () => 
     ['aggregate Order {}', 'Order', 'vitesse-light', '#59873A'],
     ['bounded context Ordering', 'Ordering', 'vitesse-dark', '#80A665'],
     ['method placeOrder() {}', 'placeOrder', 'vitesse-dark', '#80A665'],
+    ['adjustments?: List<number>', 'adjustments', 'vitesse-light', '#B07D48'],
+    ['adjustments?: List<number>', '?', 'vitesse-light', '#AB5959'],
+    ['adjustments?: List<number>', 'adjustments', 'vitesse-dark', '#BD976A'],
+    ['adjustments?: List<number>', '?', 'vitesse-dark', '#CB7676'],
   ];
 
   for (const [code, token, theme, expectedColor] of cases) {

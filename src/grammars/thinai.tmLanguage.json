@@ -404,7 +404,7 @@
     },
     {
       "name": "storage.type.thinai",
-      "match": "\\b(?:string|number|boolean|date|List|Set|Map)\\b"
+      "match": "\\b(?:string|number|boolean|date|time|instant|List|Set|Map)\\b"
     },
     {
       "name": "constant.language.thinai",
@@ -415,12 +415,24 @@
       "match": "<->|->|-x-"
     },
     {
+      "name": "meta.field.optional.thinai",
+      "match": "\\b([_a-zA-Z][\\w_]*)(\\?)(?=\\s*:)",
+      "captures": {
+        "1": {
+          "name": "variable.other.property.thinai"
+        },
+        "2": {
+          "name": "keyword.operator.optional.thinai"
+        }
+      }
+    },
+    {
       "name": "variable.other.property.thinai",
-      "match": "\\b[_a-zA-Z][\\w_]*\\??(?=\\s*:)"
+      "match": "\\b[_a-zA-Z][\\w_]*(?=\\s*:)"
     },
     {
       "name": "keyword.control.thinai",
-      "match": "\\b(integrationPatterns|postcondition|participants|precondition|separateWays|sharedKernel|application|constructor|integration|identifier|repository|supporting|transition|aggregate|invariant|projector|subdomain|behavior|customer|projects|realizes|supplier|boolean|bounded|context|depends|exposes|factory|generic|initial|invokes|journey|manages|mirrors|partner|returns|service|domain|entity|import|invoke|kernel|method|module|number|object|serves|shared|string|actor|emits|event|model|query|value|core|data|date|enum|from|kind|List|read|root|when|with|map|Map|Set|as|by|in|on|to)\\b|\\B(-x-)\\B"
+      "match": "\\b(integrationPatterns|postcondition|participants|precondition|separateWays|sharedKernel|application|constructor|integration|identifier|repository|supporting|transition|aggregate|invariant|projector|subdomain|behavior|customer|projects|realizes|supplier|boolean|bounded|context|depends|exposes|factory|generic|initial|instant|invokes|journey|manages|mirrors|partner|returns|service|domain|entity|import|invoke|kernel|method|module|number|object|serves|shared|string|actor|emits|event|model|query|value|core|data|date|enum|from|kind|List|read|root|time|when|with|map|Map|Set|as|by|in|on|to)\\b|\\B(-x-)\\B"
     }
   ],
   "repository": {
