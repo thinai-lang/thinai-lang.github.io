@@ -30,7 +30,18 @@ export default defineConfig({
           items: ['language-model', 'tactical-modeling', 'events-and-behavior'],
         },
         {
-          label: 'Order Fulfillment example',
+          label: 'Language reference',
+          items: [
+            'syntax-and-formatting',
+            'modules-and-visibility',
+            'references-and-paths',
+            'validation-rules',
+          ],
+        },
+        { label: 'Examples', items: ['examples'] },
+        { label: 'Alpha notes', items: ['alpha-notes'] },
+        {
+          label: 'Order Fulfillment repository',
           link: 'https://github.com/thinai-lang/thinai/tree/main/examples/order-fulfillment',
         },
       ],

@@ -11,9 +11,9 @@ declarations. For application services, events, and descriptive domain behavior,
 
 An aggregate groups its root entity and other domain types. Entities and value
 objects may have typed fields, invariants, constructors, and methods. Common
-field types are `string`, `number`, `boolean`, and `date`; fields can be
-optional with `?`. Built-in collections are `List<T>`, `Set<T>`, and
-`Map<K, V>`.
+field types are `string`, `number`, `boolean`, `date`, `time`, and `instant`;
+fields and method parameters can be optional with `?`. Built-in collections are
+`List<T>`, `Set<T>`, and `Map<K, V>`, and collections may nest.
 Every entity has exactly one identifier field. A child entity's identity is
 scoped to its aggregate; references to an entity in another aggregate must use
 that aggregate's identifier rather than the entity itself.
@@ -61,6 +61,25 @@ in bounded context Ordering {
       Open,
       Shipped
     }
+  }
+}
+```
+
+Collections may nest and may use value-object types:
+
+```thinai
+bounded context Catalog
+
+in bounded context Catalog {
+  value object Money {
+    amount: number
+  }
+
+  data object Search {
+    ids: List<string>
+    labels: Set<string>
+    quantities: Map<string, List<Set<number>>>
+    prices: List<Money>
   }
 }
 ```
@@ -208,6 +227,9 @@ objects for shapes that represent domain concepts.
 
 Read models and query repositories are optional. A read model describes a query
 result shape; it need not be materialized or backed by a separate database.
+Read models may compose other read models, but not data objects. Published query
+contracts expose only primitive or public DataObject results; see
+[modules and visibility](modules-and-visibility.md#published-query-contracts).
 Projectors are optional event-driven projections. A query service may read through
 query repositories or aggregate repositories, including from the same relational
 tables as the write side. Query-service methods can return primitives, data
@@ -291,6 +313,9 @@ to declare a module dependency. Declarations outside modules are visible to
 modules by default. In the other direction, a context-level declaration may
 reference a module declaration only when its module exposes it. A reference
 between two different modules requires both an exposure and a dependency.
+Exposing a nested module re-exports its public API through the enclosing module;
+see [modules and visibility](modules-and-visibility.md) for nested re-exports,
+exposed methods, and published query contracts.
 
 ```thinai
 bounded context Shipping

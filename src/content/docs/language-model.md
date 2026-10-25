@@ -8,7 +8,9 @@ across multiple `.tni` files.
 
 Separate sibling declarations and statements with line breaks, both at model
 scope and inside brace-delimited bodies. A single declaration or comma-separated
-list may wrap across lines, but the next sibling starts on a new line.
+list may wrap across lines, but the next sibling starts on a new line. Commas
+are required between enum values, and reserved-word identifiers use backticks.
+See [syntax and formatting](syntax-and-formatting.md) for the lexical rules.
 
 ## A Small Model
 
@@ -87,6 +89,10 @@ bounded context Ordering
 
 bounded context Shipping
 
+bounded context Billing
+
+bounded context CustomerSupport
+
 shared kernel CommonTypes {}
 
 context map FulfillmentMap {
@@ -96,9 +102,9 @@ context map FulfillmentMap {
     integrationPatterns: ["OpenHostService", "PublishedLanguage"]
   }
 
-  partner Ordering <-> partner Shipping
+  partner Ordering <-> partner Billing
 
-  separateWays Ordering -x- Shipping
+  separateWays Ordering -x- CustomerSupport
 
   sharedKernel CommonTypes {
     participants: [Ordering, Shipping]
@@ -140,6 +146,43 @@ shared kernel Common {
   }
 }
 ```
+
+A shared-kernel domain service may be invoked from a participating bounded
+context when the shared kernel and an authorizing context map are visible.
+Application and domain services use the normal `invokes` clause:
+
+```thinai
+shared kernel Shared {
+  domain service Rates {
+    method convert(amount: number, rate: number) returns number {
+      behavior "Convert [[amount]] at [[rate]]."
+    }
+  }
+}
+
+bounded context Source
+
+bounded context Consumer
+
+context map LocalMap {
+  sharedKernel Shared {
+    participants: [Source, Consumer]
+  }
+}
+
+in bounded context Source {
+  application service SourceApp {
+    method convert(amount: number, rate: number) {
+      invokes Shared.Rates.convert
+    }
+  }
+}
+```
+
+A context map may be imported, or declared in the same document as both
+endpoints. Same-document maps authorize event consumption and query reads in the
+same way as imported maps. Shared-kernel relationships do not authorize event
+consumption or cross-context query reads by themselves.
 
 ## Working Across Files
 

@@ -134,10 +134,11 @@ nested payload types follow their outer type's module dependencies.
 For CQRS reads, a `read model` is an optional query-result shape, not necessarily
 a materialized projection or separate database. A `query repository` is an
 optional logical read boundary and may query the same physical tables as the
-write side. A `projector` is needed only when the model uses an event-driven
-projection. Query services may read through query or aggregate repositories and
-must return data, not entity instances. Projectors do not call application
-services or change aggregates:
+write side. `reads from` may name one or more aggregate tables, or a published
+query-service operation, and may carry a descriptive `when` guard. A `projector`
+is needed only when the model uses an event-driven projection. Query services may
+read through query or aggregate repositories and must return data, not entity
+instances. Projectors do not call application services or change aggregates:
 
 ```thinai
 bounded context Ordering
@@ -170,7 +171,7 @@ bounded context Ordering
 
 in bounded context Ordering {
   event OrderPlaced {
-    orderId: OrderId
+    orderId: string
   }
 
   module Contracts {
@@ -191,8 +192,11 @@ in bounded context Ordering {
 ```
 
 A method whose parameter type is a DomainEvent or IntegrationEvent is
-event-triggered. A consumer's method can receive an imported integration event
-and invoke a local command method:
+event-triggered. An event handler has exactly one event-typed parameter and no
+additional parameters. A consumer's method can receive an imported integration
+event and invoke a local command method. Only an event handler may dispatch to a
+command in another application service; an ordinary command method does not call
+another application service's command.
 
 ```thinai
 bounded context Shipping
@@ -255,6 +259,20 @@ blocks, which group commands initiated by that actor. Journey order is
 significant. A query result linked from `when` is not bound to a command
 argument, invoked by the journey, or evaluated by the DSL. Emitted events are
 derived from the invoked methods and need not be repeated in the journey.
+
+Journey timeline rules:
+
+- Current inputs and results of earlier steps are visible to later steps.
+- The current command's result is not visible to its own step.
+- A command invoked later in the journey is not visible from an earlier step.
+- Reference a prior command result through its qualified path, for example
+  `[[Ordering.OrderApplication.placeOrder.result.orderId]]`.
+- `result` is reserved on methods with a result and on application-service
+  commands.
+- Reusing the same command more than once makes result references ambiguous and
+  produces a warning.
+
+See [references and paths](references-and-paths.md) for path and quoting rules.
 
 See the [Order Fulfillment example](https://github.com/thinai-lang/thinai/blob/main/examples/order-fulfillment/README.md)
 for a multi-file model with an integration-event consumer.

@@ -43,6 +43,17 @@ completion, navigation, formatting, and import quick fixes.
 For iterative work, `npm run watch` rebuilds the language and extension while
 the development host is running.
 
+To install a packaged alpha VSIX:
+
+```bash
+cd packages/extension
+npx --yes @vscode/vsce package --out /tmp/opencode/vscode-thinai-alpha.vsix
+code --install-extension /tmp/opencode/vscode-thinai-alpha.vsix
+```
+
+See [alpha notes and limitations](alpha-notes.md) before relying on the
+extension for production work.
+
 ## Use the CLI
 
 The CLI currently generates a JavaScript summary from a model and its imported
