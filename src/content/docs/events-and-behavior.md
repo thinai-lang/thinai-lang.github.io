@@ -11,8 +11,10 @@ provide navigable semantic relationships.
 Quoted specifications can link to methods, parameters, repositories, domain
 types, and fields by surrounding a qualified name with `[[` and `]]`. A link
 identifies a model element; it does not evaluate an expression or invoke the method. Plain
-quoted specifications remain unlinked text. Multiline quoted specifications
-dedent their content when a newline follows the opening quote.
+quoted specifications remain unlinked text. Use triple double quotes for multiline
+specification blocks, or keep single or double quotes; the formatter normalizes
+the common outer indentation while preserving relative indentation, line breaks,
+linked references, and the delimiters you chose.
 
 Use `invariant` for a domain rule that should hold for the relevant model
 element, `precondition` for what must hold before an operation, and
@@ -64,7 +66,9 @@ in bounded context Ordering {
     }
   }
 
-  repository OrderRepository manages Order.Order
+  repository OrderRepository {
+    manages Order.Order
+  }
 
   factory OrderFactory {
     method createOrder() returns Order.Order
@@ -90,9 +94,10 @@ in bounded context Ordering {
 ```
 
 Factories and repositories are declared beside aggregates in the bounded
-context. Factory methods create and return the aggregate root; behavior
-specifications link to the method rather than to a constructor or the factory
-declaration itself.
+context. A factory creates exactly one aggregate root: all of its valid methods
+return that same root, and different roots need separate factories. Behavior
+specifications link to the factory method rather than to a constructor or the
+factory declaration itself.
 
 Aggregate-root methods may emit multiple domain events. Emissions are listed in
 order. Application-service methods coordinate aggregate-root behavior, and may
@@ -121,7 +126,10 @@ emit one or more integration events. The integration-event declaration defines
 the public schema; the method's behavior text describes any payload mapping.
 Event payloads carry stable value data rather than entity instances or other
 aggregate-owned types. An IntegrationEvent nested in a module must be explicitly
-exposed before another bounded context can consume it.
+exposed before another bounded context can consume it. When the event is in a
+module and a direct payload type lives in a sibling module, the event module
+must depend on that payload module and the payload must still be exposed;
+nested payload types follow their outer type's module dependencies.
 
 For CQRS reads, a `read model` is an optional query-result shape, not necessarily
 a materialized projection or separate database. A `query repository` is an
@@ -144,7 +152,9 @@ in bounded context Ordering {
     status: string
   }
 
-  query repository OrderSummaryRepository serves OrderSummary
+  query repository OrderSummaryRepository {
+    serves OrderSummary
+  }
 
   projector OrderSummaryProjector {
     method onOrderPlaced(source: OrderPlaced) {

@@ -85,10 +85,10 @@ in bounded context Shipping {
 ## Operations and Domain Constraints
 
 Entity and value-object bodies contain fields, constructors, and methods at the
-same level; write constructors and methods before fields. Invariants may appear
-in constructor and method bodies, but not beside fields. Constructors take typed
-parameters and return their owning type implicitly. Methods may declare a return
-type with `returns`:
+same level; constructors, methods, and fields may appear in any source order.
+Invariants may appear in constructor and method bodies, but not beside fields.
+Constructors take typed parameters and return their owning type implicitly.
+Methods may declare a return type with `returns`:
 
 Constructor parameters should be domain values such as primitives, enums, and
 value objects. Keep DataObjects and events at operation-handler boundaries, and
@@ -125,9 +125,11 @@ in bounded context Ordering {
 }
 ```
 
-Factory operations are methods that return the root entity of the aggregate
-named by `for`. Behavior specifications can link to these methods, just as they
-can link to other methods; constructors themselves are not link targets.
+Factory operations are methods that return the single aggregate root created by
+that factory. All valid methods in one factory must return the same root;
+different roots need separate factories. Behavior specifications can link to
+these methods, just as they can link to other methods; constructors themselves
+are not link targets.
 
 Aggregate behavior belongs on the root entity, which protects aggregate
 invariants. Domain services are bounded-context or module peers of aggregates,
@@ -143,10 +145,12 @@ Root and child entities can both own state and declare transitions, but each
 transition must target an enum field declared on that entity. Application
 services enter through the aggregate root; root behavior coordinates changes to
 child entities so the aggregate's invariants remain protected. An enum state
-field may declare an initial value with `initial State`; when present, every enum
-state must be reachable through the entity's declared transition graph. A
-transition statement may group changes to multiple enum fields on the same
-entity, with one descriptive `when` guard applying to the whole group:
+field may declare an initial value with `initial State`; when present, every
+transition source on that field must be reachable from the initial state through
+the entity's declared transition graph. Unused enum values remain valid, so a
+state enum can be shared with contracts or other entities. A transition
+statement may group changes to multiple enum fields on the same entity, with one
+descriptive `when` guard applying to the whole group:
 
 ```thinai
 bounded context Ordering
@@ -226,7 +230,9 @@ in bounded context Ordering {
     }
   }
 
-  repository OrderRepository manages Order.Order
+  repository OrderRepository {
+    manages Order.Order
+  }
 
   factory OrderFactory {
     method create() returns Order.Order
@@ -237,7 +243,9 @@ in bounded context Ordering {
     status: string
   }
 
-  query repository OrderSearchRepository serves OrderSearch
+  query repository OrderSearchRepository {
+    serves OrderSearch
+  }
 
   event OrderUpdated
 
@@ -311,3 +319,11 @@ in bounded context Shipping {
 Module dependencies across bounded contexts are not supported. Shared value
 objects belong in an explicit shared kernel rather than in a business bounded
 context.
+
+Qualified specification paths may traverse bounded contexts, context maps,
+shared kernels, modules, aggregates, entities, services, projectors, and
+factories without exposing each structural segment. Value objects, data objects,
+read models, enums, and fields are data-bearing: using one as a non-terminal
+path segment requires same-module access, public or exposed visibility, an
+authorized shared-kernel relationship, or an authorized event or published-query
+contract.

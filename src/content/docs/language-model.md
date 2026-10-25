@@ -41,7 +41,9 @@ in bounded context Ordering {
     }
   }
 
-  repository OrderRepository manages Order.Order
+  repository OrderRepository {
+    manages Order.Order
+  }
 
   event OrderPlaced
 
@@ -170,6 +172,12 @@ alias applies to the selected component:
 ```thinai
 import { Ordering as Orders, Shipping } from "./contexts.tni"
 ```
+
+An alias applies to the whole selected component. It must not collide with any
+visible path-root spelling, including a context-relative suffix such as `Module`
+or `Type`; terminal fields, methods, enum values, and parameters do not
+conflict. Strategic declarations (actors, journeys, and subdomains) are imported
+with a bare file import rather than a component selection.
 
 Cross-context IntegrationEvent use requires an imported context map with an
 authorized relationship; DomainEvents remain private to their context.
