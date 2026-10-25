@@ -9,7 +9,7 @@
       "include": "#comments"
     },
     {
-      "name": "string.quoted.triple.thinai",
+      "name": "string.quoted.triple.double.thinai",
       "applyEndPatternLast": true,
       "begin": "\"\"\"",
       "beginCaptures": {
@@ -82,7 +82,7 @@
     },
     {
       "name": "meta.declaration.thinai",
-      "match": "\\b(bounded)\\s+(context)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "match": "\\b(bounded)\\s+(context)\\s+((?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`]))",
       "captures": {
         "1": {
           "name": "keyword.control.thinai"
@@ -97,7 +97,7 @@
     },
     {
       "name": "meta.declaration.thinai",
-      "match": "\\b(shared)\\s+(kernel)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "match": "\\b(shared)\\s+(kernel)\\s+((?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`]))",
       "captures": {
         "1": {
           "name": "keyword.control.thinai"
@@ -112,7 +112,7 @@
     },
     {
       "name": "meta.declaration.thinai",
-      "match": "\\b(context)\\s+(map)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "match": "\\b(context)\\s+(map)\\s+((?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`]))",
       "captures": {
         "1": {
           "name": "keyword.control.thinai"
@@ -127,7 +127,7 @@
     },
     {
       "name": "meta.declaration.thinai",
-      "match": "\\b(subdomain)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "match": "\\b(subdomain)\\s+((?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`]))",
       "captures": {
         "1": {
           "name": "keyword.control.thinai"
@@ -139,7 +139,7 @@
     },
     {
       "name": "meta.declaration.thinai",
-      "match": "\\b(module)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "match": "\\b(module)\\s+((?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`]))",
       "captures": {
         "1": {
           "name": "keyword.control.thinai"
@@ -151,7 +151,7 @@
     },
     {
       "name": "meta.declaration.thinai",
-      "match": "\\b(application)\\s+(service)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "match": "\\b(application)\\s+(service)\\s+((?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`]))",
       "captures": {
         "1": {
           "name": "keyword.control.thinai"
@@ -166,7 +166,7 @@
     },
     {
       "name": "meta.declaration.thinai",
-      "match": "\\b(domain)\\s+(service)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "match": "\\b(domain)\\s+(service)\\s+((?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`]))",
       "captures": {
         "1": {
           "name": "keyword.control.thinai"
@@ -181,7 +181,7 @@
     },
     {
       "name": "meta.declaration.thinai",
-      "match": "\\b(query)\\s+(service)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "match": "\\b(query)\\s+(service)\\s+((?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`]))",
       "captures": {
         "1": {
           "name": "keyword.control.thinai"
@@ -196,7 +196,7 @@
     },
     {
       "name": "meta.declaration.thinai",
-      "match": "\\b(query)\\s+(repository)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "match": "\\b(query)\\s+(repository)\\s+((?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`]))",
       "captures": {
         "1": {
           "name": "keyword.control.thinai"
@@ -211,7 +211,7 @@
     },
     {
       "name": "meta.declaration.thinai",
-      "match": "\\b(root)\\s+(entity)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "match": "\\b(root)\\s+(entity)\\s+((?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`]))",
       "captures": {
         "1": {
           "name": "keyword.control.thinai"
@@ -226,7 +226,7 @@
     },
     {
       "name": "meta.declaration.thinai",
-      "match": "\\b(value)\\s+(object)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "match": "\\b(value)\\s+(object)\\s+((?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`]))",
       "captures": {
         "1": {
           "name": "keyword.control.thinai"
@@ -241,7 +241,7 @@
     },
     {
       "name": "meta.declaration.thinai",
-      "match": "\\b(data)\\s+(object)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "match": "\\b(data)\\s+(object)\\s+((?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`]))",
       "captures": {
         "1": {
           "name": "keyword.control.thinai"
@@ -256,7 +256,7 @@
     },
     {
       "name": "meta.declaration.thinai",
-      "match": "\\b(read)\\s+(model)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "match": "\\b(read)\\s+(model)\\s+((?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`]))",
       "captures": {
         "1": {
           "name": "keyword.control.thinai"
@@ -271,7 +271,7 @@
     },
     {
       "name": "meta.declaration.thinai",
-      "match": "\\b(integration)\\s+(event)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "match": "\\b(integration)\\s+(event)\\s+((?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`]))",
       "captures": {
         "1": {
           "name": "keyword.control.thinai"
@@ -286,7 +286,7 @@
     },
     {
       "name": "meta.declaration.thinai",
-      "match": "\\b(aggregate)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "match": "\\b(aggregate)\\s+((?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`]))",
       "captures": {
         "1": {
           "name": "keyword.control.thinai"
@@ -298,7 +298,7 @@
     },
     {
       "name": "meta.declaration.thinai",
-      "match": "\\b(entity)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "match": "\\b(entity)\\s+((?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`]))",
       "captures": {
         "1": {
           "name": "keyword.control.thinai"
@@ -310,7 +310,7 @@
     },
     {
       "name": "meta.declaration.thinai",
-      "match": "\\b(event)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "match": "\\b(event)\\s+((?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`]))",
       "captures": {
         "1": {
           "name": "keyword.control.thinai"
@@ -322,7 +322,7 @@
     },
     {
       "name": "meta.declaration.thinai",
-      "match": "\\b(repository)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "match": "\\b(repository)\\s+((?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`]))",
       "captures": {
         "1": {
           "name": "keyword.control.thinai"
@@ -334,7 +334,7 @@
     },
     {
       "name": "meta.declaration.thinai",
-      "match": "\\b(projector)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "match": "\\b(projector)\\s+((?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`]))",
       "captures": {
         "1": {
           "name": "keyword.control.thinai"
@@ -346,7 +346,7 @@
     },
     {
       "name": "meta.declaration.thinai",
-      "match": "\\b(factory)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "match": "\\b(factory)\\s+((?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`]))",
       "captures": {
         "1": {
           "name": "keyword.control.thinai"
@@ -358,7 +358,7 @@
     },
     {
       "name": "meta.declaration.thinai",
-      "match": "\\b(method)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "match": "\\b(method)\\s+((?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`]))",
       "captures": {
         "1": {
           "name": "keyword.control.thinai"
@@ -370,7 +370,7 @@
     },
     {
       "name": "meta.declaration.thinai",
-      "match": "\\b(journey)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "match": "\\b(journey)\\s+((?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`]))",
       "captures": {
         "1": {
           "name": "keyword.control.thinai"
@@ -382,7 +382,7 @@
     },
     {
       "name": "meta.declaration.thinai",
-      "match": "\\b(actor)\\s+([_a-zA-Z][\\w_]*)\\b",
+      "match": "\\b(actor)\\s+((?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`]))",
       "captures": {
         "1": {
           "name": "keyword.control.thinai"
@@ -394,7 +394,7 @@
     },
     {
       "name": "meta.enum.thinai",
-      "begin": "\\b(enum)\\s+([_a-zA-Z][\\w_]*)\\s*(\\{)",
+      "begin": "\\b(enum)\\s+((?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`]))\\s*(\\{)",
       "beginCaptures": {
         "1": {
           "name": "keyword.control.thinai"
@@ -418,7 +418,7 @@
         },
         {
           "name": "constant.other.enum-member.thinai",
-          "match": "\\b[_a-zA-Z][\\w_]*\\b"
+          "match": "(?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`])"
         },
         {
           "name": "punctuation.separator.comma.thinai",
@@ -440,7 +440,7 @@
     },
     {
       "name": "meta.field.optional.thinai",
-      "match": "\\b([_a-zA-Z][\\w_]*)(\\?)(?=\\s*:)",
+      "match": "((?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`]))(\\?)(?=\\s*:)",
       "captures": {
         "1": {
           "name": "variable.other.property.thinai"
@@ -452,11 +452,11 @@
     },
     {
       "name": "variable.other.property.thinai",
-      "match": "\\b[_a-zA-Z][\\w_]*(?=\\s*:)"
+      "match": "(?!(?:integrationPatterns|participants)\\s*:)(?<![\\w`])(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?![\\w`])(?=\\s*:)"
     },
     {
       "name": "keyword.control.thinai",
-      "match": "\\b(integrationPatterns|postcondition|participants|precondition|separateWays|sharedKernel|application|constructor|integration|identifier|repository|supporting|transition|aggregate|invariant|projector|subdomain|behavior|customer|projects|realizes|supplier|boolean|bounded|context|depends|exposes|factory|generic|initial|instant|invokes|journey|manages|mirrors|partner|returns|service|domain|entity|import|invoke|kernel|method|module|number|object|serves|shared|string|actor|emits|event|model|query|value|core|data|date|enum|from|kind|List|read|root|time|when|with|map|Map|Set|as|by|in|on|to)\\b|\\B(-x-)\\B"
+      "match": "\\b(integrationPatterns|postcondition|participants|precondition|separateWays|sharedKernel|application|constructor|integration|identifier|repository|supporting|transition|aggregate|invariant|projector|subdomain|behavior|customer|projects|realizes|supplier|boolean|bounded|context|depends|exposes|factory|generic|initial|instant|invokes|journey|manages|mirrors|partner|returns|service|domain|entity|import|invoke|kernel|method|module|number|object|serves|shared|string|actor|emits|event|model|query|reads|value|core|data|date|enum|from|kind|List|read|root|time|when|with|map|Map|Set|as|by|in|on|to)\\b|\\B(-x-)\\B"
     }
   ],
   "repository": {
@@ -509,7 +509,7 @@
       "patterns": [
         {
           "name": "variable.other.reference.thinai",
-          "match": "[_a-zA-Z][\\w_]*(?:\\.[_a-zA-Z][\\w_]*)*"
+          "match": "(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`)(?:\\.(?:[_a-zA-Z][\\w_]*|`[a-zA-Z0-9_ -]+`))*"
         }
       ]
     },
