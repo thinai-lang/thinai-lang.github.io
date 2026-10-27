@@ -154,7 +154,7 @@ Application and domain services use the normal `invokes` clause:
 ```thinai
 shared kernel Shared {
   domain service Rates {
-    method convert(amount: number, rate: number) returns number {
+    method convert(amount: decimal, rate: decimal) returns decimal {
       behavior "Convert [[amount]] at [[rate]]."
     }
   }
@@ -172,7 +172,7 @@ context map LocalMap {
 
 in bounded context Source {
   application service SourceApp {
-    method convert(amount: number, rate: number) {
+    method convert(amount: decimal, rate: decimal) {
       invokes Shared.Rates.convert
     }
   }

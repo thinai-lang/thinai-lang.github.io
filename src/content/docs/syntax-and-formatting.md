@@ -87,10 +87,17 @@ without backticks. Completion inserts the quoted form automatically.
 
 Fields, parameters, and method results may use:
 
-- primitives: `string`, `number`, `boolean`, `date`, `time`, `instant`;
+- primitives: `string`, `boolean`, `integer`, `decimal`, `date`, `time`, and
+  `instant`;
 - declared types: entities, value objects, enums, data objects, and read models;
 - collections: `List<T>`, `Set<T>`, and `Map<K, V>`;
 - qualified paths through modules and aggregates.
+
+Use `integer` for counts and other whole numbers, and `decimal` for money,
+prices, rates, and exact fractional business values. Neither numeric type
+encodes precision, scale, currency, or units; use a value object when those
+matter. There is no generic `number` primitive; choose `integer` or `decimal`
+based on the domain value.
 
 Collections may nest:
 
@@ -99,13 +106,13 @@ bounded context SearchContext
 
 in bounded context SearchContext {
   value object Money {
-    amount: number
+    amount: decimal
   }
 
   data object Search {
     ids: List<string>
     labels: Set<string>
-    quantities: Map<string, List<Set<number>>>
+    quantities: Map<string, List<Set<integer>>>
     prices: List<Money>
   }
 }
@@ -119,12 +126,12 @@ bounded context PricingContext
 
 in bounded context PricingContext {
   data object Adjustment {
-    amount?: number
+    amount?: decimal
     reason: string
   }
 
   application service Pricing {
-    method quote(amount: number, note?: string) returns number {
+    method quote(amount: decimal, note?: string) returns decimal {
       behavior "Apply the adjustment to the amount."
     }
   }

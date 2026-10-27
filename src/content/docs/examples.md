@@ -50,7 +50,7 @@ Repository: [`examples/language-tour`](https://github.com/thinai-lang/thinai/tre
 | Triple-quoted specifications and escaped `\[[` markers | `syntax.tni` |
 | Line and block comments | `syntax.tni` |
 | Optional fields and optional method parameters | `syntax.tni` |
-| Primitive, value-object, and nested `List`/`Set`/`Map` types | `syntax.tni` |
+| Primitive types including `integer` and `decimal`, value objects, and nested `List`/`Set`/`Map` types | `syntax.tni` |
 | Context-level value-object constructor and method | `syntax.tni` |
 | Nested modules and nested-module re-exports | `modules.tni` |
 | Module dependencies and qualified exposure paths | `modules.tni` |

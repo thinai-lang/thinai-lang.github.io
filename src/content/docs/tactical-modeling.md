@@ -11,9 +11,12 @@ declarations. For application services, events, and descriptive domain behavior,
 
 An aggregate groups its root entity and other domain types. Entities and value
 objects may have typed fields, invariants, constructors, and methods. Common
-field types are `string`, `number`, `boolean`, `date`, `time`, and `instant`;
-fields and method parameters can be optional with `?`. Built-in collections are
-`List<T>`, `Set<T>`, and `Map<K, V>`, and collections may nest.
+field types are `string`, `boolean`, `integer`, `decimal`, `date`, `time`, and
+`instant`; fields and method parameters can be optional with `?`. Use `integer`
+for counts and `decimal` for money, prices, rates, and exact fractional business
+values; precision, scale, currency, and units belong in a value object.
+Built-in collections are `List<T>`, `Set<T>`, and `Map<K, V>`, and collections
+may nest.
 Every entity has exactly one identifier field. A child entity's identity is
 scoped to its aggregate; references to an entity in another aggregate must use
 that aggregate's identifier rather than the entity itself.
@@ -43,7 +46,7 @@ in bounded context Ordering {
 
       identifier id: OrderLineId
       sku: string
-      quantity: number
+      quantity: integer
       status: LineStatus initial Open
     }
 
@@ -72,13 +75,13 @@ bounded context Catalog
 
 in bounded context Catalog {
   value object Money {
-    amount: number
+    amount: decimal
   }
 
   data object Search {
     ids: List<string>
     labels: Set<string>
-    quantities: Map<string, List<Set<number>>>
+    quantities: Map<string, List<Set<integer>>>
     prices: List<Money>
   }
 }
@@ -141,7 +144,7 @@ bounded context Pricing
 
 in bounded context Pricing {
   value object Money {
-    constructor(amount: number, currency: string) {
+    constructor(amount: decimal, currency: string) {
       invariant "The amount is not negative."
     }
 
@@ -149,7 +152,7 @@ in bounded context Pricing {
       behavior "Return a new amount based on [[Money.amount]] and [[other.amount]]."
     }
 
-    amount: number
+    amount: decimal
     currency: string
   }
 }

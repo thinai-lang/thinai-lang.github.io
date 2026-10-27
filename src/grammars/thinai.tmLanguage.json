@@ -428,7 +428,7 @@
     },
     {
       "name": "storage.type.thinai",
-      "match": "\\b(?:string|number|boolean|date|time|instant|List|Set|Map)\\b"
+      "match": "\\b(?:string|boolean|integer|decimal|date|time|instant|List|Set|Map)\\b"
     },
     {
       "name": "constant.language.thinai",
@@ -456,7 +456,7 @@
     },
     {
       "name": "keyword.control.thinai",
-      "match": "\\b(integrationPatterns|postcondition|participants|precondition|separateWays|sharedKernel|application|constructor|integration|identifier|repository|supporting|transition|aggregate|invariant|projector|subdomain|behavior|customer|projects|realizes|supplier|boolean|bounded|context|depends|exposes|factory|generic|initial|instant|invokes|journey|manages|mirrors|partner|returns|service|domain|entity|import|invoke|kernel|method|module|number|object|serves|shared|string|actor|emits|event|model|query|reads|value|core|data|date|enum|from|kind|List|read|root|time|when|with|map|Map|Set|as|by|in|on|to)\\b|\\B(-x-)\\B"
+      "match": "\\b(integrationPatterns|postcondition|participants|precondition|separateWays|sharedKernel|application|constructor|integration|identifier|repository|supporting|transition|aggregate|invariant|projector|subdomain|behavior|customer|projects|realizes|supplier|boolean|bounded|context|decimal|depends|exposes|factory|generic|initial|instant|integer|invokes|journey|manages|mirrors|partner|returns|service|domain|entity|import|invoke|kernel|method|module|object|serves|shared|string|actor|emits|event|model|query|reads|value|core|data|date|enum|from|kind|List|read|root|time|when|with|map|Map|Set|as|by|in|on|to)\\b|\\B(-x-)\\B"
     }
   ],
   "repository": {
