@@ -65,6 +65,11 @@ node packages/cli/bin/cli.js generate path/to/model.tni
 
 Pass `--destination <dir>` to choose the output directory.
 
+The CLI validates the source file and its transitive imports. It does not
+discover separate files that import the source file. Use the VS Code extension
+or another workspace-aware client when you need to validate the complete
+import-connected model, including importers.
+
 ## Learn the language
 
 Start with the [language model](language-model.md) for strategic DDD concepts,

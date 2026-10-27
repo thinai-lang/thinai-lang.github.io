@@ -9,7 +9,9 @@ do not move a declaration into a different context.
 ## Declaring modules
 
 Use `exposes` to publish declarations and `depends on` to declare a module
-dependency. Exposures must appear before the module's members.
+dependency. Exposures must appear before the module's members. A module may
+expose declarations it owns, including methods and members of its own
+aggregates, plus its direct child modules.
 
 ```thinai
 bounded context Shipping
@@ -31,16 +33,37 @@ in bounded context Shipping {
 }
 ```
 
-Visibility works in both directions:
+Visibility depends on where the source and target live:
 
-- Declarations outside modules are visible to modules by default.
+- Context-level declarations are public within their bounded context or shared
+  kernel.
 - A context-level declaration may reference a module declaration only when the
-  owning module exposes it, and all enclosing modules expose the path.
-- A reference between two different modules requires an exposure and a
-  dependency.
-- A module can reference its own exposed nested module without a redundant
-  dependency.
+  owning module and every enclosing module expose the path.
+- A declaration in another module requires exposure by its owning module and a
+  route to that module: a direct dependency, a dependency on an exposing
+  ancestor, or the source module's own public API.
+- A parent module that exposes a child module may use the child's public API
+  without a redundant dependency. Sibling modules require both exposure and
+  `depends on`.
+- A direct dependency on a nested module is valid even when its parent does not
+  expose it, provided that nested module exposes the declaration.
 - `depends on` is not a re-export.
+- A method used as a non-terminal path segment must be exposed when the source
+  is outside its module, just like a terminal method reference.
+
+### Visibility at a glance
+
+Within one bounded context or shared kernel:
+
+| Target declaration | From its own module | From another module | From outside all modules |
+| --- | --- | --- | --- |
+| Context-level declaration | ✓ | ✓ | ✓ |
+| Declaration in a top-level module | ✓ | exposure + `depends on` | exposure |
+| Declaration in a nested module | ✓ | exposure by its owning module plus a dependency or exposing-ancestor route | exposure at each level |
+
+From outside all modules, every enclosing module must expose the next segment.
+Across bounded contexts, and across different shared kernels, the full public
+exposure chain is always required.
 
 ## Nested modules and re-exports
 
@@ -84,11 +107,40 @@ in bounded context ModulesTour {
 `Consumer` depends only on `Outer`, not on `Outer.Inner`. A client of `Outer`
 does not need a separate dependency on every nested module that `Outer` exposes.
 
+A direct dependency on a nested module is also valid when its parent does not
+expose it, as long as the nested module exposes the declaration:
+
+```thinai
+bounded context PrivateModules
+
+in bounded context PrivateModules {
+  module PrivateOuter {
+    module PrivateInner {
+      exposes InnerValue
+
+      value object InnerValue {
+        raw: string
+      }
+    }
+  }
+
+  module DirectConsumer depends on PrivateOuter.PrivateInner {
+    value object UsesInner {
+      innerValue: InnerValue
+    }
+  }
+}
+```
+
+`PrivateOuter` does not expose `PrivateInner`, but `DirectConsumer` depends
+directly on `PrivateInner`, and `InnerValue` is exposed there.
+
 ## Exposed methods and services
 
-Modules may expose services, query services, methods, events, read models, and
-other declarations. Exposing a method publishes that operation through the
-module's API.
+Modules may expose any declaration they own that the grammar permits, including
+aggregates, entities, value objects, data objects, read models, enums, events,
+services, projectors, repositories, factories, methods, and direct child
+modules. Exposing a method publishes that operation through the module's API.
 
 ```thinai
 bounded context CommandsTour
@@ -173,10 +225,16 @@ query. Shared-kernel relationships do not authorize query reads.
   and a context-map relationship for cross-context use.
 - A declaration outside a module may reference a module declaration only when
   the module and every enclosing module expose it.
+- A module-to-module reference in one context requires exposure by the owning
+  module plus a dependency or public re-export route. A direct dependency on a
+  nested module is enough when that module exposes the declaration.
+- A method used as a path segment requires method exposure outside its own
+  module.
 - Exposing a declaration makes it part of a published contract; it does not make
   the declaration a directly reusable signature type in another bounded context.
 - Integration-event payloads may use exposed value objects or enums from a
-  sibling module when the event's module depends on the payload module.
+  sibling module when the event's module depends on the payload module and every
+  enclosing module exposes the payload type.
 
 For path syntax and reference visibility, see
 [references and paths](references-and-paths.md).

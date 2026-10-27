@@ -170,7 +170,7 @@ The formatter:
 - respects the document's newline style;
 - keeps empty blocks empty;
 - expands inline enums to one value per line;
-- normalizes comma and operator spacing.
+- normalizes parameter-list parentheses and comma/operator spacing.
 
 Formatting is not required for validity. Completion and validation work on
 unformatted source as well.

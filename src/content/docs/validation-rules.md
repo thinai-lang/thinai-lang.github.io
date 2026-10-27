@@ -73,14 +73,18 @@ most common errors, not a replacement for the grammar or the language server.
 - Event handlers have exactly one event-typed parameter and no additional
   parameters.
 - Projector methods handle exactly one domain or integration event.
+- Domain-event payloads must not expose entity instances, including inside
+  collections or nested value-object shapes.
 - Integration-event payloads carry stable value data, not entities or
-  aggregate-owned types.
+  aggregate-owned types. Validation covers collection element and value types,
+  including nested value-object shapes.
 - An integration event nested in a module must be exposed before another context
   can consume it.
 
 ## CQRS reads
 
-- Query services may read query repositories or aggregate repositories.
+- Query services may read query repositories, which may source aggregate tables,
+  but not aggregate repositories directly.
 - Query-service methods return primitives, data objects, read models, value
   objects, enums, or collections of those values.
 - Application-service methods must not return entities.
@@ -94,15 +98,22 @@ most common errors, not a replacement for the grammar or the language server.
 ## Modules and visibility
 
 - `exposes` entries appear before module members.
-- A module may expose only declarations it owns.
-- Cross-module references require both an exposure and a module dependency.
+- A module may expose declarations it owns, including methods and members of
+  its own aggregates, plus its direct child modules.
+- A context-level declaration may reference a module declaration only when the
+  owning module and every enclosing module expose the path.
+- A reference from another module requires exposure by the owning module plus a
+  dependency or public re-export route. A direct dependency on a nested module
+  is enough when that module exposes the declaration.
+- A parent module that exposes a child module does not need a redundant
+  dependency on the child.
 - Exposing a nested module re-exports that module's public API through the
   enclosing module.
 - `depends on` is not a re-export.
-- A module may use its own exposed nested module's API without a redundant
-  dependency.
 - Module dependencies do not cross bounded-context boundaries.
 - Exposing a query service publishes only primitive or public DataObject results.
+- A method used as a non-terminal path segment requires method exposure outside
+  its own module.
 - An unexposed module-nested declaration cannot be referenced from outside its
   module.
 
@@ -126,8 +137,9 @@ most common errors, not a replacement for the grammar or the language server.
 ## Journeys
 
 - Actors are declared once at model scope.
-- A journey is a top-level timeline of user-invoked application-service
-  commands.
+- A journey is a top-level timeline of non-event application-service commands.
+  Any application-service method without an event parameter is treated as a
+  command; a method with an event parameter is an event handler.
 - Each actor may have at most one `by` block per journey.
 - A step names at least a service or context segment before the command.
 - Journey order is significant across actor blocks.
@@ -155,4 +167,7 @@ most common errors, not a replacement for the grammar or the language server.
 | `Event-triggered method must have exactly one event-typed parameter` | Remove extra parameters or the non-event parameter |
 | `Conflicting relationships` | Remove or reconcile the incompatible context-map relationships |
 | `Only an event handler may dispatch to a command` | Make the caller an event handler or invoke an allowed target |
-| `This specification path segment is not visible` | Expose the module path or use a public declaration |
+| `This specification path segment is not visible` | Expose the method or module path, or use a direct dependency on an exposed nested module |
+| `Event payloads must not expose entity instances` | Replace entity data with identifiers or stable value data, including inside collections |
+| `An integration-event payload must not expose types owned by an aggregate` | Move the type out of the aggregate or use a public contract value |
+| `Import component name ... conflicts with a declaration` | Rename the local declaration or alias the imported component |

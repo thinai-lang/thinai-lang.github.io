@@ -3,9 +3,10 @@ title: Alpha Notes and Limitations
 description: What to expect from the Thinai alpha, how to install it, and which limitations are intentional.
 ---
 
-Thinai is in alpha. Syntax and language-service behavior may still change
-between releases. The examples, grammar, and validation rules in this
-documentation describe the current alpha behavior.
+Thinai is in alpha. The first release is `0.1.0-alpha.1`. Syntax and
+language-service behavior may still change between releases. The examples,
+grammar, and validation rules in this documentation describe the current alpha
+behavior.
 
 ## Installing the alpha
 
@@ -42,6 +43,12 @@ CLI usage.
 - Cross-context contribution quick fixes are intentionally unavailable because
   private cross-context type use is rejected. Same-context contribution quick
   fixes are supported.
+
+## Known CLI limitations
+
+- The CLI validates the source file and its transitive imports, not files that
+  import the source file. Use the language server for the full import-connected
+  model.
 
 ## Known editor limitations
 

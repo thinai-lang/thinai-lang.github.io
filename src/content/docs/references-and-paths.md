@@ -88,12 +88,24 @@ Data-bearing declarations—value objects, data objects, read models, enums, and
 fields—require one of:
 
 - same-module access;
-- public or exposed visibility;
+- exposure by the owning module plus a direct dependency or public API route;
 - an authorized shared-kernel relationship;
 - an authorized event or published-query contract.
 
-An identifier value object named by `mirrors` is the explicit exception and may
-be module-private.
+From outside all modules or across bounded contexts, the full public exposure
+chain is required. An identifier value object named by `mirrors` is the explicit
+exception and may be module-private.
+
+| Path segment | Requirement |
+| --- | --- |
+| Structural container (context, map, kernel, aggregate, entity, service, projector, factory) | May be traversed without exposing the segment. |
+| Module | Must be accessible through the public module API or a direct dependency; a cross-context contract path may reach a private nested module only when authorized. |
+| Method used as a non-terminal segment | Must be exposed by its owning module unless the source is in that module; context-level methods are public within their context. |
+| Data-bearing non-terminal (value object, data object, read model, enum, field) | Must be exposed by its owning module and reachable through the same module, a direct dependency or exposing ancestor, the public API, an authorized shared kernel, or an authorized event or query contract. |
+| Terminal declaration | Must satisfy the declaration, contract, or journey visibility rule that applies to it. |
+
+For module and cross-context details, see
+[modules and visibility](modules-and-visibility.md).
 
 ## Journey references
 
@@ -155,11 +167,13 @@ behavior """
 If a reference does not resolve, check:
 
 1. Is the declaration imported or visible in the current model?
-2. Does a module path expose every segment?
+2. Is the module accessible, is the declaration exposed, and is this a direct
+   dependency on its module?
 3. Does a cross-context read or event require an authorized context map?
 4. Is a data-bearing path segment private to another module or aggregate?
-5. Does a reserved-word segment need backticks?
-6. For a journey, was the referenced command invoked earlier in the same
+5. Does a non-terminal method path require method exposure?
+6. Does a reserved-word segment need backticks?
+7. For a journey, was the referenced command invoked earlier in the same
    journey?
 
 See [validation rules](validation-rules.md) for the corresponding constraints.

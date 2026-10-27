@@ -114,6 +114,47 @@ value objects. Keep DataObjects and events at operation-handler boundaries, and
 refer to entities in another aggregate by their identifiers rather than passing
 the entity instances.
 
+Method and constructor signatures follow these rules:
+
+| Kind | Inputs | Outputs |
+| --- | --- | --- |
+| Entity constructor | Domain values; same-aggregate entity references; no DataObjects, events, read models, or foreign entities | No return |
+| Context-level value-object constructor | Domain values; no entities, DataObjects, events, or read models | No return |
+| Aggregate-owned value-object constructor | Domain values; same-aggregate entity references; no DataObjects, events, read models, or foreign entities | No return |
+| Entity method | Domain values; same-aggregate entity references; no DataObjects, events, read models, or foreign entities | Domain values; same-aggregate entity references |
+| Aggregate-owned value-object method | Domain values; same-aggregate entity references; no DataObjects, events, read models, or foreign entities | Domain values; same-aggregate entity references |
+| Context-level value-object method | Domain values; no entities, DataObjects, events, or read models | Domain values |
+| Factory method | Identifiers, value objects, primitives, enums, and collections of those; no entities, DataObjects, events, or read models | The single aggregate root created by that factory |
+| Domain-service method | Entity or aggregate-root entity parameters and domain values; no DataObjects, events, or read models | Domain values; no entities, DataObjects, or read models |
+| Application-service method | Domain values and DataObjects; no entities or read models; event handlers have exactly one event parameter and no other parameters | Domain values and DataObjects; no entities or read models |
+| Query-service method | Domain values and DataObjects; no entities, read models, or events | Domain values, DataObjects, and read models; no entities |
+| Projector method | Exactly one domain or integration event | No return; only `projects` targets |
+
+“Domain values” means primitives, enums, value objects, identifiers, and
+collections of those values. DataObjects belong at application-service and
+query-service boundaries.
+
+Context-level value objects may declare constructors and methods too:
+
+```thinai
+bounded context Pricing
+
+in bounded context Pricing {
+  value object Money {
+    constructor(amount: number, currency: string) {
+      invariant "The amount is not negative."
+    }
+
+    method add(other: Money) returns Money {
+      behavior "Return a new amount based on [[Money.amount]] and [[other.amount]]."
+    }
+
+    amount: number
+    currency: string
+  }
+}
+```
+
 ```thinai
 bounded context Ordering
 
@@ -230,11 +271,11 @@ result shape; it need not be materialized or backed by a separate database.
 Read models may compose other read models, but not data objects. Published query
 contracts expose only primitive or public DataObject results; see
 [modules and visibility](modules-and-visibility.md#published-query-contracts).
-Projectors are optional event-driven projections. A query service may read through
-query repositories or aggregate repositories, including from the same relational
-tables as the write side. Query-service methods can return primitives, data
-objects, read models, or collections of these; application-service methods must
-not return entities. For example:
+Projectors are optional event-driven projections. A query service reads through
+query repositories, which may source the same relational tables as the write
+side; it does not read aggregate repositories directly. Query-service methods can
+return primitives, data objects, read models, or collections of these;
+application-service methods must not return entities. For example:
 
 ```thinai
 bounded context Ordering
@@ -309,10 +350,16 @@ that routing matters.
 
 Modules organize declarations within one bounded context or shared kernel.
 Use `exposes` to list declarations available to other modules, and `depends on`
-to declare a module dependency. Declarations outside modules are visible to
-modules by default. In the other direction, a context-level declaration may
-reference a module declaration only when its module exposes it. A reference
-between two different modules requires both an exposure and a dependency.
+to declare a module dependency. A module may expose declarations it owns,
+including methods and members of its own aggregates, plus its direct child
+modules. Declarations outside modules are visible to modules by default. In the
+other direction, a context-level declaration may reference a module declaration
+only when its owning module and every enclosing module expose the path. A
+reference from another module requires exposure by the owning module plus a
+dependency or public re-export route. A direct dependency on a nested module is
+valid when that module exposes the declaration, even if its parent does not
+expose it. A parent that exposes a child module needs no redundant dependency.
+`depends on` is not a re-export.
 Exposing a nested module re-exports its public API through the enclosing module;
 see [modules and visibility](modules-and-visibility.md) for nested re-exports,
 exposed methods, and published query contracts.
@@ -349,6 +396,7 @@ Qualified specification paths may traverse bounded contexts, context maps,
 shared kernels, modules, aggregates, entities, services, projectors, and
 factories without exposing each structural segment. Value objects, data objects,
 read models, enums, and fields are data-bearing: using one as a non-terminal
-path segment requires same-module access, public or exposed visibility, an
-authorized shared-kernel relationship, or an authorized event or published-query
-contract.
+path segment requires same-module access; exposure by its owning module plus a
+direct dependency or public API route; an authorized shared-kernel relationship;
+or an authorized event or published-query contract. From outside all modules or
+across contexts, the full public exposure chain is required.

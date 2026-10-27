@@ -125,11 +125,13 @@ context boundary, an application-service method can receive a domain event and
 emit one or more integration events. The integration-event declaration defines
 the public schema; the method's behavior text describes any payload mapping.
 Event payloads carry stable value data rather than entity instances or other
-aggregate-owned types. An IntegrationEvent nested in a module must be explicitly
-exposed before another bounded context can consume it. When the event is in a
-module and a direct payload type lives in a sibling module, the event module
-must depend on that payload module and the payload must still be exposed;
-nested payload types follow their outer type's module dependencies.
+aggregate-owned types. Validation includes collection element and value types and
+nested value-object shapes, not only direct field types. An IntegrationEvent
+nested in a module must be explicitly exposed before another bounded context can
+consume it. When the event is in a module and a direct payload type lives in a
+sibling module, the event module must depend on that payload module and the
+payload must still be exposed; nested payload types follow their outer type's
+module dependencies.
 
 For CQRS reads, a `read model` is an optional query-result shape, not necessarily
 a materialized projection or separate database. A `query repository` is an
@@ -137,8 +139,9 @@ optional logical read boundary and may query the same physical tables as the
 write side. `reads from` may name one or more aggregate tables, or a published
 query-service operation, and may carry a descriptive `when` guard. A `projector`
 is needed only when the model uses an event-driven projection. Query services may
-read through query or aggregate repositories and must return data, not entity
-instances. Projectors do not call application services or change aggregates:
+read through query repositories, which may source aggregate tables, and must
+return data, not entity instances. Projectors do not call application services or
+change aggregates:
 
 ```thinai
 bounded context Ordering
@@ -233,8 +236,10 @@ not make domain events public.
 
 ## Journeys
 
-A journey is a top-level, descriptive EventStorming timeline of user-invoked
-application-service commands. It can span bounded contexts. Each command remains
+A journey is a top-level, descriptive EventStorming timeline of non-event
+application-service commands. Any application-service method without an event
+parameter is treated as a command; a method with an event parameter is an event
+handler. A journey can span bounded contexts. Each command remains
 owned by its bounded context; the journey does not imply a synchronous remote
 call or shared transaction. Background event handoffs are modeled by the
 contexts' events and handlers, not as journey steps. Queries and event-triggered
