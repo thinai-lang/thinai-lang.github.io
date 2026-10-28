@@ -56,19 +56,39 @@ extension for production work.
 
 ## Use the CLI
 
-The CLI currently generates a JavaScript summary from a model and its imported
-files:
+The CLI generates a JavaScript summary, exports the model graph, produces
+task-scoped context slices, reports model impact, validates models, and runs a
+read-only MCP server.
 
 ```bash
+# Generate the JavaScript summary
 node packages/cli/bin/cli.js generate path/to/model.tni
+
+# Export the model graph
+node packages/cli/bin/cli.js inspect path/to/model.tni --out model.json
+
+# Get one aggregate or context and its dependencies
+node packages/cli/bin/cli.js context path/to/model.tni Aggregate:Ordering.Order --format md
+
+# Report elements affected by a change
+node packages/cli/bin/cli.js impact path/to/model.tni ValueObject:Ordering.Order.OrderId --json
+
+# Validate the source file and its transitive imports
+node packages/cli/bin/cli.js validate path/to/model.tni
+
+# Start a read-only MCP server
+node packages/cli/bin/cli.js mcp path/to/model.tni
 ```
 
-Pass `--destination <dir>` to choose the output directory.
+Pass `--destination <dir>` to choose the generation output directory.
 
 The CLI validates the source file and its transitive imports. It does not
 discover separate files that import the source file. Use the VS Code extension
 or another workspace-aware client when you need to validate the complete
 import-connected model, including importers.
+
+See [agent workflow](agent-workflow.md) for the model-first workflow and MCP
+tools.
 
 ## Learn the language
 

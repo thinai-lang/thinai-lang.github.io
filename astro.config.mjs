@@ -24,7 +24,7 @@ export default defineConfig({
       customCss: ['./src/styles/brand.css'],
       sidebar: [
         { label: 'Home', link: '/' },
-        { label: 'Getting started', items: ['getting-started'] },
+        { label: 'Getting started', items: ['getting-started', 'agent-workflow'] },
         {
           label: 'Language guides',
           items: ['language-model', 'tactical-modeling', 'events-and-behavior'],

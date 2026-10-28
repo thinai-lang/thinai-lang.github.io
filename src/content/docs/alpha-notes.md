@@ -52,12 +52,9 @@ CLI usage.
 
 ## Known editor limitations
 
-The current extension focuses on core language support. It does not yet provide:
-
-- rename or refactor operations;
-- find-all-references;
-- hover documentation;
-- a document outline or document symbols.
+The current extension focuses on core language support. It provides diagnostics,
+completion, definitions, find-all-references, document symbols, hover, formatting,
+and code actions. Rename and refactor operations are not yet available.
 
 Same-label completion items can represent different structural path targets.
 Their details distinguish them; the list does not collapse them because doing so
