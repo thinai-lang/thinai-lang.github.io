@@ -27,7 +27,6 @@ guides to learn the language and model a domain by topic:
   reporting.
 
 For a complete multi-file model, see the
-[Order Fulfillment example](https://github.com/thinai-lang/thinai/blob/main/examples/order-fulfillment/README.md). The
-[language package README](https://github.com/thinai-lang/thinai/blob/main/packages/language/README.md) describes the
-implementation package; the [grammar](https://github.com/thinai-lang/thinai/blob/main/packages/language/src/thinai.langium)
-defines the syntax precisely.
+[Order Fulfillment example](https://github.com/thinai-lang/thinai-lang.github.io/tree/main/examples/order-fulfillment).
+The [language guides](language-model.md) describe the language precisely; the
+[alpha notes](alpha-notes.md) describe installation and current limitations.

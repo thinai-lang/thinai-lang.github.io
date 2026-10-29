@@ -1,6 +1,6 @@
 ---
 title: Getting Started
-description: Build and run the Thinai alpha from the project repository.
+description: Install the Thinai alpha editor extension, CLI, and language package.
 ---
 
 Thinai is a domain-specific modeling language for domain-driven design. The
@@ -9,50 +9,39 @@ alpha; syntax and language-service behavior may still change between releases.
 
 ## Requirements
 
-- Node.js 22 or newer
-- npm 10.2.3 or newer
 - Visual Studio Code 1.91 or newer for the editor extension
+- Node.js 22 or newer for the CLI and the language package
 
-## Build from source
+The editor extension bundles the language server. You do not need a separate
+language-server installation to use Thinai in VS Code.
 
-The alpha is distributed from the
-[project repository](https://github.com/thinai-lang/thinai). Clone it, install
-the workspace dependencies, and generate the parser and language metadata:
+## Install the editor extension
 
-```bash
-git clone https://github.com/thinai-lang/thinai.git
-cd thinai
-npm install
-npm run build
-```
-
-`npm run build` runs Langium generation and compiles the language, CLI, and
-extension packages. Run the test suite with:
+Install the pre-release version from the Visual Studio Marketplace:
 
 ```bash
-npm test
+code --install-extension thinai-lang.vscode-thinai --pre-release
 ```
 
-## Use the editor extension
+You can also search for **Thinai** in the Extensions view and select **Install
+Pre-Release Version**. The extension provides diagnostics, completion,
+navigation, formatting, and import quick fixes for `.tni` files.
 
-Open the repository in Visual Studio Code, build the workspace, then run the
-**Run Extension** launch configuration (F5). This starts an Extension
-Development Host with Thinai support for `.tni` files, including diagnostics,
-completion, navigation, formatting, and import quick fixes.
+Open a folder that contains `.tni` files. The extension activates on `.tni`
+files and builds the model from the file and its imports.
 
-For iterative work, `npm run watch` rebuilds the language and extension while
-the development host is running.
-
-To install a packaged alpha VSIX:
+## Install the CLI
 
 ```bash
-cd packages/extension
-npx --yes @vscode/vsce package --out /tmp/opencode/vscode-thinai-alpha.vsix
-code --install-extension /tmp/opencode/vscode-thinai-alpha.vsix
+npm install -g thinai-cli@alpha
+thinai-cli --version
 ```
 
-See [alpha notes and limitations](alpha-notes.md) before relying on the
-extension for production work.
+You can also run it without a global install:
+
+```bash
+npx thinai-cli@alpha --version
+```
 
 ## Use the CLI
 
@@ -62,22 +51,22 @@ read-only MCP server.
 
 ```bash
 # Generate the JavaScript summary
-node packages/cli/bin/cli.js generate path/to/model.tni
+thinai-cli generate path/to/model.tni
 
 # Export the model graph
-node packages/cli/bin/cli.js inspect path/to/model.tni --out model.json
+thinai-cli inspect path/to/model.tni --out model.json
 
 # Get one aggregate or context and its dependencies
-node packages/cli/bin/cli.js context path/to/model.tni Aggregate:Ordering.Order --format md
+thinai-cli context path/to/model.tni Aggregate:Ordering.Order --format md
 
 # Report elements affected by a change
-node packages/cli/bin/cli.js impact path/to/model.tni ValueObject:Ordering.Order.OrderId --json
+thinai-cli impact path/to/model.tni ValueObject:Ordering.Order.OrderId --json
 
 # Validate the source file and its transitive imports
-node packages/cli/bin/cli.js validate path/to/model.tni
+thinai-cli validate path/to/model.tni
 
 # Start a read-only MCP server
-node packages/cli/bin/cli.js mcp path/to/model.tni
+thinai-cli mcp path/to/model.tni
 ```
 
 Pass `--destination <dir>` to choose the generation output directory.
@@ -90,11 +79,33 @@ import-connected model, including importers.
 See [agent workflow](agent-workflow.md) for the model-first workflow and MCP
 tools.
 
+## Use the language package
+
+```bash
+npm install thinai-language@alpha
+```
+
+The package exports the language services used by the CLI and the editor
+extension.
+
+## Examples
+
+The [Order Fulfillment example](https://github.com/thinai-lang/thinai-lang.github.io/tree/main/examples/order-fulfillment)
+is a complete multi-file model that exercises imports, modules, context maps,
+events, and published query contracts. The
+[Language Tour](https://github.com/thinai-lang/thinai-lang.github.io/tree/main/examples/language-tour)
+is a compact syntax and visibility tour.
+
+## Source and support
+
+The Thinai source repository is private during the alpha. Report bugs and
+feature requests in the public
+[issue tracker](https://github.com/thinai-lang/issues). See
+[alpha notes and limitations](alpha-notes.md) before relying on the extension
+for production work.
+
 ## Learn the language
 
 Start with the [language model](language-model.md) for strategic DDD concepts,
 then read [tactical modeling](tactical-modeling.md) and
-[events and behavior](events-and-behavior.md). The
-[Order Fulfillment example](https://github.com/thinai-lang/thinai/blob/main/examples/order-fulfillment/README.md)
-is a complete multi-file model that exercises imports, modules, context maps,
-events, and published query contracts.
+[events and behavior](events-and-behavior.md).

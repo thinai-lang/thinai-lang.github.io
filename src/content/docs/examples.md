@@ -10,11 +10,11 @@ Two example locations complement each other:
 - **Language Tour** is a compact syntax and visibility tour for features that
   are easier to read outside the main domain model.
 
-Both examples are validated by the repository test suite.
+Both examples are validated by the Thinai test suite.
 
 ## Order Fulfillment
 
-Repository: [`examples/order-fulfillment`](https://github.com/thinai-lang/thinai/tree/main/examples/order-fulfillment)
+Repository: [`examples/order-fulfillment`](https://github.com/thinai-lang/thinai-lang.github.io/tree/main/examples/order-fulfillment)
 
 The model spans Ordering, Shipping, Billing, Customer Support, shared-kernel
 types, and a context map. It demonstrates:
@@ -38,11 +38,11 @@ types, and a context map. It demonstrates:
 | Cross-context journey command invocation | `cross-context-journey.tni` |
 
 Start with the
-[Order Fulfillment README](https://github.com/thinai-lang/thinai/blob/main/examples/order-fulfillment/README.md).
+[Order Fulfillment README](https://github.com/thinai-lang/thinai-lang.github.io/blob/main/examples/order-fulfillment/README.md).
 
 ## Language Tour
 
-Repository: [`examples/language-tour`](https://github.com/thinai-lang/thinai/tree/main/examples/language-tour)
+Repository: [`examples/language-tour`](https://github.com/thinai-lang/thinai-lang.github.io/tree/main/examples/language-tour)
 
 | Feature | File |
 | --- | --- |
@@ -91,11 +91,14 @@ Repository: [`examples/language-tour`](https://github.com/thinai-lang/thinai/tre
 
 ## Running the examples
 
-From the repository root:
+The examples are mirrored in this repository under `examples/`. Install the CLI
+first, then run it against a copied checkout:
 
 ```bash
-node packages/cli/bin/cli.js generate examples/order-fulfillment/shipping.tni
-node packages/cli/bin/cli.js generate examples/language-tour/sharing.tni
+git clone https://github.com/thinai-lang/thinai-lang.github.io.git
+cd thinai-lang.github.io
+npx thinai-cli@alpha generate examples/order-fulfillment/shipping.tni
+npx thinai-cli@alpha generate examples/language-tour/sharing.tni
 ```
 
 Open either directory in VS Code with the Thinai extension to exercise

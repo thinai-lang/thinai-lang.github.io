@@ -1,0 +1,52 @@
+// Syntax tour: identifiers, quoted names, strings, collections, and optional markers.
+bounded context SyntaxTour
+
+in bounded context SyntaxTour {
+  value object Adjustment {
+    `value`: decimal
+    reason?: string
+  }
+
+  // Context-level value objects may declare constructors and methods.
+  value object Money {
+    constructor(amount: decimal, currency: string) {
+      invariant "The amount is not negative."
+      behavior "Normalize the amount and currency before storing them."
+    }
+
+    method add(other: Money) returns Money {
+      precondition "Both amounts use the same currency."
+      behavior "Return a new amount based on [[Money.amount]] and [[other.amount]]."
+      postcondition "The result uses the same currency."
+    }
+
+    amount: decimal
+    currency: string
+  }
+
+  data object TourInput {
+    adjustments: List<Adjustment>
+    labels: Set<string>
+    matrix: Map<string, List<Set<integer>>>
+    prices: List<Money>
+    note?: string
+  }
+
+  enum TourState {
+    Ready,
+    Done
+  }
+
+  /*
+    Block comments and triple-quoted specifications are supported.
+    The next behavior is deliberately multiline.
+  */
+  application service TourService {
+    method describe(input: TourInput, verbose?: boolean) returns string {
+      behavior """
+        Record [[input.note]] and each [[Adjustment.`value`]] adjustment.
+        The literal sequence \[[ is escaped text, while [[Money.amount]] is a link.
+      """
+    }
+  }
+}

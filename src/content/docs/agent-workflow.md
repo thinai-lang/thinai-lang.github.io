@@ -18,10 +18,13 @@ Use whichever interface is available:
 
 All three read the same model. The model remains the source of truth.
 
+Install the CLI with `npm install -g thinai-cli@alpha` or run it with
+`npx thinai-cli@alpha`. The commands below assume `thinai-cli` is on `PATH`.
+
 ## Inspect the model
 
 ```bash
-node packages/cli/bin/cli.js inspect path/to/model.tni --out model.json
+thinai-cli inspect path/to/model.tni --out model.json
 ```
 
 The output uses the `thinai-model-v1` schema. Element IDs are canonical and
@@ -39,7 +42,7 @@ Prefer one aggregate, bounded context, module, or contract over loading the
 whole model.
 
 ```bash
-node packages/cli/bin/cli.js context path/to/model.tni Aggregate:Ordering.Order --format md
+thinai-cli context path/to/model.tni Aggregate:Ordering.Order --format md
 ```
 
 The slice includes the root, its members, relevant dependencies, contracts, and
@@ -49,7 +52,7 @@ metadata is preserved.
 ## Report impact
 
 ```bash
-node packages/cli/bin/cli.js impact path/to/model.tni ValueObject:Ordering.Order.OrderId --json
+thinai-cli impact path/to/model.tni ValueObject:Ordering.Order.OrderId --json
 ```
 
 The report lists the changed element, its descendants, incoming references, and
@@ -58,7 +61,7 @@ the elements that reference it.
 ## Validate
 
 ```bash
-node packages/cli/bin/cli.js validate path/to/model.tni
+thinai-cli validate path/to/model.tni
 ```
 
 The CLI validates the source file and its transitive imports. It does not
@@ -68,7 +71,7 @@ client for the complete import-connected model.
 ## MCP server
 
 ```bash
-node packages/cli/bin/cli.js mcp path/to/model.tni
+thinai-cli mcp path/to/model.tni
 ```
 
 The server is read-only. Available tools:

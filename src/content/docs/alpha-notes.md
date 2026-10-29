@@ -10,28 +10,21 @@ behavior.
 
 ## Installing the alpha
 
-The alpha is distributed from the
-[project repository](https://github.com/thinai-lang/thinai). Build it from source
-or install a packaged VSIX.
+Install the pre-release editor extension from the Visual Studio Marketplace:
 
 ```bash
-git clone https://github.com/thinai-lang/thinai.git
-cd thinai
-npm install
-npm run build
-npm test
+code --install-extension thinai-lang.vscode-thinai --pre-release
 ```
 
-To build a VSIX from the workspace:
+Install the CLI and language package from npm:
 
 ```bash
-cd packages/extension
-npx --yes @vscode/vsce package --out /tmp/opencode/vscode-thinai-alpha.vsix
-code --install-extension /tmp/opencode/vscode-thinai-alpha.vsix
+npm install -g thinai-cli@alpha
+npm install thinai-language@alpha
 ```
 
-See [Getting started](getting-started.md) for the development-host workflow and
-CLI usage.
+The Thinai source repository is private during the alpha. See
+[Getting started](getting-started.md) for installation details and CLI usage.
 
 ## Known language limitations
 
@@ -68,8 +61,7 @@ consolidation is planned after alpha.
 
 ## Reporting issues
 
-Use the
-[project issue tracker](https://github.com/thinai-lang/thinai/issues) and include:
+Use the [public issue tracker](https://github.com/thinai-lang/issues) and include:
 
 - the smallest `.tni` source that reproduces the issue;
 - the expected and actual result;

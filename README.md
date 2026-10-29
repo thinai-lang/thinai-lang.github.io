@@ -4,10 +4,19 @@ This repository contains the source for [thinai-lang.github.io](https://thinai-l
 
 The Shiki language grammar at `src/grammars/thinai.tmLanguage.json` is mirrored from `thinai/packages/extension/syntaxes/thinai.tmLanguage.json`. Keep it in sync when Thinai's TextMate grammar changes; `npm test` verifies that Shiki loads and highlights it.
 
-When the language repository is checked out as a sibling directory, refresh the mirror with:
+The example models at `examples/` are mirrored from `thinai/examples/`. Keep them in sync when the source examples change.
+
+When the language repository is checked out as a sibling directory, refresh the mirrors with:
 
 ```bash
 npm run sync:grammar
+npm run sync:examples
+```
+
+Verify both mirrors without writing:
+
+```bash
+npm run check:examples
 ```
 
 Set `THINAI_REPO` to point at a different checkout location.

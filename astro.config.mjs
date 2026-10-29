@@ -42,7 +42,7 @@ export default defineConfig({
         { label: 'Alpha notes', items: ['alpha-notes'] },
         {
           label: 'Order Fulfillment repository',
-          link: 'https://github.com/thinai-lang/thinai/tree/main/examples/order-fulfillment',
+          link: 'https://github.com/thinai-lang/thinai-lang.github.io/tree/main/examples/order-fulfillment',
         },
       ],
       expressiveCode: {

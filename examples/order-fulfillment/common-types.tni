@@ -1,0 +1,40 @@
+shared kernel CommonTypes {
+  value object Currency {
+    code: string
+  }
+
+  enum Role {
+    Customer,
+    FulfillmentOperator,
+    System
+  }
+
+  /* Domain policies can live in the shared kernel alongside value types. */
+  domain service CurrencyConversion {
+    method convert(amount: decimal, rate: decimal) returns decimal {
+      precondition "The amount is non-negative and the conversion rate is positive."
+      behavior "Convert the amount using the supplied exchange rate."
+      postcondition "The returned amount is expressed in the target currency."
+    }
+  }
+
+  module SharedContracts {
+    exposes CorrelationId, TenantId, Identifiers
+
+    value object CorrelationId {
+      raw: string
+    }
+
+    value object TenantId {
+      raw: string
+    }
+
+    module Identifiers {
+      exposes ExternalId
+
+      value object ExternalId {
+        raw: string
+      }
+    }
+  }
+}

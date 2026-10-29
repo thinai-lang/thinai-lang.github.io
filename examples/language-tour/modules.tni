@@ -1,0 +1,70 @@
+// Module tour: nested modules, re-exports, dependencies, exposed methods,
+// and a local mirror of a module-private identifier.
+bounded context ModulesTour
+
+in bounded context ModulesTour {
+  module Outer {
+    exposes Inner, PublicValue
+
+    module Inner {
+      exposes InnerValue
+
+      aggregate Request {
+        root entity Request {
+          identifier id: RequestId
+        }
+
+        value object RequestId {
+          raw: string
+        }
+      }
+
+      value object InnerValue {
+        raw: string
+      }
+    }
+
+    value object PublicValue {
+      raw: string
+    }
+  }
+
+  module Consumer depends on Outer {
+    value object UsesPublic {
+      publicValue: PublicValue
+      innerValue: Outer.Inner.InnerValue
+    }
+  }
+
+  data object OutsideUsesNested {
+    innerValue: Outer.Inner.InnerValue
+  }
+
+  module Api {
+    exposes Handler.run
+
+    application service Handler {
+      method run() {}
+    }
+  }
+
+  module ApiConsumer depends on Api {
+    event Triggered
+
+    application service UsesApi {
+      method onTriggered(source: Triggered) {
+        invokes Api.Handler.run
+      }
+    }
+  }
+}
+
+bounded context MirrorTour
+
+in bounded context MirrorTour {
+  // A local identifier mirror may name a module-private identifier in another
+  // bounded context; this is the sanctioned cross-context identifier use.
+  value object MirroredRequestId mirrors ModulesTour.Outer.Inner.Request.RequestId {
+    raw: string
+  }
+}

@@ -11,7 +11,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "test": "node --test",
-    "sync:grammar": "node scripts/sync-grammar.mjs"
+    "sync:grammar": "node scripts/sync-grammar.mjs",
+    "sync:examples": "node scripts/sync-examples.mjs",
+    "check:examples": "node scripts/sync-examples.mjs --check"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.42.6",

@@ -279,5 +279,5 @@ Journey timeline rules:
 
 See [references and paths](references-and-paths.md) for path and quoting rules.
 
-See the [Order Fulfillment example](https://github.com/thinai-lang/thinai/blob/main/examples/order-fulfillment/README.md)
+See the [Order Fulfillment example](https://github.com/thinai-lang/thinai-lang.github.io/blob/main/examples/order-fulfillment/README.md)
 for a multi-file model with an integration-event consumer.
