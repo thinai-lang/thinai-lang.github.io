@@ -1,0 +1,26 @@
+{
+  "name": "thinai-docs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "test": "node --test",
+    "sync:grammar": "node scripts/sync-grammar.mjs",
+    "sync:examples": "node scripts/sync-examples.mjs",
+    "check:examples": "node scripts/sync-examples.mjs --check"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.42.6",
+    "astro": "^7.3.8",
+    "shiki": "^4.5.0"
+  },
+  "overrides": {
+    "postcss-nested": "8.0.1"
+  }
+}

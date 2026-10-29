@@ -1,0 +1,52 @@
+// Sharing tour: same-document context map, shared-kernel service,
+// published query contract, and an authorized cross-context query read.
+shared kernel Shared {
+  value object Money {
+    amount: decimal
+    currency: string
+  }
+
+  domain service Rates {
+    method convert(amount: decimal, rate: decimal) returns decimal {
+      behavior "Convert [[amount]] at [[rate]]."
+    }
+  }
+}
+
+bounded context Source
+
+bounded context Consumer
+
+context map LocalMap {
+  customer Consumer -> supplier Source
+
+  sharedKernel Shared {
+    participants: [Source, Consumer]
+  }
+}
+
+in bounded context Source {
+  module Api {
+    exposes Queries
+
+    query service Queries {
+      method lookup() returns string {
+        behavior "Return the published value."
+      }
+    }
+  }
+
+  application service SourceApp {
+    method convert(amount: decimal, rate: decimal) {
+      invokes Shared.Rates.convert
+    }
+  }
+}
+
+in bounded context Consumer {
+  application service ConsumerApp {
+    method fetch() {
+      reads from Source.Api.Queries.lookup
+    }
+  }
+}

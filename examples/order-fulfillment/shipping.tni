@@ -1,0 +1,106 @@
+import "./context-catalog.tni"
+import "./ordering.tni"
+import "./ordering-events.tni"
+import { FulfillmentMap } from "./context-map.tni"
+import { CommonTypes as Common } from "./common-types.tni"
+
+in bounded context Shipping {
+  value object OrderId mirrors Ordering.Order.OrderId {
+    raw: string
+  }
+
+  aggregate Shipment {
+    root entity Shipment {
+      method start() {
+        precondition "The shipment is pending."
+        transition status from Pending to Started
+        emits ShipmentStarted
+        behavior "Start shipment processing for its associated order."
+        postcondition "The shipment status is Started and ShipmentStarted is emitted."
+      }
+
+      identifier id: ShipmentId
+      orderId: OrderId
+      status: ShipmentStatus initial Pending
+      currency: Common.Currency
+    }
+
+    value object ShipmentId {
+      raw: string
+    }
+  }
+
+  repository ShipmentRepository {
+    manages Shipment.Shipment
+  }
+
+  factory ShipmentFactory {
+    method createShipment(id: ShipmentId, orderId: OrderId) returns Shipment.Shipment {
+      precondition "The shipment and order identifiers are valid."
+      behavior "Create a pending shipment for the identified order."
+      postcondition "The returned shipment has the supplied identifiers and is Pending."
+    }
+  }
+
+  enum ShipmentStatus {
+    Pending,
+    Started
+  }
+
+  event ShipmentStarted
+
+  domain service Authorization {
+    method authorize(role: Common.Role, action: string) returns boolean {
+      precondition "The role and requested action are known."
+      behavior "Allow the action only when the supplied role is authorized for it."
+      postcondition "The result indicates whether the role is authorized for the action."
+    }
+  }
+
+  application service ShipmentApplication {
+    method createShipment(orderId: OrderId) {
+      precondition "The order has been placed and is eligible for fulfillment."
+      invokes ShipmentFactory.createShipment
+      invokes Shipment.Shipment.start
+      behavior "First, authorize the Common.Role.FulfillmentOperator role for creating a shipment with [[Authorization.authorize]]; stop if authorization fails. Then create a shipment by invoking the aggregate root's start operation."
+      postcondition "A shipment has been started for the order."
+    }
+
+    method onOrderPlaced(source: Ordering.Contracts.OrderPlacedV1) {
+      precondition "The incoming contract contains a valid order identifier."
+      invokes createShipment
+      behavior "First, authorize the Common.Role.System role for handling the incoming event with [[Authorization.authorize]]; stop if authorization fails. Then create a shipment from the order identifier in the incoming event."
+      postcondition "A shipment is started for the order from the incoming event."
+    }
+  }
+
+  module Operations {
+    exposes TrackingCode, RoutingCode
+
+    value object TrackingCode {
+      raw: string
+    }
+
+    value object RoutingCode {
+      raw: string
+    }
+  }
+
+  value object ShipmentRouting {
+    routingCode: RoutingCode
+  }
+
+  module AuditOperations {
+    exposes AuditCode
+
+    value object AuditCode {
+      raw: string
+    }
+  }
+
+  module Fulfillment depends on Operations, AuditOperations {
+    value object ShipmentMetadata {
+      trackingCode: TrackingCode
+    }
+  }
+}

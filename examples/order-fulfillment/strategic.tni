@@ -1,0 +1,8 @@
+subdomain OrderManagement kind core
+
+subdomain Fulfillment kind supporting
+
+subdomain Payments kind generic
+
+// A subdomain may omit its kind when it has not been classified yet.
+subdomain SharedCapabilities

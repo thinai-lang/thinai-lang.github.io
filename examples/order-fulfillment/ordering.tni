@@ -1,0 +1,220 @@
+import './context-catalog.tni'
+import { CommonTypes as Common } from "./common-types.tni"
+import { FulfillmentMap } from "./context-map.tni"
+
+in bounded context Ordering {
+  aggregate Order {
+    root entity Order {
+      constructor(id: OrderId, owner: string) {
+        invariant "An order must have an owner; check [[Order.ensureOwner]]."
+        precondition "The supplied identifier is non-empty."
+        behavior "Normalize the identifier with [[OrderId.normalize]] before creating the order."
+        postcondition "The order has an identifier and owner, and [[createdAt]] records its creation instant."
+      }
+
+      method ensureOwner() {
+        precondition "An owner has been supplied."
+        behavior "Reject an order whose owner is missing or blank."
+        postcondition "The order has a non-empty owner."
+      }
+
+      method place() {
+        precondition "The order is Draft, has a valid owner, and contains at least one valid line."
+        transition status from Draft to Placed
+          when "The order is ready to be placed."
+        emits OrderPlaced
+          when "The order is ready to be placed."
+        behavior "Place the draft order after its lines and owner have been validated."
+        postcondition "The order is placed and its status is Placed."
+      }
+
+      method pay() {
+        precondition "The order is Placed and the payment provider has confirmed payment."
+        transition status from Placed to Paid,
+                   paymentStatus from Pending to Confirmed
+          when "The payment provider has confirmed the payment."
+        emits OrderPaid
+          when "The payment provider has confirmed the payment."
+        behavior "Record the confirmed payment and advance both order and payment status."
+        postcondition "The order is Paid and payment is Confirmed."
+      }
+
+      method fulfillItem(itemId: OrderItemId) {
+        precondition "The selected item belongs to this order."
+        invokes Order.OrderItem.ship
+        behavior "Delegate shipping of the selected child item while preserving aggregate invariants."
+        postcondition "The selected item is shipped."
+      }
+
+      method validateCanDelete() {
+        precondition "Only a draft order can be deleted."
+        behavior "Reject deletion when the order has progressed beyond Draft."
+        postcondition "A successful validation guarantees that the order is still a draft."
+      }
+
+      method addLine(line: OrderLine) {
+        precondition "The line has a non-empty SKU and a positive quantity."
+        behavior """
+          Add the line quantity to the order's lines. The initial state is
+          [[Ordering.Order.OrderStatus.Draft]], and \[[ is literal text.
+        """
+        postcondition "The order contains the supplied line."
+      }
+
+      identifier id: OrderId
+      owner: string
+      currency: Common.Currency
+      customerId: CustomerId
+      status: OrderStatus initial Draft
+      paymentStatus: PaymentStatus initial Pending
+      lines: List<OrderLine>
+      items: List<OrderItem>
+      labels: Set<string>
+      quantities: Map<string, integer>
+      characteristics: Map<string, List<Set<string>>>
+      createdAt: instant
+      externalReference?: Common.SharedContracts.Identifiers.ExternalId
+    }
+
+    value object OrderId {
+      constructor(raw: string) {
+        invariant "An order identifier is non-empty."
+        precondition "The raw identifier is non-empty."
+        behavior "Normalize the value with [[OrderId.normalize]]."
+        postcondition "The identifier value is normalized."
+      }
+
+      method normalize() returns string {
+        precondition "The raw identifier is non-empty."
+        behavior "Trim and normalize [[OrderId.raw]] into its canonical representation."
+        postcondition "The returned identifier is normalized and non-empty."
+      }
+
+      raw: string
+    }
+
+    value object OrderLine {
+      sku: string
+      quantity: integer
+    }
+
+    entity OrderItem {
+      constructor(id: OrderItemId, line: OrderLine) {
+        precondition "The identifier is non-empty and the line is valid."
+        behavior "Create an open order item for the supplied line."
+        postcondition "The item has the supplied identifier and line and starts Open."
+      }
+
+      method ship() {
+        precondition "The item has not already shipped."
+        transition status from Open to Shipped
+        behavior "Mark the item as shipped."
+        postcondition "The item status is Shipped."
+      }
+
+      identifier id: OrderItemId
+      line: OrderLine
+      status: OrderItemStatus initial Open
+    }
+
+    value object OrderItemId {
+      raw: string
+    }
+
+    enum OrderStatus {
+      Draft,
+      Placed,
+      Paid
+    }
+
+    enum PaymentStatus {
+      Pending,
+      Confirmed
+    }
+
+    enum OrderItemStatus {
+      Open,
+      Shipped
+    }
+
+    invariant "Every order line has a positive quantity."
+  }
+
+  value object PriceAdjustment {
+    `value`: decimal
+    reason: string
+  }
+
+  domain service OrderPricing {
+    method calculateTotal(amount: decimal, adjustments?: List<PriceAdjustment>) returns decimal {
+      precondition "The amount is non-negative."
+      invokes Common.CurrencyConversion.convert
+      behavior "Apply each [[PriceAdjustment.`value`]] adjustment, then calculate the total."
+      postcondition "The returned total includes all adjustments."
+    }
+  }
+
+  repository OrderRepository {
+    manages Order.Order
+  }
+
+  aggregate Customer {
+    root entity Customer {
+      method register() {
+        emits CustomerRegistered
+        behavior "Register the customer after its identity and name have been validated."
+        postcondition "A CustomerRegistered event is emitted for the customer."
+      }
+
+      identifier id: CustomerId
+      name: string
+    }
+
+    value object CustomerId {
+      raw: string
+    }
+  }
+
+  repository CustomerRepository {
+    manages Customer.Customer
+  }
+
+  factory CustomerFactory {
+    method createCustomer(id: CustomerId, name: string) returns Customer.Customer {
+      precondition "The identifier and name are valid."
+      behavior "Create a customer root with the supplied identity and name."
+      postcondition "The returned customer has the supplied identifier and name."
+    }
+  }
+
+  application service CustomerRegistration {
+    method registerCustomer(id: CustomerId, name: string) {
+      precondition "The customer identifier and name are valid."
+      invokes CustomerFactory.createCustomer
+      invokes Customer.Customer.register
+      behavior "Create the customer and register it through the customer aggregate."
+      postcondition "The customer is registered and a CustomerRegistered event is emitted."
+    }
+  }
+
+  domain service Authorization {
+    method authorize(role: Common.Role, action: string) returns boolean {
+      precondition "The role and requested action are known."
+      behavior "Allow the action only when the supplied role is authorized for it."
+      postcondition "The result indicates whether the role is authorized for the action."
+    }
+  }
+
+  event OrderPlaced {
+    orderId: OrderId
+    customerId: CustomerId
+    status: OrderStatus
+  }
+
+  event OrderPaid
+
+  event CustomerRegistered {
+    customerId: CustomerId
+    name: string
+  }
+}

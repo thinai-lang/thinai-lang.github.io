@@ -1,4 +1,7 @@
-# Events and Behavior
+---
+title: Events and Behavior
+description: Describe application-service operations, events, and journeys in Thinai.
+---
 
 Thinai models application-service operations, aggregate behavior, domain and
 integration events, and user-started journeys. Behavior specifications remain
@@ -8,8 +11,10 @@ provide navigable semantic relationships.
 Quoted specifications can link to methods, parameters, repositories, domain
 types, and fields by surrounding a qualified name with `[[` and `]]`. A link
 identifies a model element; it does not evaluate an expression or invoke the method. Plain
-quoted specifications remain unlinked text. Multiline quoted specifications
-dedent their content when a newline follows the opening quote.
+quoted specifications remain unlinked text. Use triple double quotes for multiline
+specification blocks, or keep single or double quotes; the formatter normalizes
+the common outer indentation while preserving relative indentation, line breaks,
+linked references, and the delimiters you chose.
 
 Use `invariant` for a domain rule that should hold for the relevant model
 element, `precondition` for what must hold before an operation, and
@@ -61,7 +66,9 @@ in bounded context Ordering {
     }
   }
 
-  repository OrderRepository manages Order.Order
+  repository OrderRepository {
+    manages Order.Order
+  }
 
   factory OrderFactory {
     method createOrder() returns Order.Order
@@ -87,9 +94,10 @@ in bounded context Ordering {
 ```
 
 Factories and repositories are declared beside aggregates in the bounded
-context. Factory methods create and return the aggregate root; behavior
-specifications link to the method rather than to a constructor or the factory
-declaration itself.
+context. A factory creates exactly one aggregate root: all of its valid methods
+return that same root, and different roots need separate factories. Behavior
+specifications link to the factory method rather than to a constructor or the
+factory declaration itself.
 
 Aggregate-root methods may emit multiple domain events. Emissions are listed in
 order. Application-service methods coordinate aggregate-root behavior, and may
@@ -117,16 +125,23 @@ context boundary, an application-service method can receive a domain event and
 emit one or more integration events. The integration-event declaration defines
 the public schema; the method's behavior text describes any payload mapping.
 Event payloads carry stable value data rather than entity instances or other
-aggregate-owned types. An IntegrationEvent nested in a module must be explicitly
-exposed before another bounded context can consume it.
+aggregate-owned types. Validation includes collection element and value types and
+nested value-object shapes, not only direct field types. An IntegrationEvent
+nested in a module must be explicitly exposed before another bounded context can
+consume it. When the event is in a module and a direct payload type lives in a
+sibling module, the event module must depend on that payload module and the
+payload must still be exposed; nested payload types follow their outer type's
+module dependencies.
 
 For CQRS reads, a `read model` is an optional query-result shape, not necessarily
 a materialized projection or separate database. A `query repository` is an
 optional logical read boundary and may query the same physical tables as the
-write side. A `projector` is needed only when the model uses an event-driven
-projection. Query services may read through query or aggregate repositories and
-must return data, not entity instances. Projectors do not call application
-services or change aggregates:
+write side. `reads from` may name one or more aggregate tables, or a published
+query-service operation, and may carry a descriptive `when` guard. A `projector`
+is needed only when the model uses an event-driven projection. Query services may
+read through query repositories, which may source aggregate tables, and must
+return data, not entity instances. Projectors do not call application services or
+change aggregates:
 
 ```thinai
 bounded context Ordering
@@ -141,7 +156,9 @@ in bounded context Ordering {
     status: string
   }
 
-  query repository OrderSummaryRepository serves OrderSummary
+  query repository OrderSummaryRepository {
+    serves OrderSummary
+  }
 
   projector OrderSummaryProjector {
     method onOrderPlaced(source: OrderPlaced) {
@@ -157,7 +174,7 @@ bounded context Ordering
 
 in bounded context Ordering {
   event OrderPlaced {
-    orderId: OrderId
+    orderId: string
   }
 
   module Contracts {
@@ -178,8 +195,11 @@ in bounded context Ordering {
 ```
 
 A method whose parameter type is a DomainEvent or IntegrationEvent is
-event-triggered. A consumer's method can receive an imported integration event
-and invoke a local command method:
+event-triggered. An event handler has exactly one event-typed parameter and no
+additional parameters. A consumer's method can receive an imported integration
+event and invoke a local command method. Only an event handler may dispatch to a
+command in another application service; an ordinary command method does not call
+another application service's command.
 
 ```thinai
 bounded context Shipping
@@ -216,8 +236,10 @@ not make domain events public.
 
 ## Journeys
 
-A journey is a top-level, descriptive EventStorming timeline of user-invoked
-application-service commands. It can span bounded contexts. Each command remains
+A journey is a top-level, descriptive EventStorming timeline of non-event
+application-service commands. Any application-service method without an event
+parameter is treated as a command; a method with an event parameter is an event
+handler. A journey can span bounded contexts. Each command remains
 owned by its bounded context; the journey does not imply a synchronous remote
 call or shared transaction. Background event handoffs are modeled by the
 contexts' events and handlers, not as journey steps. Queries and event-triggered
@@ -243,5 +265,19 @@ significant. A query result linked from `when` is not bound to a command
 argument, invoked by the journey, or evaluated by the DSL. Emitted events are
 derived from the invoked methods and need not be repeated in the journey.
 
-See the [Order Fulfillment example](https://github.com/thinai-lang/thinai/blob/main/examples/order-fulfillment/README.md)
+Journey timeline rules:
+
+- Current inputs and results of earlier steps are visible to later steps.
+- The current command's result is not visible to its own step.
+- A command invoked later in the journey is not visible from an earlier step.
+- Reference a prior command result through its qualified path, for example
+  `[[Ordering.OrderApplication.placeOrder.result.orderId]]`.
+- `result` is reserved on methods with a result and on application-service
+  commands.
+- Reusing the same command more than once makes result references ambiguous and
+  produces a warning.
+
+See [references and paths](references-and-paths.md) for path and quoting rules.
+
+See the [Order Fulfillment example](https://github.com/thinai-lang/thinai-lang.github.io/blob/main/examples/order-fulfillment/README.md)
 for a multi-file model with an integration-event consumer.

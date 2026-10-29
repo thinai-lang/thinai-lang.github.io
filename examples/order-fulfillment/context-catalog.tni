@@ -1,0 +1,10 @@
+import "./strategic.tni"
+
+bounded context Ordering realizes OrderManagement, SharedCapabilities
+
+bounded context Shipping realizes Fulfillment
+
+bounded context Billing realizes Payments
+
+// This context is intentionally not classified under a subdomain yet.
+bounded context CustomerSupport

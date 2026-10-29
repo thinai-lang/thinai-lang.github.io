@@ -15,20 +15,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/configure-pages@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-node@v4
         with:
-          python-version: '3.x'
-      - run: pip install -r requirements.txt
-      - run: python -m unittest discover -s tests -v
-      - run: mkdocs build --strict
-      - if: github.event_name != 'pull_request'
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - if: github.event.repository.private == false
+        uses: actions/configure-pages@v5
+      - run: npm run build
+      - if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && github.event.repository.private == false
         uses: actions/upload-pages-artifact@v4
         with:
-          path: site
+          path: dist
 
   deploy:
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && github.event.repository.private == false
     needs: build
     permissions:
       contents: read

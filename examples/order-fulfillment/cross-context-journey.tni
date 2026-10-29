@@ -1,0 +1,13 @@
+import "./context-catalog.tni"
+import "./ordering-events.tni"
+import "./shipping.tni"
+
+journey FulfillPlacedOrder {
+  by Customer {
+    invoke Ordering.OrderApplication.placeOrder
+      with "Place the selected order after customer authorization."
+    invoke Shipping.ShipmentApplication.createShipment
+      with "Create a shipment for the order identified by [[Ordering.OrderApplication.placeOrder.result.orderId]]."
+      when "The order has been placed and is eligible for fulfillment."
+  }
+}

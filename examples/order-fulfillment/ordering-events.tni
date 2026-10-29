@@ -1,0 +1,170 @@
+import "./context-catalog.tni"
+import "./ordering.tni"
+
+actor Customer
+actor OrderManager
+
+in bounded context Ordering {
+  application service OrderApplication {
+    method placeOrder(input: PlaceOrderInput) returns PlaceOrderResult {
+      precondition "The order contains at least one item."
+      invokes Order.Order.place
+        when "The order is ready to be placed."
+      behavior "First, authorize the Common.Role.Customer role for placing an order with [[Authorization.authorize]]; stop if authorization fails. Then place the order identified by [[input.orderId]] and return its [[result.status]]."
+      postcondition "The order is placed."
+    }
+
+    method publishOrderPlaced(source: OrderPlaced) {
+      emits Contracts.OrderPlacedV1, Contracts.OrderPlacedAuditV1
+        when "The internal event has been mapped to both public contracts."
+      precondition "The source event is a valid placed-order event."
+      behavior "First, authorize the Common.Role.System role for publishing the event with [[Authorization.authorize]]; stop if authorization fails. Then map the internal event to the public integration contract."
+      postcondition "The corresponding public event contracts are emitted."
+    }
+  }
+
+  application service OrderItemFulfillment {
+    method fulfillItem(orderId: OrderId, itemId: OrderItemId) {
+      precondition "The item belongs to the identified order."
+      invokes Order.Order.fulfillItem
+      behavior "Ship the selected child item through the aggregate root."
+      postcondition "The selected item is shipped through its owning order."
+    }
+  }
+
+  application service OrderMaintenance {
+    method deleteDraftOrder(orderId: OrderId) {
+      precondition "The identified order exists and is still a draft."
+      invokes Order.Order.validateCanDelete
+      behavior "Remove the order only after its root validates the deletion rule."
+      postcondition "The draft order is removed."
+    }
+  }
+
+  data object PlaceOrderInput {
+    orderId: OrderId
+    items: List<OrderLineDetails>
+    deliveryAddress: DeliveryAddress
+    submittedAt: instant
+    requestedDeliveryDate: date
+    preferredDeliveryTime: time
+  }
+
+  data object OrderLineDetails {
+    sku: string
+    quantities: Map<string, List<Set<integer>>>
+  }
+
+  data object DeliveryAddress {
+    city: string
+    postalCode: string
+  }
+
+  data object PlaceOrderResult {
+    orderId: OrderId
+    status: OrderStatus
+  }
+
+  data object OrderEligibilityResult {
+    eligible: boolean
+  }
+
+  read model OrderSummary {
+    orderId: OrderId
+    customerId: CustomerId
+    status: OrderStatus
+  }
+
+  query repository OrderSummaryRepository {
+    serves OrderSummary
+    reads from Order, Customer
+  }
+
+  read model CustomerSummary {
+    customerId: CustomerId
+    name: string
+  }
+
+  read model OrderAuditSummary {
+    orderId: OrderId
+    status: OrderStatus
+  }
+
+  query repository CustomerSummaryRepository {
+    serves CustomerSummary
+    reads from Customer
+  }
+  query repository OrderAuditSummaryRepository {
+    serves OrderAuditSummary
+    reads from Order
+  }
+
+  projector OrderSummaryProjector {
+    method onOrderPlaced(source: OrderPlaced) {
+      projects OrderSummary, OrderAuditSummary
+      behavior "Project [[OrderPlaced.orderId]], [[OrderPlaced.customerId]], and [[OrderPlaced.status]] into [[OrderSummary.orderId]], [[OrderSummary.customerId]], and [[OrderSummary.status]] in [[OrderSummaryRepository]], then record [[OrderAuditSummary.status]]."
+    }
+  }
+
+  projector CustomerSummaryProjector {
+    method onCustomerRegistered(source: CustomerRegistered) {
+      projects CustomerSummary
+      behavior "Project [[CustomerRegistered.customerId]] and [[CustomerRegistered.name]] into [[CustomerSummary.customerId]] and [[CustomerSummary.name]] in [[CustomerSummaryRepository]]."
+    }
+  }
+
+  query service OrderQueries {
+    method canPlaceOrder(orderId: OrderId) returns OrderEligibilityResult {
+      reads from OrderSummaryRepository
+        when "The order summary is available for eligibility checks."
+      precondition "The identified order exists."
+      behavior "Read [[OrderSummaryRepository]] for [[orderId]] and return whether [[result.eligible]] is true."
+      postcondition "The result reports whether the order is eligible for placement."
+    }
+
+    method findCustomerOrders(customerId: CustomerId) returns List<OrderSummary> {
+      reads from OrderSummaryRepository, CustomerSummaryRepository
+      precondition "The customer identifier is valid."
+      behavior "Combine [[OrderSummaryRepository]] and [[CustomerSummaryRepository]] for the selected customer."
+      postcondition "The result contains the selected customer's order summaries."
+    }
+  }
+
+  module Contracts {
+    exposes OrderPlacedV1, OrderPlacedAuditV1
+
+    integration event OrderPlacedV1 {
+      orderId: string
+      customerId: string
+      status: string
+    }
+
+    integration event OrderPlacedAuditV1 {
+      orderId: string
+      audit: string
+    }
+  }
+}
+
+journey PlaceOrder {
+  by Customer {
+    invoke Ordering.OrderApplication.placeOrder
+      with "input.orderId from [[Ordering.OrderSummary.orderId]] and input.items from the selected order lines"
+      when "The eligibility result [[Ordering.OrderQueries.canPlaceOrder.result.eligible]] is true."
+  }
+}
+
+journey RegisterCustomerAndPlaceOrder {
+  by Customer {
+    invoke Ordering.CustomerRegistration.registerCustomer
+      with "id from the customer identifier and name from the registration form"
+    invoke Ordering.OrderApplication.placeOrder
+      with 'orderId from the selected order and items from the requested order lines'
+  }
+
+  by OrderManager {
+    invoke Ordering.OrderMaintenance.deleteDraftOrder
+      with "The draft order selected for removal"
+      when "The root confirms that the order is still a draft."
+  }
+}
