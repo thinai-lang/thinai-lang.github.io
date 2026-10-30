@@ -26,16 +26,17 @@ npm install thinai-language@alpha
 The Thinai source repository is private during the alpha. See
 [Getting started](getting-started.md) for installation details and CLI usage.
 
-## Known language limitations
+## Design rules, not limitations
 
-- **Identifiers are ASCII-only**, including backtick-quoted names. Quoted names
-  may contain spaces and hyphens, but not non-ASCII letters.
-- There is no direct use of another bounded context's value object, data object,
-  read model, or enum as a field, parameter, or return type. Use a mirror, shared
-  kernel, integration event, or published query contract as appropriate.
-- Cross-context contribution quick fixes are intentionally unavailable because
-  private cross-context type use is rejected. Same-context contribution quick
-  fixes are supported.
+Thinai intentionally rejects direct use of another bounded context's value
+object, data object, read model, or enum as a field, parameter, or return type.
+Cross-context collaboration must be explicit: a mirror, shared kernel,
+integration event, or published query contract. This enforces bounded-context
+autonomy rather than restricting the language; see
+[cross-context restrictions](modules-and-visibility.md#cross-context-restrictions).
+
+Cross-context contribution quick fixes are intentionally absent for the same
+reason. Same-context contribution quick fixes are supported.
 
 ## Known CLI limitations
 
@@ -52,12 +53,6 @@ and code actions. Rename and refactor operations are not yet available.
 Same-label completion items can represent different structural path targets.
 Their details distinguish them; the list does not collapse them because doing so
 could hide a valid target.
-
-## Implementation notes
-
-The keyword-completion policy is spread across a few internal modules. This is
-maintainability debt, not a user-facing language limitation. A behavior-preserving
-consolidation is planned after alpha.
 
 ## Reporting issues
 

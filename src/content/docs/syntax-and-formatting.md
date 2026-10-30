@@ -54,8 +54,9 @@ Enum values are a list rather than statements:
 
 ## Identifiers
 
-Identifiers are ASCII-only. Plain identifiers start with a letter or underscore
-and continue with letters, digits, or underscores.
+Identifiers accept Unicode letters, digits, and combining marks. A plain
+identifier starts with a letter or underscore and continues with letters,
+digits, combining marks, or underscores.
 
 Use backticks when a name:
 
@@ -63,18 +64,13 @@ Use backticks when a name:
 - contains spaces or hyphens.
 
 ```thinai
-bounded context RequestContext
+bounded context ஆர்டர்
 
-in bounded context RequestContext {
-  data object Request {
+in bounded context ஆர்டர் {
+  data object `ஆர்டர் விவரம்` {
     `value`: string
     `display-name`: string
-  }
-
-  application service Api {
-    method inspect(request: Request) {
-      behavior "Read [[Request.`value`]] and [[Request.`display-name`]]."
-    }
+    எண்ணிக்கை: integer
   }
 }
 ```
@@ -82,6 +78,10 @@ in bounded context RequestContext {
 Declarations and references both require backticks for reserved words. The
 validator reports an error when a `[[...]]` reference uses a reserved word
 without backticks. Completion inserts the quoted form automatically.
+
+Normalize identifiers to Unicode NFC. Thinai reports a warning when a name is
+not in NFC form, because two visually identical spellings such as `é` and
+`e` followed by a combining accent are different strings and would not link.
 
 ## Types
 

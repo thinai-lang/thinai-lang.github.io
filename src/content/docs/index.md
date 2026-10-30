@@ -25,6 +25,8 @@ guides to learn the language and model a domain by topic:
 - [Examples](examples.md) — the Order Fulfillment model and the Language Tour.
 - [Alpha notes](alpha-notes.md) — installation, known limitations, and issue
   reporting.
+- [Implementation](implementation.md) — how the language and its tooling are
+  built.
 
 For a complete multi-file model, see the
 [Order Fulfillment example](https://github.com/thinai-lang/thinai-lang.github.io/tree/main/examples/order-fulfillment).
