@@ -3,10 +3,10 @@ title: Alpha Notes and Limitations
 description: What to expect from the Thinai alpha, how to install it, and which limitations are intentional.
 ---
 
-Thinai is in alpha. The first release is `0.1.0-alpha.1`. Syntax and
-language-service behavior may still change between releases. The examples,
-grammar, and validation rules in this documentation describe the current alpha
-behavior.
+Thinai is in alpha. The current release is `0.1.0-alpha.3`; the first release was
+`0.1.0-alpha.1`. Syntax and language-service behavior may still change between
+releases. The examples, grammar, and validation rules in this documentation
+describe the current alpha behavior.
 
 ## Installing the alpha
 
