@@ -9,7 +9,7 @@ const thinaiGrammar = JSON.parse(
 thinaiGrammar.aliases = ['tni'];
 
 export default defineConfig({
-  site: 'https://thinai-lang.github.io',
+  site: 'https://thinai-lang.dev',
   output: 'static',
   integrations: [
     starlight({

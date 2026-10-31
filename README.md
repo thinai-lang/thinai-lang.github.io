@@ -1,6 +1,6 @@
 # Thinai documentation site
 
-This repository contains the source for [thinai-lang.github.io](https://thinai-lang.github.io/). Documentation updates are built with Astro Starlight and deployed from `main` with GitHub Actions when the repository is public.
+This repository contains the source for [thinai-lang.dev](https://thinai-lang.dev/). Documentation updates are built with Astro Starlight and deployed from `main` with GitHub Actions when the repository is public.
 
 The Shiki language grammar at `src/grammars/thinai.tmLanguage.json` is mirrored from `thinai/packages/extension/syntaxes/thinai.tmLanguage.json`. Keep it in sync when Thinai's TextMate grammar changes; `npm test` verifies that Shiki loads and highlights it.
 
