@@ -68,3 +68,7 @@ in bounded context MirrorTour {
     raw: string
   }
 }
+
+context map Mirroring {
+  customer MirrorTour -> supplier ModulesTour
+}
