@@ -89,7 +89,9 @@ in bounded context Catalog {
 
 Identifier value objects can mirror identifiers owned by another context.
 Define a local mirror rather than making a foreign context's private type part
-of the local model:
+of the local model. The mirror must declare the same fields, types, and
+optionality as the source, and the two contexts must be connected by a
+customer-supplier, partnership, or shared-kernel relationship in a context map:
 
 ```thinai
 import "./context-catalog.tni"
@@ -101,6 +103,10 @@ in bounded context Shipping {
   value object OrderId mirrors Ordering.Order.OrderId {
     raw: string
   }
+}
+
+context map ShippingOrdering {
+  customer Shipping -> supplier Ordering
 }
 ```
 

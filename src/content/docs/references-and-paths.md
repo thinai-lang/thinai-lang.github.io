@@ -94,7 +94,8 @@ fields—require one of:
 
 From outside all modules or across bounded contexts, the full public exposure
 chain is required. An identifier value object named by `mirrors` is the explicit
-exception and may be module-private.
+exception and may be module-private. The mirror must match the source fields and
+be backed by a customer-supplier, partnership, or shared-kernel relationship.
 
 | Path segment | Requirement |
 | --- | --- |
