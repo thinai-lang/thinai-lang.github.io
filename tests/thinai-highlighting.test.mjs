@@ -27,6 +27,8 @@ test('Vitesse themes color Thinai scopes without custom overrides', async () => 
     ['adjustments?: List<decimal>', '?', 'vitesse-dark', '#CB7676'],
     ['amount: decimal', 'decimal', 'vitesse-light', '#AB5959'],
     ['quantity: integer', 'integer', 'vitesse-dark', '#CB7676'],
+    ['bounded context ஆர்டர்', 'ஆர்டர்', 'vitesse-light', '#59873A'],
+    ['aggregate 订单 {', '订单', 'vitesse-dark', '#80A665'],
     ['behavior """\n  Use [[Order.OrderId.raw]].\n"""', 'Use', 'vitesse-light', '#B56959'],
     ['behavior """\n  Use [[Order.OrderId.raw]].\n"""', 'Use', 'vitesse-dark', '#C98A7D'],
   ];
