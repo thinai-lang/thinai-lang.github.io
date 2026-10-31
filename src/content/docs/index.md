@@ -5,6 +5,10 @@ description: Guides to Thinai, a domain-specific modeling language for domain-dr
 
 <p><img src="/assets/thinai-light.svg" alt="Thinai logo" width="80"></p>
 
+> **Alpha:** Thinai is in alpha. Syntax, validation rules, and tooling may
+> change between releases. See [alpha notes](alpha-notes.md) for current
+> limitations.
+
 Thinai is a domain-specific modeling language for expressing DDD structures,
 relationships, and behavioral intent in a shared, navigable model. Use these
 guides to learn the language and model a domain by topic:
