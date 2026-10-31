@@ -1,25 +1,24 @@
 ---
 title: Implementation
-description: How Thinai is built with Langium and what that means for integrators.
+description: How Thinai's language tooling is organized.
 ---
 
-Thinai is implemented with [Langium](https://langium.org/), a language
-engineering framework for TypeScript. The grammar is the single source of truth
-for syntax, and Langium services provide parsing, linking, validation, and
+Thinai is implemented in TypeScript. The grammar is the single source of truth
+for syntax, and the language services provide parsing, linking, validation, and
 language-server behavior.
 
-## What Langium provides
+## What the language services provide
 
 - a lexer and parser generated from the grammar;
 - cross-reference linking and scope handling;
-- the validation registry;
+- semantic validation;
 - language-server features: diagnostics, completion, hover, definitions,
   references, document symbols, formatting, and semantic tokens;
 - document lifecycle and workspace indexing.
 
 ## Thinai-specific services
 
-Thinai adds the domain rules on top of the Langium defaults:
+Thinai adds the domain rules on top of the base language services:
 
 - scope computation and a scope provider for modules, context maps, and
   cross-context visibility;
