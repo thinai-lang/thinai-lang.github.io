@@ -55,11 +55,14 @@ metadata is preserved.
 ## Report impact
 
 ```bash
-thinai-cli impact path/to/model.tni ValueObject:Ordering.Order.OrderId --json
+thinai-cli impact path/to/model.tni ValueObject:Ordering.Order.OrderId --json --depth 2
 ```
 
 The report lists the changed element, its descendants, incoming references, and
-the elements that reference it.
+the elements that reference it. `--depth` follows reverse references up to the
+requested level (default 1), and `--limit` caps the returned affected elements
+(default 200). Check `totalAffected`, `returned`, and `truncated` before
+assuming the report is complete.
 
 ## Validate
 
@@ -79,14 +82,35 @@ thinai-cli mcp path/to/model.tni
 
 The server is read-only. Available tools:
 
-- `list_elements`
-- `search_elements`
-- `get_element`
-- `get_context`
-- `get_dependencies`
-- `get_visibility`
-- `validate_model`
-- `impact_of_change`
+- `list_elements` — filter by kind, context, or text; paginate with `offset`/`limit`.
+- `search_elements` — case-insensitive search by ID, name, or qualified name.
+- `resolve_element` — exact qualified-name lookup with optional `kind` and `context`.
+- `get_element` — one element with its source, properties, and direct relationships.
+- `get_context` — task-scoped model slice.
+- `get_dependencies` — filter by `direction`, `kind` (`reference`, `qualifier`, or `all`), and exact `role`; paginate with `offset`/`limit`.
+- `get_visibility` — context, module path, exposure, `visibility`, and `publicApi`.
+- `get_source` — exact declaration text from a loaded model document, bounded by `maxCharacters`.
+- `validate_model` — reload and validate the model.
+- `impact_of_change` — direct or transitive reverse-reference impact with `depth` (default 1, maximum 10) and `limit` (default 200, maximum 1000).
+
+Dependency results default to semantic `reference` edges. Pass
+`kind: "all"` to include `qualifier` edges, which represent module and namespace
+path segments. Use exact `role` filters such as `invokes`, `emits`, or `type`.
+
+`resolve_element` matches the `qualifiedName` exactly and case-sensitively. It
+returns the full element when there is one match, and summaries when several
+elements share the name:
+
+```json
+{ "qualifiedName": "Ordering.Order" }
+```
+
+`get_source` accepts only a model element ID. It never accepts an arbitrary
+filesystem path and reads only documents in the loaded model:
+
+```json
+{ "id": "Aggregate:Ordering.Order", "maxCharacters": 4000 }
+```
 
 Use MCP when the agent supports structured tool calls but not LSP or shell
 commands. Use the CLI when shell access is available. Use LSP for editor and
