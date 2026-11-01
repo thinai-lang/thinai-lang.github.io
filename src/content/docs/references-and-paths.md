@@ -13,12 +13,14 @@ context and imports.
 A reference names a visible declaration, method, parameter, repository, type,
 enum value, or field.
 
+<!-- thinai-fragment -->
 ```thinai
 behavior "Read [[OrderRepository]] and [[Order.Order.status]]."
 ```
 
 When a domain term is also a reserved word, quote that segment with backticks:
 
+<!-- thinai-fragment -->
 ```thinai
 data object Request {
   `value`: string
@@ -34,6 +36,7 @@ Ordinary identifiers do not need quotes.
 
 A dotted reference is one linked path with independently navigable segments:
 
+<!-- thinai-fragment -->
 ```thinai
 behavior "Use [[input.address.street]]."
 ```
@@ -44,12 +47,14 @@ behavior "Use [[input.address.street]]."
 
 Qualified paths may continue through a field's declared type:
 
+<!-- thinai-fragment -->
 ```thinai
 behavior "Use [[Shop.Dto.address.city]]."
 ```
 
 Use fully qualified paths when names collide:
 
+<!-- thinai-fragment -->
 ```thinai
 behavior "Compare [[Ordering.Order]] with [[Ordering.Order.Order]]."
 ```
@@ -62,6 +67,7 @@ entity.
 Inside a method, refer to parameters by their local names and to the operation
 result through the `result` binding:
 
+<!-- thinai-fragment -->
 ```thinai
 application service OrderApplication {
   method place(input: PlaceOrderInput) returns PlaceOrderResult {
@@ -142,6 +148,7 @@ into the same model.
 
 A query result can be linked without invoking the query in the journey:
 
+<!-- thinai-fragment -->
 ```thinai
 when "The eligibility result [[Ordering.OrderQueries.canPlaceOrder.result.eligible]] is true."
 ```
@@ -156,6 +163,7 @@ arguments, invoke methods, or evaluate expressions.
 - Keep the opening and closing `"""` delimiters on their own lines.
 - The formatter preserves relative indentation and linked references.
 
+<!-- thinai-fragment -->
 ```thinai
 behavior """
   Check [[Order.Order.ensureOwner]].

@@ -54,9 +54,9 @@ Enum values are a list rather than statements:
 
 ## Identifiers
 
-Identifiers accept Unicode letters, digits, and combining marks. A plain
-identifier starts with a letter or underscore and continues with letters,
-digits, combining marks, or underscores.
+Identifiers follow Unicode UAX #31. A plain identifier starts with an
+`ID_Start` character or an underscore and continues with `ID_Continue`
+characters, which include letters, digits, and combining marks.
 
 Use backticks when a name:
 
@@ -119,7 +119,8 @@ in bounded context SearchContext {
 ```
 
 `Map` takes exactly two type arguments. `List` and `Set` take exactly one.
-A field or parameter may be optional with `?`:
+For `Map<K, V>`, specification paths navigate the value type `V`; map keys are
+identity, not navigable data. A field or parameter may be optional with `?`:
 
 ```thinai
 bounded context PricingContext
@@ -140,6 +141,7 @@ in bounded context PricingContext {
 
 An entity enum field may declare its initial state:
 
+<!-- thinai-fragment -->
 ```thinai
 status: OrderStatus initial Draft
 ```
@@ -154,6 +156,7 @@ Specification text uses single quotes, double quotes, or triple double quotes.
 Use triple double quotes for multiline text and put the delimiters on their own
 lines.
 
+<!-- thinai-fragment -->
 ```thinai
 behavior """
   Check [[Order.Order.ensureOwner]], then read [[Order.Order.status]].
@@ -179,8 +182,9 @@ The formatter:
 - expands inline enums to one value per line;
 - normalizes parameter-list parentheses and comma/operator spacing.
 
-Formatting is not required for validity. Completion and validation work on
-unformatted source as well.
+Indentation and spacing are not required for validity, but the line-layout
+rules for first statements and sibling declarations are validated. Completion
+and validation still work on unformatted source.
 
 ## Imports and aliases
 
@@ -192,8 +196,9 @@ import "./common-types.tni"
 import { Ordering as Orders, Shipping } from "./contexts.tni"
 ```
 
-Selective imports are required when a file declares multiple bounded contexts,
-context maps, or shared kernels. Strategic declarations such as actors and
+Selective imports are available when you need only some components from a file
+that declares multiple bounded contexts, context maps, or shared kernels. A bare
+import brings in all components. Strategic declarations such as actors and
 journeys are brought in with a bare import. See
 [the language model](language-model.md#working-across-files) for the full file
 model and visibility rules.

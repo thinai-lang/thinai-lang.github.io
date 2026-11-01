@@ -5,6 +5,7 @@ import test from 'node:test';
 
 const root = new URL('..', import.meta.url);
 const docs = new URL('../src/content/docs/', import.meta.url);
+const examples = new URL('../examples/', import.meta.url);
 
 const listMarkdown = async (directory) => {
   const entries = await readdir(directory, { recursive: true, withFileTypes: true });
@@ -13,7 +14,7 @@ const listMarkdown = async (directory) => {
     .map((entry) => join(entry.parentPath ?? entry.path, entry.name));
 };
 
-const pages = await listMarkdown(docs);
+const pages = [...await listMarkdown(docs), ...await listMarkdown(examples)];
 
 test('public pages do not link to the private source repository', async () => {
   const privateLink = /github\.com\/thinai-lang\/thinai(?![\w-])/;
@@ -28,12 +29,25 @@ test('public pages do not link to the private source repository', async () => {
 });
 
 test('public pages do not use source-checkout commands', async () => {
-  const sourceCommands = [/npm run build/, /npm test/, /packages\/(cli|language|extension)/];
+  const sourceCommands = [
+    /npm run build/,
+    /npm test/,
+    /packages\/(cli|language|extension)/,
+    /Extension Development Host/
+  ];
   for (const page of pages) {
     const text = await readFile(page, 'utf8');
     for (const pattern of sourceCommands) {
       assert.doesNotMatch(text, pattern, `${page} references a source-only command`);
     }
+  }
+});
+
+test('public pages do not document the removed generation command', async () => {
+  const removedCommand = /thinai-cli generate|--destination/u;
+  for (const page of pages) {
+    const text = await readFile(page, 'utf8');
+    assert.doesNotMatch(text, removedCommand, `${page} documents the removed generation command`);
   }
 });
 

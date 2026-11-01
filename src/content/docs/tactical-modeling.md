@@ -10,7 +10,8 @@ declarations. For application services, events, and descriptive domain behavior,
 ## Aggregates, Entities, and Value Objects
 
 An aggregate groups its root entity and other domain types. Entities and value
-objects may have typed fields, invariants, constructors, and methods. Common
+objects may have typed fields, constructors, and methods; invariants belong on
+aggregates or inside constructor and method bodies. Common
 field types are `string`, `boolean`, `integer`, `decimal`, `date`, `time`, and
 `instant`; fields and method parameters can be optional with `?`. Use `integer`
 for counts and `decimal` for money, prices, rates, and exact fractional business
@@ -283,8 +284,9 @@ contracts expose only primitive or public DataObject results; see
 Projectors are optional event-driven projections. A query service reads through
 query repositories, which may source the same relational tables as the write
 side; it does not read aggregate repositories directly. Query-service methods can
-return primitives, data objects, read models, or collections of these;
-application-service methods must not return entities. For example:
+return primitives, data objects, read models, value objects, enums, or
+collections of these; application-service methods must not return entities. For
+example:
 
 ```thinai
 bounded context Ordering

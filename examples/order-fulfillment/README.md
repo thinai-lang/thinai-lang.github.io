@@ -52,12 +52,13 @@ The model demonstrates root and child entity identities and transitions, constru
 
 ## Try It
 
-Open this directory as a workspace in the Thinai Extension Development Host. The language server will index all `.tni` files and enable cross-file navigation, completion, validation, and import quick fixes.
+Open this directory in VS Code with the Thinai extension installed. The language server will index all `.tni` files and enable cross-file navigation, completion, validation, and import quick fixes.
 
-From the repository root, validate and generate a summary with:
+From the repository root, validate the model or inspect its graph with:
 
 ```bash
-node packages/cli/bin/cli.js generate examples/order-fulfillment/shipping.tni -d examples/order-fulfillment/generated
+npx thinai-cli@alpha validate examples/order-fulfillment/shipping.tni
+npx thinai-cli@alpha inspect examples/order-fulfillment/shipping.tni --out model.json
 ```
 
 The example uses a private `OrderPlaced` domain event and maps it to the separate `OrderPlacedV1` integration contract. Shipping imports both the producer context and context map, and consumes only the IntegrationEvent.

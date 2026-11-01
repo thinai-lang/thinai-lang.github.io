@@ -97,8 +97,9 @@ first, then run it against a copied checkout:
 ```bash
 git clone https://github.com/thinai-lang/thinai-lang.github.io.git
 cd thinai-lang.github.io
-npx thinai-cli@alpha generate examples/order-fulfillment/shipping.tni
-npx thinai-cli@alpha generate examples/language-tour/sharing.tni
+npx thinai-cli@alpha validate examples/order-fulfillment/shipping.tni
+npx thinai-cli@alpha validate examples/language-tour/sharing.tni
+npx thinai-cli@alpha inspect examples/order-fulfillment/shipping.tni --out model.json
 ```
 
 Open either directory in VS Code with the Thinai extension to exercise

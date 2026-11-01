@@ -28,7 +28,10 @@ thinai-cli inspect path/to/model.tni --out model.json
 ```
 
 The output uses the `thinai-model-v1` schema. Element IDs are canonical and
-kind-prefixed:
+kind-prefixed. Each element reports `visibility` (immediate exposure),
+`publicApi` (fully visible from the context boundary), and `exposedBy` (the
+modules that expose it directly). Relationships report a semantic `role` and a
+`kind` of `reference` or `qualifier`:
 
 ```text
 Aggregate:Ordering.Order

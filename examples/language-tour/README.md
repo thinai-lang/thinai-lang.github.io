@@ -72,9 +72,10 @@ visibility feature without following the full domain model.
 
 ## Try It
 
-Open this directory as a workspace in the Thinai Extension Development Host, or
-validate any file from the repository root:
+Open this directory in VS Code with the Thinai extension installed, or validate
+any file from the repository root:
 
 ```bash
-node packages/cli/bin/cli.js generate examples/language-tour/sharing.tni -d examples/language-tour/generated
+npx thinai-cli@alpha validate examples/language-tour/sharing.tni
+npx thinai-cli@alpha inspect examples/language-tour/sharing.tni --out model.json
 ```

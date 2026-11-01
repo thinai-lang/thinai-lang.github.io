@@ -34,7 +34,7 @@ Thinai adds the domain rules on top of the base language services:
 | Package | Role |
 | --- | --- |
 | `thinai-language` | Grammar and language services |
-| `thinai-cli` | Model generation, inspection, validation, and the MCP server |
+| `thinai-cli` | Model inspection, context slices, impact, validation, and the MCP server |
 | `vscode-thinai` | VS Code extension, bundling the language server |
 
 The extension bundles the language server, so installing the extension is enough
@@ -42,9 +42,9 @@ for editor support.
 
 ## No code generation
 
-Thinai models are not compiled into application code. `thinai-cli generate`
-emits a JavaScript summary of the model for inspection; it does not produce an
-implementation.
+Thinai models are not compiled into application code. `thinai-cli inspect`
+exports the model graph as data for tooling and inspection; it does not produce
+an implementation.
 
 ## Why it matters
 

@@ -45,14 +45,10 @@ npx thinai-cli@alpha --version
 
 ## Use the CLI
 
-The CLI generates a JavaScript summary, exports the model graph, produces
-task-scoped context slices, reports model impact, validates models, and runs a
-read-only MCP server.
+The CLI exports the model graph, produces task-scoped context slices, reports
+model impact, validates models, and runs a read-only MCP server.
 
 ```bash
-# Generate the JavaScript summary
-thinai-cli generate path/to/model.tni
-
 # Export the model graph
 thinai-cli inspect path/to/model.tni --out model.json
 
@@ -68,8 +64,6 @@ thinai-cli validate path/to/model.tni
 # Start a read-only MCP server
 thinai-cli mcp path/to/model.tni
 ```
-
-Pass `--destination <dir>` to choose the generation output directory.
 
 The CLI validates the source file and its transitive imports. It does not
 discover separate files that import the source file. Use the VS Code extension
@@ -100,7 +94,8 @@ is a compact syntax and visibility tour.
 
 The Thinai source repository is private during the alpha. Report bugs and
 feature requests in the public
-[issue tracker](https://github.com/thinai-lang/issues). See
+[issue tracker](https://github.com/thinai-lang/issues). Report security issues
+privately to `security@thinai-lang.dev`. See
 [alpha notes and limitations](alpha-notes.md) before relying on the extension
 for production work.
 

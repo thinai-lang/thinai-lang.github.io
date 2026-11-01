@@ -133,7 +133,7 @@ shared-kernel component and lists the bounded contexts that share it.
 A shared kernel is an explicit place for concepts genuinely shared across
 contexts. It may contain value objects, enumerations, modules, and domain
 services for stable, jointly-owned policies. A shared-kernel domain service may
-use shared-kernel types, but must not depend on a bounded context's private model.
+use shared-kernel types, but must not depend on a bounded context's model.
 To invoke one from a bounded context, the shared kernel and a context map that
 declares the context as a participant must be visible. When they are in separate
 files, import both explicitly. Data objects are not shared-kernel members; use
@@ -207,10 +207,11 @@ in bounded context Ordering {
 }
 ```
 
-When an imported file declares several bounded contexts, context maps, or shared kernels,
-select the components needed by the importing file. A context map can also be
-selected and imported when a cross-context IntegrationEvent is consumed. An
-alias applies to the selected component:
+When an imported file declares several bounded contexts, context maps, or shared
+kernels, you can select the components needed by the importing file, or use a
+bare import to bring in all components. A context map can also be selected and
+imported when a cross-context IntegrationEvent is consumed. An alias applies to
+the selected component:
 
 ```thinai
 import { Ordering as Orders, Shipping } from "./contexts.tni"
@@ -222,8 +223,9 @@ or `Type`; terminal fields, methods, enum values, and parameters do not
 conflict. Strategic declarations (actors, journeys, and subdomains) are imported
 with a bare file import rather than a component selection.
 
-Cross-context IntegrationEvent use requires an imported context map with an
-authorized relationship; DomainEvents remain private to their context.
+Cross-context IntegrationEvent use requires an authorized relationship in an
+imported context map, or a context map declared in the same document as both
+endpoints; DomainEvents remain private to their context.
 
 ## Language Tooling
 

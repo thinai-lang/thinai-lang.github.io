@@ -21,10 +21,13 @@ most common errors, not a replacement for the grammar or the language server.
 
 - A value object has no identity and may contain fields, constructors, and
   methods.
-- A value object may mirror an identifier value object from another bounded
-  context with `mirrors`. The mirror must declare the same fields, types, and
-  optionality as the source. A customer-supplier, partnership, or shared-kernel
-  relationship must connect the two contexts in an imported context map.
+- A value object may mirror an aggregate-root identifier value object from
+  another bounded context with `mirrors`. The mirror must declare the same
+  fields, types, and optionality as the source. A customer-supplier,
+  partnership, or shared-kernel relationship must connect the two contexts in a
+  visible context map; the map may be imported or declared in the same document
+  as both endpoints. For a customer-supplier relationship, the mirroring context
+  is the customer and the identifier's context is the supplier.
 - A data object has fields but no identifier, methods, invariants, or
   transitions.
 - Data objects may contain primitives, collections, value objects, enums, and
