@@ -17,6 +17,9 @@ Install the pre-release editor extension from the Visual Studio Marketplace:
 code --install-extension thinai-lang.vscode-thinai --pre-release
 ```
 
+For editors that use Open VSX, install the same extension from the
+[Open VSX listing](https://open-vsx.org/extension/thinai-lang/vscode-thinai).
+
 Install the CLI and language package from npm:
 
 ```bash

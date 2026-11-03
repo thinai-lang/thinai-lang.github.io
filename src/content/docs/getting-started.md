@@ -27,6 +27,14 @@ You can also search for **Thinai** in the Extensions view and select **Install
 Pre-Release Version**. The extension provides diagnostics, completion,
 navigation, formatting, and import quick fixes for `.tni` files.
 
+For editors that use Open VSX, such as VSCodium, Gitpod, and Eclipse Che,
+install the same extension from the
+[Open VSX listing](https://open-vsx.org/extension/thinai-lang/vscode-thinai):
+
+```bash
+codium --install-extension thinai-lang.vscode-thinai
+```
+
 Open a folder that contains `.tni` files. The extension activates on `.tni`
 files and builds the model from the file and its imports.
 
