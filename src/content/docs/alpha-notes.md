@@ -4,10 +4,12 @@ description: What to expect from the Thinai alpha, how to install it, and which 
 ---
 
 Thinai is in alpha. The current language, CLI, and extension source release is
-`0.1.5-alpha.5`; the VS Code Marketplace version is `0.1.5` (published as a
-pre-release). The first release was `0.1.0-alpha.1`. Syntax and language-service
-behavior may still change between releases. The examples, grammar, and
-validation rules in this documentation describe the current alpha behavior.
+`0.1.6-alpha.6`; the VS Code Marketplace version is `0.1.6` (published as a
+pre-release). The first release was `0.1.0-alpha.1`. `0.1.5-alpha.5` was
+withdrawn from Open VSX after a metadata error; `0.1.6-alpha.6` supersedes it.
+Syntax and language-service behavior may still change between releases. The
+examples, grammar, and validation rules in this documentation describe the
+current alpha behavior.
 
 ## Installing the alpha
 
