@@ -102,7 +102,9 @@ most common errors, not a replacement for the grammar or the language server.
 
 ## Modules and visibility
 
-- `exposes` entries appear before module members.
+- A module declares `exposes` at most once, anywhere in its body; the clause
+  applies to the whole module.
+- `depends on` appears in the module header.
 - A module may expose declarations it owns, including methods and members of
   its own aggregates, plus its direct child modules.
 - A context-level declaration may reference a module declaration only when the
@@ -167,6 +169,7 @@ most common errors, not a replacement for the grammar or the language server.
 | `Start each sibling declaration or statement on a new line` | Split the declarations or statements onto separate lines |
 | `Reserved word ... must be backtick-quoted` | Add backticks around the reference segment |
 | `Duplicate declaration` | Rename the declaration or check the import-connected model |
+| `A module may declare 'exposes' at most once.` | Merge the clauses into a single export list |
 | `A repository must manage an aggregate-root entity` | Point `manages` at the root entity |
 | `A query must declare a result type` | Add `returns ...` to the query method |
 | `Event-triggered method must have exactly one event-typed parameter` | Remove extra parameters or the non-event parameter |

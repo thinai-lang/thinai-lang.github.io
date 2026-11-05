@@ -9,8 +9,9 @@ do not move a declaration into a different context.
 ## Declaring modules
 
 Use `exposes` to publish declarations and `depends on` to declare a module
-dependency. Exposures must appear before the module's members. A module may
-expose declarations it owns, including methods and members of its own
+dependency. A module declares `exposes` once, anywhere in its body; the clause
+applies to the whole module. `depends on` stays in the module header. A module
+may expose declarations it owns, including methods and members of its own
 aggregates, plus its direct child modules.
 
 ```thinai
