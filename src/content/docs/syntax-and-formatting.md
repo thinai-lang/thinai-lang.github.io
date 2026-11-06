@@ -19,7 +19,7 @@ Thinai uses braces for blocks and does not use semicolon terminators.
 - A comma-separated list may wrap across lines, but the next sibling statement
   still starts on a new line.
 - A declaration header may continue on the next line when the grammar expects
-  more input, for example `module Api` followed by `depends on ...`.
+  more input, for example `bounded context` followed by `realizes ...`.
 
 ```thinai
 bounded context Ordering

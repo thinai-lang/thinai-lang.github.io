@@ -361,9 +361,9 @@ that routing matters.
 
 Modules organize declarations within one bounded context or shared kernel.
 Use `exposes` to list declarations available to other modules, and `depends on`
-to declare a module dependency. A module may expose declarations it owns,
-including methods and members of its own aggregates, plus its direct child
-modules. Declarations outside modules are visible to modules by default. In the
+to declare a module dependency inside the module body. A module may expose
+declarations it owns, including methods and members of its own aggregates, plus
+its direct child modules. Declarations outside modules are visible to modules by default. In the
 other direction, a context-level declaration may reference a module declaration
 only when its owning module and every enclosing module expose the path. A
 reference from another module requires exposure by the owning module plus a
@@ -391,7 +391,9 @@ in bounded context Shipping {
     trackingCode: TrackingCode
   }
 
-  module Fulfillment depends on Operations {
+  module Fulfillment {
+    depends on Operations
+
     value object ShipmentMetadata {
       trackingCode: TrackingCode
     }

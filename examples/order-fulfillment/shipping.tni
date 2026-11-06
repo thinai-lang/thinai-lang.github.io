@@ -98,7 +98,9 @@ in bounded context Shipping {
     }
   }
 
-  module Fulfillment depends on Operations, AuditOperations {
+  module Fulfillment {
+    depends on Operations, AuditOperations
+
     value object ShipmentMetadata {
       trackingCode: TrackingCode
     }

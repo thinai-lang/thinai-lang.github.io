@@ -29,7 +29,9 @@ in bounded context ModulesTour {
     }
   }
 
-  module Consumer depends on Outer {
+  module Consumer {
+    depends on Outer
+
     value object UsesPublic {
       publicValue: PublicValue
       innerValue: Outer.Inner.InnerValue
@@ -48,7 +50,9 @@ in bounded context ModulesTour {
     }
   }
 
-  module ApiConsumer depends on Api {
+  module ApiConsumer {
+    depends on Api
+
     event Triggered
 
     application service UsesApi {

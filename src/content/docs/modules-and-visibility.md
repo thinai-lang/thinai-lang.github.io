@@ -9,8 +9,8 @@ do not move a declaration into a different context.
 ## Declaring modules
 
 Use `exposes` to publish declarations and `depends on` to declare a module
-dependency. A module declares `exposes` once, anywhere in its body; the clause
-applies to the whole module. `depends on` stays in the module header. A module
+dependency. A module declares `exposes` once and `depends on` once; both clauses
+may appear anywhere in the module body and apply to the whole module. A module
 may expose declarations it owns, including methods and members of its own
 aggregates, plus its direct child modules.
 
@@ -26,7 +26,9 @@ in bounded context Shipping {
     }
   }
 
-  module Fulfillment depends on Operations {
+  module Fulfillment {
+    depends on Operations
+
     value object ShipmentMetadata {
       trackingCode: TrackingCode
     }
@@ -92,7 +94,9 @@ in bounded context ModulesTour {
     }
   }
 
-  module Consumer depends on Outer {
+  module Consumer {
+    depends on Outer
+
     value object UsesPublic {
       publicValue: PublicValue
       innerValue: Outer.Inner.InnerValue
@@ -125,7 +129,9 @@ in bounded context PrivateModules {
     }
   }
 
-  module DirectConsumer depends on PrivateOuter.PrivateInner {
+  module DirectConsumer {
+    depends on PrivateOuter.PrivateInner
+
     value object UsesInner {
       innerValue: InnerValue
     }
@@ -155,7 +161,9 @@ in bounded context CommandsTour {
     }
   }
 
-  module Consumer depends on Api {
+  module Consumer {
+    depends on Api
+
     event Triggered
 
     application service UsesApi {
