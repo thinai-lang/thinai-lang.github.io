@@ -180,6 +180,8 @@ The formatter:
 - respects the document's newline style;
 - keeps empty blocks empty;
 - expands inline enums to one value per line;
+- wraps `exposes` and `depends on` lists longer than 120 characters, one item
+  per continuation line;
 - normalizes parameter-list parentheses and comma/operator spacing.
 
 Indentation and spacing are not required for validity, but the line-layout
