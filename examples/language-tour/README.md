@@ -12,13 +12,15 @@ Thinai source and is validated by the repository test suite.
   qualified value-object references, and a context-level value-object
   constructor and method.
 - `modules.tni` demonstrates nested modules, module re-exports, dependencies,
-  qualified exposure paths, methods published with their container, an
+  qualified exposure paths, explicit method exposure, a direct dependency on an
+  unexposed nested module, module-nested domain-service invocation, an
   event-triggered command dispatched to a method published by another
   application service, and a local identifier mirror that names a
   module-private identifier.
 - `sharing.tni` demonstrates a shared kernel with a domain service, a
   same-document context map, a shared-kernel service invocation, a
-  module-exposed query service, and an authorized cross-context query read.
+  module-exposed query service with a nested DataObject result, an authorized
+  cross-context query read, and a command-led journey with a query step.
 
 ## Feature coverage
 
@@ -32,11 +34,16 @@ Thinai source and is validated by the repository test suite.
 | Context-level value-object constructor and method | `syntax.tni` |
 | Nested modules and nested-module re-exports | `modules.tni` |
 | Module dependencies and qualified exposure paths | `modules.tni` |
-| Exposed methods and event-triggered cross-service dispatch | `modules.tni` |
+| Explicit method exposure and container-published methods | `modules.tni` |
+| Direct dependency on an unexposed nested module | `modules.tni` |
+| Module-nested domain-service exposure and invocation | `modules.tni` |
+| Event-triggered cross-service dispatch | `modules.tni` |
 | Local identifier mirror of a module-private identifier | `modules.tni` |
 | Shared-kernel value objects and domain services | `sharing.tni` |
 | Same-document context map and shared-kernel relationship | `sharing.tni` |
-| Module-exposed query service and authorized cross-context query read | `sharing.tni` |
+| Module-exposed query service with a nested DataObject result | `sharing.tni` |
+| Authorized cross-context query read | `sharing.tni` |
+| Command-led journey with a query read step | `sharing.tni` |
 
 ## Method and constructor coverage
 
@@ -61,11 +68,14 @@ Thinai source and is validated by the repository test suite.
 | Context-level and same-module access | `syntax.tni`, `modules.tni` |
 | Sibling-module exposure and `depends on` | `modules.tni`, `../order-fulfillment/shipping.tni` |
 | Nested-module re-export through an exposed parent | `modules.tni`, `../order-fulfillment/common-types.tni` |
+| Explicit method exposure | `modules.tni` |
+| Direct dependency on an unexposed nested module | `modules.tni` |
+| Module-nested domain-service exposure | `modules.tni` |
 | Module-private identifier `mirrors` | `modules.tni` |
 | Shared-kernel type and service with a `sharedKernel` relationship | `sharing.tni` |
 | Authorized cross-context query result | `sharing.tni` |
 | Authorized cross-context IntegrationEvent | `../order-fulfillment/shipping.tni`, `../order-fulfillment/ordering-events.tni` |
-| Cross-context journey command invocation | `../order-fulfillment/cross-context-journey.tni` |
+| Command-led journey with query and command steps | `sharing.tni`, `../order-fulfillment/cross-context-journey.tni` |
 
 The main Order Fulfillment example remains the reference for a realistic
 multi-file model. Use this tour when you want to see an individual syntax or

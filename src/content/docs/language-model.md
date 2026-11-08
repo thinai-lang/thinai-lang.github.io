@@ -232,7 +232,7 @@ endpoints; DomainEvents remain private to their context.
 The language server provides keyword and cross-reference completion, relative
 `.tni` import-path completion and clickable import links, navigation,
 references, document symbols, hover, rename, call hierarchy for method
-invocations and journey commands, diagnostics, formatting, and quick fixes for
+invocations and journey steps, diagnostics, formatting, and quick fixes for
 unresolved declarations, missing module dependencies, and missing exposures.
 Renaming or moving a `.tni` file updates relative import paths. The
 [Order Fulfillment example](https://github.com/thinai-lang/thinai-lang.github.io/blob/main/examples/order-fulfillment/README.md)

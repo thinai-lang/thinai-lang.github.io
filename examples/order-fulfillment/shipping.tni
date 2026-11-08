@@ -23,6 +23,7 @@ in bounded context Shipping {
       orderId: OrderId
       status: ShipmentStatus initial Pending
       currency: Common.Currency
+      routing: RoutingCode
     }
 
     value object ShipmentId {
@@ -35,10 +36,10 @@ in bounded context Shipping {
   }
 
   factory ShipmentFactory {
-    method createShipment(id: ShipmentId, orderId: OrderId) returns Shipment.Shipment {
+    method createShipment(id: ShipmentId, orderId: OrderId, routing: RoutingCode) returns Shipment.Shipment {
       precondition "The shipment and order identifiers are valid."
-      behavior "Create a pending shipment for the identified order."
-      postcondition "The returned shipment has the supplied identifiers and is Pending."
+      behavior "Create a pending shipment for the identified order with the supplied routing code."
+      postcondition "The returned shipment has the supplied identifiers and routing code and is Pending."
     }
   }
 
@@ -49,6 +50,18 @@ in bounded context Shipping {
 
   event ShipmentStarted
 
+  read model ShipmentSummary {
+    shipmentId: ShipmentId
+    orderId: OrderId
+    status: ShipmentStatus
+    routing: RoutingCode
+  }
+
+  query repository ShipmentSummaryRepository {
+    serves ShipmentSummary
+    reads from Shipment
+  }
+
   domain service Authorization {
     method authorize(role: Common.Role, action: string) returns boolean {
       precondition "The role and requested action are known."
@@ -58,24 +71,30 @@ in bounded context Shipping {
   }
 
   application service ShipmentApplication {
-    method createShipment(orderId: OrderId) {
+    method createShipment(orderId: OrderId, routing: RoutingCode) {
       precondition "The order has been placed and is eligible for fulfillment."
       invokes ShipmentFactory.createShipment
+      behavior "First, authorize the Common.Role.FulfillmentOperator role for creating a shipment with [[Authorization.authorize]]; stop if authorization fails. Then create a pending shipment for the order with the supplied routing code."
+      postcondition "A pending shipment exists for the order."
+    }
+
+    method dispatchShipment(shipmentId: ShipmentId) {
+      precondition "The selected shipment is pending."
       invokes Shipment.Shipment.start
-      behavior "First, authorize the Common.Role.FulfillmentOperator role for creating a shipment with [[Authorization.authorize]]; stop if authorization fails. Then create a shipment by invoking the aggregate root's start operation."
-      postcondition "A shipment has been started for the order."
+      behavior "First, authorize the Common.Role.FulfillmentOperator role for dispatching a shipment with [[Authorization.authorize]]; stop if authorization fails. Then start the selected pending shipment."
+      postcondition "The shipment is started."
     }
 
     method onOrderPlaced(source: Ordering.Contracts.OrderPlacedV1) {
-      precondition "The incoming contract contains a valid order identifier."
+      precondition "The incoming contract contains a valid order identifier and delivery data."
       invokes createShipment
-      behavior "First, authorize the Common.Role.System role for handling the incoming event with [[Authorization.authorize]]; stop if authorization fails. Then create a shipment from the order identifier in the incoming event."
-      postcondition "A shipment is started for the order from the incoming event."
+      behavior "First, authorize the Common.Role.System role for handling the incoming event with [[Authorization.authorize]]; stop if authorization fails. Then create a pending shipment for [[Ordering.Contracts.OrderPlacedV1.orderId]], mapping [[Ordering.Contracts.OrderPlacedV1.delivery.city]] and [[Ordering.Contracts.OrderPlacedV1.lines.sku]] into the local shipment."
+      postcondition "A pending shipment exists for the incoming order."
     }
   }
 
   module Operations {
-    exposes TrackingCode, RoutingCode
+    exposes TrackingCode, RoutingCode, ShipmentQueries, ShipmentLookup
 
     value object TrackingCode {
       raw: string
@@ -83,6 +102,21 @@ in bounded context Shipping {
 
     value object RoutingCode {
       raw: string
+    }
+
+    data object ShipmentLookup {
+      shipmentId: string
+      orderId: string
+      status: ShipmentStatus
+      routing: RoutingCode
+    }
+
+    query service ShipmentQueries {
+      method findPendingShipments(region: string) returns List<ShipmentLookup> {
+        reads from ShipmentSummaryRepository
+        behavior "Return the pending shipments for [[region]] with their status and routing."
+        postcondition "The result contains published shipment lookups."
+      }
     }
   }
 

@@ -1,5 +1,6 @@
 // Sharing tour: same-document context map, shared-kernel service,
-// published query contract, and an authorized cross-context query read.
+// published query contract, an authorized cross-context query read,
+// and a command-led journey with a query read step.
 shared kernel Shared {
   value object Money {
     amount: decimal
@@ -27,11 +28,26 @@ context map LocalMap {
 
 in bounded context Source {
   module Api {
-    exposes Queries
+    exposes Queries, LookupResult, LookupMetadata, LookupStatus
+
+    data object LookupResult {
+      payload: string
+      metadata: LookupMetadata
+      status: LookupStatus
+    }
+
+    data object LookupMetadata {
+      source: string
+    }
+
+    enum LookupStatus {
+      Available,
+      Missing
+    }
 
     query service Queries {
-      method lookup() returns string {
-        behavior "Return the published value."
+      method lookup() returns LookupResult {
+        behavior "Return the published value and its metadata."
       }
     }
   }
@@ -47,6 +63,19 @@ in bounded context Consumer {
   application service ConsumerApp {
     method fetch() {
       reads from Source.Api.Queries.lookup
+      behavior "Read [[Source.Api.LookupMetadata.source]] and [[Source.Api.LookupResult.status]] from the published query."
     }
+  }
+}
+
+actor Reader
+
+journey ReadPublishedValue {
+  by Reader {
+    invoke Source.Api.Queries.lookup
+      with "the key selected by the reader"
+
+    invoke Consumer.ConsumerApp.fetch
+      with "the value returned by [[Source.Api.Queries.lookup.result.payload]]"
   }
 }

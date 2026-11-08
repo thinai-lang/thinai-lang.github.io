@@ -263,7 +263,10 @@ including enum values.
 Operations returning read models, value objects, enums, or module-nested
 DataObjects that are not exposed remain local to the context. A context-level
 query service is local and journey-visible, but it is not automatically a
-cross-context query API.
+cross-context query API. A journey may invoke a context-level query service as a
+read step even when the journey spans contexts, because journeys are
+model-level timelines. A method-level cross-context query read still requires
+the published query contract and an authorized context-map relationship.
 
 ```thinai
 bounded context Source

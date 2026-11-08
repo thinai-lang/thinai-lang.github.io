@@ -123,8 +123,9 @@ Journey `with` and `when` text follows the journey timeline:
 - The current command's result binding is not visible to its own step.
 - A command invoked later in the same journey is not visible from an earlier
   step.
+- Visible query results remain linkable regardless of query-step position.
 - Referencing the same command more than once is ambiguous and produces a
-  warning.
+  warning; duplicate query reads are allowed.
 
 Use the command's qualified result path for a prior invocation:
 
@@ -146,7 +147,25 @@ journey FulfillPlacedOrder {
 The journey example assumes the context and service declarations are imported
 into the same model.
 
-A query result can be linked without invoking the query in the journey:
+A journey may also include a query read step. The query result is a public
+contract link, so it can be referenced from later steps:
+
+```thinai
+actor Customer
+
+journey LookupAndPlace {
+  by Customer {
+    invoke Ordering.OrderQueries.canPlaceOrder
+      with "orderId from the draft order selected by the customer"
+
+    invoke Ordering.OrderApplication.placeOrder
+      with "orderId from the selected draft order and items from the selected order lines"
+      when "The eligibility result [[Ordering.OrderQueries.canPlaceOrder.result.eligible]] is true."
+  }
+}
+```
+
+A query result can also be linked without invoking the query in the journey:
 
 <!-- thinai-fragment -->
 ```thinai
@@ -182,7 +201,8 @@ If a reference does not resolve, check:
 4. Is a data-bearing path segment private to another module or aggregate?
 5. Does a non-terminal method path require method exposure?
 6. Does a reserved-word segment need backticks?
-7. For a journey, was the referenced command invoked earlier in the same
-   journey?
+7. For a journey command, was the referenced command invoked earlier in the
+   same journey? For a query result, is the query service context-level or
+   module-exposed?
 
 See [validation rules](validation-rules.md) for the corresponding constraints.

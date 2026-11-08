@@ -9,15 +9,42 @@ examples.
 
 - `strategic.tni` defines all subdomain kinds and an unclassified subdomain.
 - `context-catalog.tni` declares canonical bounded contexts, including zero, one, and multiple subdomain realizations.
-- `ordering.tni` demonstrates aggregates, entities, value objects, enums, primitive and nested collection fields, constructors, all specification clauses, escaped specification markers, and grouped guarded transitions.
-- `ordering-events.tni` demonstrates nested data objects, services, repositories, factories, read models, projectors with multiple targets, multiple emitted contracts, and multi-actor journeys.
-- `shipping.tni` demonstrates a mirrored identifier, an integration-event handler, module exposures, and multiple module dependencies.
-- `cross-context-journey.tni` demonstrates a journey that invokes commands from both Ordering and Shipping.
+- `ordering.tni` demonstrates aggregates, entities, value objects, enums, primitive and nested collection fields, constructors, all specification clauses including method-level invariants, escaped specification markers, grouped guarded transitions, rich domain-event payloads, and a local inventory aggregate.
+- `ordering-events.tni` demonstrates nested data objects, services, repositories, factories, read models, projectors with multiple targets, multiple emitted contracts, same-context domain-event handling, domain-to-integration translation, composed read models, query-service composition, and multi-actor journeys.
+- `shipping.tni` demonstrates a mirrored identifier, an integration-event handler, a pending-versus-dispatched shipment split, a published query contract, module exposures, and multiple module dependencies.
+- `cross-context-journey.tni` demonstrates a command-led journey that invokes queries and commands from both Ordering and Shipping.
 - `context-map.tni` demonstrates every relationship form and every integration-pattern label.
 - `common-types.tni` defines shared-kernel values, services, and nested modules, including a nested-module re-export.
-- `language-tour/` contains a compact syntax and visibility tour for features that are easier to read outside the main domain model.
+- `language-tour/` contains a compact syntax, visibility, and published-query tour for features that are easier to read outside the main domain model.
 
-The model demonstrates root and child entity identities and transitions, constructors that accept domain values and describe non-state initialization in postconditions (for example, `createdAt`), DataObjects kept at the application-service boundary, a grouped transition across two status fields with one shared descriptive guard, guarded method invocations, conditional emissions, application-service calls to aggregate-root and factory methods, multiple command services per aggregate, query projections reused across aggregates, event-driven projectors, event-to-integration-event translation, incoming integration-event handling, and descriptive cross-context journeys. Where authorization is relevant, application-service behavior specifications describe it as the first step, using a context-local authorization domain service and roles from the shared-kernel enum. It also shows all four behavior-specification kinds, inline links to parameters and event/read-model fields, optional fields/parameters, collections, mirrored identifiers, component-selective imports, context maps, module dependencies, a shared-kernel domain-service invocation, nested-module re-export, backtick-quoted identifiers, triple-quoted specifications, guarded multi-event emissions, guarded read dependencies, and a prior-command result link in a journey.
+The model demonstrates root and child entity identities and transitions, constructors that accept domain values and describe non-state initialization in postconditions (for example, `createdAt`), DataObjects kept at the application-service boundary, a grouped transition across two status fields with one shared descriptive guard, guarded method invocations, conditional emissions, application-service calls to aggregate-root and factory methods, multiple command services per aggregate, query projections reused across aggregates, event-driven projectors, same-context domain-event handling for aggregate integration, event-to-integration-event translation, incoming integration-event handling, composed read models, query-service composition, and descriptive cross-context journeys with optional query reads. Where authorization is relevant, application-service behavior specifications describe it as the first step, using a context-local authorization domain service and roles from the shared-kernel enum. It also shows all four behavior-specification kinds, method-level invariants, inline links to parameters and event/read-model fields, optional fields and collections, `Map` value-shape paths, mirrored identifiers, component-selective imports, context maps, module dependencies, shared-kernel domain-service invocation, module-nested domain-service invocation, explicit method exposure, direct dependencies on unexposed nested modules, nested-module re-export, backtick-quoted identifiers, triple-quoted specifications, guarded multi-event emissions, guarded read dependencies, and prior command/query result links in a journey.
+
+## Event-driven reactions
+
+The example keeps event handoffs outside actor journeys and models them as
+application-service handlers:
+
+1. `Order.Order.place` emits the private `OrderPlaced` domain event.
+2. `InventoryReservation.onOrderPlaced` handles `OrderPlaced` inside Ordering and
+   invokes `Inventory.StockItem.reserve`. This is same-context aggregate
+   integration.
+3. `OrderApplication.publishOrderPlaced` handles the same domain event and emits
+   `Contracts.OrderPlacedV1` and `Contracts.OrderPlacedAuditV1`. This is
+   domain-to-integration-event translation.
+4. `ShipmentApplication.onOrderPlaced` handles
+   `Ordering.Contracts.OrderPlacedV1` in Shipping and invokes `createShipment`,
+   which creates a pending `Shipment` aggregate. This is cross-context aggregate
+   integration.
+5. `ShipmentApplication.dispatchShipment` is the actor-initiated fulfillment
+   step used by the Warehouse journey.
+
+## Journey query steps
+
+Journeys remain command-led. Each actor block must contain at least one command
+step. Query steps are optional read steps that document what an actor looks up
+before or after acting. Query steps use the same `with` and `when` prose as
+commands, and query results remain public contract links rather than private
+timeline bindings.
 
 ## Language coverage index
 
@@ -36,19 +63,29 @@ The model demonstrates root and child entity identities and transitions, constru
 | Entity and aggregate-owned value-object constructors and methods, and factory methods | `ordering.tni`, `shipping.tni` |
 | Application-, domain-, query-, and projector method kinds | `ordering.tni`, `ordering-events.tni`, `shipping.tni`, `../language-tour/sharing.tni` |
 | Authorized cross-context integration-event consumption | `shipping.tni`, `ordering-events.tni` |
-| Cross-context journey command invocation | `cross-context-journey.tni` |
+| Same-context domain-event handler integrating another local aggregate | `ordering-events.tni` |
+| Domain-to-integration-event translation with a rich payload | `ordering-events.tni` |
+| Cross-context integration-event handler creating a local aggregate | `shipping.tni` |
+| Rich domain/integration event payloads with value objects, enums, and collections | `ordering.tni`, `ordering-events.tni` |
+| Published query DataObject with nested DataObject and enum shape | `shipping.tni`, `../language-tour/sharing.tni` |
 | Authorized cross-context query read | `../language-tour/sharing.tni` |
+| Composed read models and nested read-model paths | `ordering-events.tni` |
+| Query-service composition and primitive/DataObject/read-model/value-object/enum/collection results | `ordering-events.tni` |
+| Command-led journeys with optional query steps | `ordering-events.tni`, `cross-context-journey.tni`, `../language-tour/sharing.tni` |
+| Prior command and query result links in a journey | `ordering-events.tni`, `cross-context-journey.tni` |
+| Cross-context journey with query and command steps | `cross-context-journey.tni` |
+| Explicit method exposure and direct dependency on an unexposed nested module | `../language-tour/modules.tni` |
+| Module-nested domain-service exposure and invocation | `../language-tour/modules.tni` |
 | Shared-kernel domain-service invocation | `ordering.tni` |
 | Backtick-quoted identifiers, triple-quoted specifications, and escaped markers | `ordering.tni` |
 | Guarded multi-event emissions and guarded `reads from` clauses | `ordering-events.tni` |
-| Prior-command result binding in a journey | `cross-context-journey.tni` |
 | `string`, `boolean`, `integer`, `decimal`, `date`, `time`, and `instant`; `List`, `Set`, `Map`, and nested collection types | `ordering.tni`, `ordering-events.tni` |
-| Nested data objects, optional fields/parameters, identifiers, enum initial states, constructors, and mirrored value objects | `ordering.tni`, `ordering-events.tni`, `shipping.tni` |
+| Nested data objects, optional fields/parameters/collections, identifiers, enum initial states, constructors, and mirrored value objects | `ordering.tni`, `ordering-events.tni`, `shipping.tni` |
 | Application/domain/query services, repositories, factories, projectors, read models, events, and exposed integration contracts | `ordering.tni`, `ordering-events.tni`, `shipping.tni` |
-| All behavior clauses, multiple emits/projects targets, guarded and grouped transitions, enum-value links | `ordering.tni`, `ordering-events.tni` |
+| All behavior clauses including method-level `invariant`, multiple emits/projects targets, guarded and grouped transitions, enum-value links | `ordering.tni`, `ordering-events.tni` |
+| `Map` value-shape specification paths | `ordering-events.tni` |
 | Single- and double-quoted strings, line/block comments, and escaped `\[[` markers | `strategic.tni`, `common-types.tni`, `ordering.tni`, `context-map.tni` |
-| Multiple journey actors/steps with `with` and `when` descriptions | `ordering-events.tni` |
-| A journey spanning commands in multiple bounded contexts | `cross-context-journey.tni` |
+| Multiple journey actors/steps with `with` and `when` descriptions | `ordering-events.tni`, `cross-context-journey.tni` |
 
 ## Try It
 
@@ -61,4 +98,4 @@ npx thinai-cli@alpha validate examples/order-fulfillment/shipping.tni
 npx thinai-cli@alpha inspect examples/order-fulfillment/shipping.tni --out model.json
 ```
 
-The example uses a private `OrderPlaced` domain event and maps it to the separate `OrderPlacedV1` integration contract. Shipping imports both the producer context and context map, and consumes only the IntegrationEvent.
+The example uses a private `OrderPlaced` domain event and maps it to the separate `OrderPlacedV1` integration contract. Shipping imports both the producer context and context map, consumes only the IntegrationEvent, and creates a pending shipment that the Warehouse journey dispatches. The same example also demonstrates a published query contract and command-led journeys with query read steps.

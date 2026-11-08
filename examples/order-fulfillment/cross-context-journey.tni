@@ -2,12 +2,40 @@ import "./context-catalog.tni"
 import "./ordering-events.tni"
 import "./shipping.tni"
 
+actor Warehouse
+
 journey FulfillPlacedOrder {
   by Customer {
+    invoke Ordering.OrderApplication.priceOrder
+      with "the amount from the selected order and its applicable adjustments"
+      when "The customer is signed in and owns the draft order."
+
+    invoke Ordering.OrderQueries.canPlaceOrder
+      with "orderId from the draft order selected by the customer"
+      when "The price [[Ordering.OrderApplication.priceOrder.result]] has been calculated."
+
     invoke Ordering.OrderApplication.placeOrder
-      with "Place the selected order after customer authorization."
-    invoke Shipping.ShipmentApplication.createShipment
-      with "Create a shipment for the order identified by [[Ordering.OrderApplication.placeOrder.result.orderId]]."
-      when "The order has been placed and is eligible for fulfillment."
+      with "orderId from the selected draft order and items from the requested order lines"
+      when "The eligibility result [[Ordering.OrderQueries.canPlaceOrder.result.eligible]] permits placement."
+  }
+
+  by Warehouse {
+    invoke Shipping.Operations.ShipmentQueries.findPendingShipments
+      with "the region assigned to the warehouse operator"
+      when "The operator is assigned to the fulfillment queue."
+
+    invoke Shipping.ShipmentApplication.dispatchShipment
+      with "the shipment selected from [[Shipping.Operations.ShipmentQueries.findPendingShipments.result.shipmentId]]"
+      when "The selected shipment is still pending."
+  }
+
+  by OrderManager {
+    invoke Ordering.OrderQueries.findCustomerOrders
+      with "customerId from the customer selected by the manager"
+      when "The customer has at least one open order."
+
+    invoke Ordering.OrderMaintenance.deleteDraftOrder
+      with "the draft order selected from [[Ordering.OrderQueries.findCustomerOrders.result.orders.orderId]]"
+      when "The root confirms that the order is still a draft."
   }
 }

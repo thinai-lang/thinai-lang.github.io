@@ -24,8 +24,45 @@ in bounded context ModulesTour {
       }
     }
 
+    // Inner is exposed; HiddenInner is intentionally not exposed by Outer.
+    module HiddenInner {
+      exposes HiddenValue
+
+      value object HiddenValue {
+        raw: string
+      }
+    }
+
     value object PublicValue {
       raw: string
+    }
+  }
+
+  module DirectConsumer {
+    depends on Outer.HiddenInner
+
+    value object UsesHidden {
+      hiddenValue: HiddenInner.HiddenValue
+    }
+  }
+
+  module Policies {
+    exposes Pricing
+
+    domain service Pricing {
+      method price(amount: decimal) returns decimal {
+        behavior "Price the supplied amount."
+      }
+    }
+  }
+
+  module PricingConsumer {
+    depends on Policies
+
+    application service UsesPricing {
+      method calculate(amount: decimal) returns decimal {
+        invokes Policies.Pricing.price
+      }
     }
   }
 
@@ -43,10 +80,12 @@ in bounded context ModulesTour {
   }
 
   module Api {
-    exposes Handler
+    // Only the command method is published; the service container is not.
+    exposes Handler.run
 
     application service Handler {
       method run() {}
+      method audit() {}
     }
   }
 

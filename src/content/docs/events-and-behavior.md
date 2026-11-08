@@ -169,6 +169,22 @@ in bounded context Ordering {
 }
 ```
 
+A domain-event handler can also integrate another aggregate in the same bounded
+context. The handler receives the private event and invokes a command or
+aggregate-root method locally:
+
+<!-- thinai-fragment -->
+```thinai
+application service InventoryReservation {
+  method onOrderPlaced(source: OrderPlaced) {
+    invokes Inventory.StockItem.reserve
+    behavior "Reserve stock for [[OrderPlaced.orderId]] in the local inventory aggregate."
+  }
+}
+```
+
+A separate handler translates the domain event into public contracts:
+
 ```thinai
 bounded context Ordering
 
@@ -218,11 +234,14 @@ in bounded context Shipping {
 }
 ```
 
-Keep the imported contract at this boundary; use local types in ordinary
-command methods and aggregates. Do not model arbitrary payload transformations
-as expressions. Integration-event publication is an application-layer reaction
-to a local DomainEvent. Delivery ordering, broker behavior, and outbox mechanics
-are outside the DSL.
+The handler remains in Shipping and maps the imported contract into local
+command inputs. In the Order Fulfillment example, `onOrderPlaced` invokes a
+local `createShipment` command that creates a pending `Shipment` aggregate; it
+does not invoke the producer's aggregate. Keep the imported contract at this
+boundary; use local types in ordinary command methods and aggregates. Do not
+model arbitrary payload transformations as expressions. Integration-event
+publication is an application-layer reaction to a local DomainEvent. Delivery
+ordering, broker behavior, and outbox mechanics are outside the DSL.
 
 Cross-context integration-event use requires an explicit bounded-context
 import and an imported context map with an authorized, correctly directed
@@ -236,46 +255,59 @@ not make domain events public.
 
 ## Journeys
 
-A journey is a top-level, descriptive EventStorming timeline of non-event
-application-service commands. Any application-service method without an event
-parameter is treated as a command; a method with an event parameter is an event
-handler. A journey can span bounded contexts. Each command remains
-owned by its bounded context; the journey does not imply a synchronous remote
-call or shared transaction. Background event handoffs are modeled by the
-contexts' events and handlers, not as journey steps. Queries and event-triggered
-handlers are not journey commands. Optional `with` input descriptions and `when`
-guards are linked prose, not executable data flow or conditions; each command
-must still enforce its own invariant:
+A journey is a top-level, descriptive, command-led timeline of non-event
+application-service commands with optional query-service reads. Any
+application-service method without an event parameter is treated as a command;
+a method with an event parameter is an event handler. A journey can span
+bounded contexts. Each command remains owned by its bounded context; the journey
+does not imply a synchronous remote call or shared transaction. Background event
+handoffs are modeled by the contexts' events and handlers, not as journey steps.
+Event-triggered handlers are not journey steps. Query steps are optional reads
+that document what an actor looks up before or after acting. Each actor block
+must contain at least one command step; a read-only use case belongs in a query
+service. Optional `with` input descriptions and `when` guards are linked prose,
+not executable data flow or conditions; each command must still enforce its own
+invariant:
 
 ```thinai
 actor Customer
 
 journey PlaceOrder {
   by Customer {
+    invoke Ordering.OrderQueries.canPlaceOrder
+      with "orderId from the draft order selected by the customer"
+      when "The order summary is available."
+
     invoke Ordering.OrderApplication.placeOrder
-      with "orderId from [[Ordering.OrderSummary.orderId]] and items from the selected order lines"
+      with "orderId from the selected draft order and items from the selected order lines"
       when "The eligibility result [[Ordering.OrderQueries.canPlaceOrder.result.eligible]] allows this order."
   }
 }
 ```
 
 Actors are declared once at the top level and referenced in `by Actor { ... }`
-blocks, which group commands initiated by that actor. Journey order is
-significant. A query result linked from `when` is not bound to a command
-argument, invoked by the journey, or evaluated by the DSL. Emitted events are
-derived from the invoked methods and need not be repeated in the journey.
+blocks, which group operations initiated by that actor. Journey order is
+significant. A query result linked from `with` or `when` is not bound to a
+command argument or evaluated by the DSL. Query results are public contract
+links, not private step bindings: a visible query result can be linked even
+when the query is not invoked, and a query step does not gate result access.
+Emitted events are derived from the invoked methods and need not be repeated in
+the journey.
 
 Journey timeline rules:
 
-- Current inputs and results of earlier steps are visible to later steps.
+- Current inputs and results of earlier command steps are visible to later steps.
 - The current command's result is not visible to its own step.
 - A command invoked later in the journey is not visible from an earlier step.
+- Visible query results remain linkable regardless of query-step position.
 - Reference a prior command result through its qualified path, for example
   `[[Ordering.OrderApplication.placeOrder.result.orderId]]`.
 - `result` is reserved on methods with a result and on application-service
   commands.
 - Reusing the same command more than once makes result references ambiguous and
   produces a warning.
+- Reusing the same query is allowed because it names the same public query
+  contract.
 
 See [references and paths](references-and-paths.md) for path and quoting rules.
 

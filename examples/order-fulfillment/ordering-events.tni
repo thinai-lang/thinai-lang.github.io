@@ -6,11 +6,19 @@ actor OrderManager
 
 in bounded context Ordering {
   application service OrderApplication {
+    method priceOrder(amount: decimal, adjustments?: List<PriceAdjustment>) returns decimal {
+      invokes OrderPricing.calculateTotal
+      behavior "Calculate the order total with [[OrderPricing.calculateTotal]]."
+      postcondition "The result is the order total after the supplied adjustments."
+    }
+
     method placeOrder(input: PlaceOrderInput) returns PlaceOrderResult {
+      reads from OrderRepository
+        when "The draft order is loaded before placement."
       precondition "The order contains at least one item."
       invokes Order.Order.place
         when "The order is ready to be placed."
-      behavior "First, authorize the Common.Role.Customer role for placing an order with [[Authorization.authorize]]; stop if authorization fails. Then place the order identified by [[input.orderId]] and return its [[result.status]]."
+      behavior "First, authorize the Common.Role.Customer role for placing an order with [[Authorization.authorize]]; stop if authorization fails. Then place the order identified by [[input.orderId]], using the selected delivery address [[input.deliveryAddresses.city]], and return its [[result.status]]."
       postcondition "The order is placed."
     }
 
@@ -18,8 +26,17 @@ in bounded context Ordering {
       emits Contracts.OrderPlacedV1, Contracts.OrderPlacedAuditV1
         when "The internal event has been mapped to both public contracts."
       precondition "The source event is a valid placed-order event."
-      behavior "First, authorize the Common.Role.System role for publishing the event with [[Authorization.authorize]]; stop if authorization fails. Then map the internal event to the public integration contract."
+      behavior "First, authorize the Common.Role.System role for publishing the event with [[Authorization.authorize]]; stop if authorization fails. Then map [[OrderPlaced.orderId]], [[OrderPlaced.delivery.city]], and [[OrderPlaced.lines.sku]] into the public integration contract."
       postcondition "The corresponding public event contracts are emitted."
+    }
+  }
+
+  application service InventoryReservation {
+    method onOrderPlaced(source: OrderPlaced) {
+      precondition "The placed order carries a valid order identifier and lines."
+      invokes Inventory.StockItem.reserve
+      behavior "Reserve stock for the placed order in the local inventory aggregate, using [[OrderPlaced.orderId]] and [[OrderPlaced.lines.sku]]."
+      postcondition "Stock is reserved for the placed order."
     }
   }
 
@@ -44,7 +61,8 @@ in bounded context Ordering {
   data object PlaceOrderInput {
     orderId: OrderId
     items: List<OrderLineDetails>
-    deliveryAddress: DeliveryAddress
+    deliveryAddresses: Map<string, DeliveryAddress>
+    notes?: List<string>
     submittedAt: instant
     requestedDeliveryDate: date
     preferredDeliveryTime: time
@@ -53,11 +71,6 @@ in bounded context Ordering {
   data object OrderLineDetails {
     sku: string
     quantities: Map<string, List<Set<integer>>>
-  }
-
-  data object DeliveryAddress {
-    city: string
-    postalCode: string
   }
 
   data object PlaceOrderResult {
@@ -83,6 +96,11 @@ in bounded context Ordering {
   read model CustomerSummary {
     customerId: CustomerId
     name: string
+  }
+
+  read model CustomerOrderSummary {
+    customerSummary: CustomerSummary
+    orders: List<OrderSummary>
   }
 
   read model OrderAuditSummary {
@@ -122,11 +140,41 @@ in bounded context Ordering {
       postcondition "The result reports whether the order is eligible for placement."
     }
 
-    method findCustomerOrders(customerId: CustomerId) returns List<OrderSummary> {
+    method findSummary(orderId: OrderId) returns OrderSummary {
+      reads from OrderSummaryRepository
+      behavior "Load the summary for [[orderId]]."
+      postcondition "The result is the current order summary."
+    }
+
+    method findStatus(orderId: OrderId) returns OrderStatus {
+      invokes findSummary
+      behavior "Return [[OrderSummary.status]] from the summary loaded by the query-service composition helper."
+      postcondition "The result is the current order status."
+    }
+
+    method findCustomerOrders(customerId: CustomerId) returns CustomerOrderSummary {
       reads from OrderSummaryRepository, CustomerSummaryRepository
       precondition "The customer identifier is valid."
       behavior "Combine [[OrderSummaryRepository]] and [[CustomerSummaryRepository]] for the selected customer."
-      postcondition "The result contains the selected customer's order summaries."
+      postcondition "The result contains the customer summary and the customer's order summaries."
+    }
+
+    method findOrderHistory(customerId: CustomerId) returns List<OrderSummary> {
+      reads from OrderSummaryRepository
+      behavior "Return the order history for the selected customer."
+      postcondition "The result is a collection of order summaries."
+    }
+
+    method findCustomerName(customerId: CustomerId) returns string {
+      reads from CustomerSummaryRepository
+      behavior "Return [[CustomerSummary.name]] for the selected customer."
+      postcondition "The result is the customer's display name."
+    }
+
+    method findOrderId(customerId: CustomerId) returns OrderId {
+      reads from OrderSummaryRepository
+      behavior "Return [[OrderSummary.orderId]] for the selected customer's first order."
+      postcondition "The result is an order identifier."
     }
   }
 
@@ -137,6 +185,8 @@ in bounded context Ordering {
       orderId: string
       customerId: string
       status: string
+      delivery: DeliveryAddress
+      lines: List<OrderLineSnapshot>
     }
 
     integration event OrderPlacedAuditV1 {
@@ -148,8 +198,16 @@ in bounded context Ordering {
 
 journey PlaceOrder {
   by Customer {
+    invoke Ordering.OrderApplication.priceOrder
+      with "the amount from the selected order and its applicable adjustments"
+      when "The customer is signed in."
+
+    invoke Ordering.OrderQueries.canPlaceOrder
+      with "orderId from the selected draft order"
+      when "The price [[Ordering.OrderApplication.priceOrder.result]] has been calculated."
+
     invoke Ordering.OrderApplication.placeOrder
-      with "input.orderId from [[Ordering.OrderSummary.orderId]] and input.items from the selected order lines"
+      with "input.orderId from the selected draft order and input.items from the selected order lines"
       when "The eligibility result [[Ordering.OrderQueries.canPlaceOrder.result.eligible]] is true."
   }
 }
@@ -158,13 +216,23 @@ journey RegisterCustomerAndPlaceOrder {
   by Customer {
     invoke Ordering.CustomerRegistration.registerCustomer
       with "id from the customer identifier and name from the registration form"
+
+    invoke Ordering.OrderQueries.findCustomerOrders
+      with "customerId from the newly registered customer"
+      when "The registration succeeded and the customer profile is available."
+
     invoke Ordering.OrderApplication.placeOrder
-      with 'orderId from the selected order and items from the requested order lines'
+      with "orderId from the draft order created for the new customer and items from the requested order lines"
+      when "The order history [[Ordering.OrderQueries.findCustomerOrders.result.orders.orderId]] confirms the customer has no conflicting open orders."
   }
 
   by OrderManager {
+    invoke Ordering.OrderQueries.findCustomerOrders
+      with "customerId from the customer selected by the manager"
+      when "The customer has at least one open order."
+
     invoke Ordering.OrderMaintenance.deleteDraftOrder
-      with "The draft order selected for removal"
+      with "The draft order selected from [[Ordering.OrderQueries.findCustomerOrders.result.orders.orderId]]"
       when "The root confirms that the order is still a draft."
   }
 }

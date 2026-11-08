@@ -155,19 +155,27 @@ most common errors, not a replacement for the grammar or the language server.
 ## Journeys
 
 - Actors are declared once at model scope.
-- A journey is a top-level timeline of non-event application-service commands.
-  Any application-service method without an event parameter is treated as a
-  command; a method with an event parameter is an event handler.
+- A journey is a command-led timeline of non-event application-service commands
+  with optional query-service reads. Any application-service method without an
+  event parameter is treated as a command; a method with an event parameter is
+  an event handler.
+- Each actor block must contain at least one command step. A read-only use case
+  belongs in a query service, not a journey.
 - Each actor may have at most one `by` block per journey.
-- A step names at least a service or context segment before the command.
+- A step names at least a service or context segment before the operation.
+- Query steps must target a context-level or module-exposed query service.
+- Event handlers, projectors, query repositories, repositories, domain
+  services, and factories are not journey step targets.
 - Journey order is significant across actor blocks.
 - Current inputs and earlier command results are visible; later commands are
   not.
 - The current command's result is not visible to its own step.
+- Query results are public contract links, not private step bindings; visible
+  query results remain linkable regardless of query-step position.
 - `result` is reserved on methods with a result and on application-service
   commands.
 - Reusing the same command in one journey makes result references ambiguous and
-  produces a warning.
+  produces a warning; duplicate query reads are allowed.
 - Journeys do not model background event handoffs, synchronous remote calls, or
   shared transactions.
 
