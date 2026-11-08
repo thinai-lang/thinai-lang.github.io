@@ -279,7 +279,8 @@ objects for shapes that represent domain concepts.
 Read models and query repositories are optional. A read model describes a query
 result shape; it need not be materialized or backed by a separate database.
 Read models may compose other read models, but not data objects. Published query
-contracts expose only primitive or public DataObject results; see
+contracts expose only primitive or context-visible or module-exposed DataObject
+results; see
 [modules and visibility](modules-and-visibility.md#published-query-contracts).
 Projectors are optional event-driven projections. A query service reads through
 query repositories, which may source the same relational tables as the write
@@ -360,20 +361,27 @@ that routing matters.
 ## Modules
 
 Modules organize declarations within one bounded context or shared kernel.
-Use `exposes` to list declarations available to other modules, and `depends on`
-to declare a module dependency inside the module body. A module may expose
-declarations it owns, including methods and members of its own aggregates, plus
-its direct child modules. Declarations outside modules are visible to modules by default. In the
+Use `exposes` to publish module declarations and `depends on` to declare a
+module dependency inside the module body.
+
+Exposing a container publishes its behavioral members: an aggregate publishes
+its root entity and root-entity methods; an entity, value object, service,
+projector, or factory publishes its methods. Child entities, nested value
+objects, and nested enums remain private unless exposed explicitly. Explicit
+member paths remain valid when precise control is needed.
+
+Declarations outside modules are context-visible to modules by default. In the
 other direction, a context-level declaration may reference a module declaration
 only when its owning module and every enclosing module expose the path. A
 reference from another module requires exposure by the owning module plus a
-dependency or public re-export route. A direct dependency on a nested module is
+dependency or module-exposure route. A direct dependency on a nested module is
 valid when that module exposes the declaration, even if its parent does not
 expose it. A parent that exposes a child module needs no redundant dependency.
 `depends on` is not a re-export.
+
 Exposing a nested module re-exports its public API through the enclosing module;
-see [modules and visibility](modules-and-visibility.md) for nested re-exports,
-exposed methods, and published query contracts.
+see [modules and visibility](modules-and-visibility.md) for visibility scopes,
+nested re-exports, container exposure, and published query contracts.
 
 ```thinai
 bounded context Shipping
@@ -410,6 +418,6 @@ shared kernels, modules, aggregates, entities, services, projectors, and
 factories without exposing each structural segment. Value objects, data objects,
 read models, enums, and fields are data-bearing: using one as a non-terminal
 path segment requires same-module access; exposure by its owning module plus a
-direct dependency or public API route; an authorized shared-kernel relationship;
+direct dependency or module-exposure route; an authorized shared-kernel relationship;
 or an authorized event or published-query contract. From outside all modules or
-across contexts, the full public exposure chain is required.
+across contexts, the full module-exposure chain is required.

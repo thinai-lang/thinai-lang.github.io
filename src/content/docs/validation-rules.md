@@ -106,12 +106,17 @@ most common errors, not a replacement for the grammar or the language server.
   applies to the whole module.
 - A module declares `depends on` at most once, anywhere in its body; the clause
   applies to the whole module.
-- A module may expose declarations it owns, including methods and members of
-  its own aggregates, plus its direct child modules.
+- A module may expose declarations it owns plus its direct child modules.
+- Exposing an aggregate publishes its root entity and root-entity methods.
+  Child entities, nested value objects, and nested enums remain private unless
+  exposed explicitly.
+- Exposing an entity, value object, service, projector, or factory publishes its
+  methods.
+- Explicit member paths remain valid when precise control is needed.
 - A context-level declaration may reference a module declaration only when the
   owning module and every enclosing module expose the path.
 - A reference from another module requires exposure by the owning module plus a
-  dependency or public re-export route. A direct dependency on a nested module
+  dependency or module-exposure route. A direct dependency on a nested module
   is enough when that module exposes the declaration.
 - A parent module that exposes a child module does not need a redundant
   dependency on the child.
@@ -119,11 +124,16 @@ most common errors, not a replacement for the grammar or the language server.
   enclosing module.
 - `depends on` is not a re-export.
 - Module dependencies do not cross bounded-context boundaries.
-- Exposing a query service publishes only primitive or public DataObject results.
+- Exposing a query service publishes its methods under the normal container
+  exposure rules, but only operations whose results are primitives or
+  context-visible or module-exposed DataObjects.
 - A method used as a non-terminal path segment requires method exposure outside
   its own module.
 - An unexposed module-nested declaration cannot be referenced from outside its
   module.
+- A warning is produced when an exposed command publishes a private contract
+  type. Explicitly exposed context-visible or module-exposed aggregate-owned
+  types are not private and do not produce this warning.
 
 ## Context maps and cross-context use
 

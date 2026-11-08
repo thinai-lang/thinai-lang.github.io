@@ -12,9 +12,10 @@ Thinai source and is validated by the repository test suite.
   qualified value-object references, and a context-level value-object
   constructor and method.
 - `modules.tni` demonstrates nested modules, module re-exports, dependencies,
-  qualified exposure paths, exposed methods, an event-triggered command
-  dispatched to an exposed method in another application service, and a local
-  identifier mirror that names a module-private identifier.
+  qualified exposure paths, methods published with their container, an
+  event-triggered command dispatched to a method published by another
+  application service, and a local identifier mirror that names a
+  module-private identifier.
 - `sharing.tni` demonstrates a shared kernel with a domain service, a
   same-document context map, a shared-kernel service invocation, a
   module-exposed query service, and an authorized cross-context query read.

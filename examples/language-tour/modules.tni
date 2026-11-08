@@ -1,4 +1,4 @@
-// Module tour: nested modules, re-exports, dependencies, exposed methods,
+// Module tour: nested modules, re-exports, dependencies, published methods,
 // and a local mirror of a module-private identifier.
 bounded context ModulesTour
 
@@ -43,7 +43,7 @@ in bounded context ModulesTour {
   }
 
   module Api {
-    exposes Handler.run
+    exposes Handler
 
     application service Handler {
       method run() {}

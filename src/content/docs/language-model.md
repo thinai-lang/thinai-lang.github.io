@@ -230,7 +230,10 @@ endpoints; DomainEvents remain private to their context.
 ## Language Tooling
 
 The language server provides keyword and cross-reference completion, relative
-`.tni` import-path completion, navigation, and diagnostics. It also offers
-quick fixes for unresolved declarations that can be imported from another
-workspace file. The [Order Fulfillment example](https://github.com/thinai-lang/thinai-lang.github.io/blob/main/examples/order-fulfillment/README.md)
+`.tni` import-path completion and clickable import links, navigation,
+references, document symbols, hover, rename, call hierarchy for method
+invocations and journey commands, diagnostics, formatting, and quick fixes for
+unresolved declarations, missing module dependencies, and missing exposures.
+Renaming or moving a `.tni` file updates relative import paths. The
+[Order Fulfillment example](https://github.com/thinai-lang/thinai-lang.github.io/blob/main/examples/order-fulfillment/README.md)
 demonstrates these features in a complete multi-file model.

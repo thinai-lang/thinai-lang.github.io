@@ -53,8 +53,15 @@ reason. Same-context contribution quick fixes are supported.
 ## Known editor limitations
 
 The current extension focuses on core language support. It provides diagnostics,
-completion, definitions, find-all-references, document symbols, hover, formatting,
-and code actions. Rename and refactor operations are not yet available.
+completion, definitions, find-all-references, document symbols, hover, rename,
+call hierarchy, import links, automatic import updates on file moves,
+formatting, and code actions. Rename supports declarations, references, and
+import aliases, and validates new names and collisions.
+
+Type hierarchy, inlay hints, code lens, and signature help are not provided yet.
+Thinai has containment and mirrors but no inheritance/subtyping, so a type
+hierarchy would currently be misleading. Invocations do not have argument lists
+in source, so signature help has no natural trigger.
 
 Same-label completion items can represent different structural path targets.
 Their details distinguish them; the list does not collapse them because doing so

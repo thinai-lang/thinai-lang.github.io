@@ -94,11 +94,11 @@ Data-bearing declarations—value objects, data objects, read models, enums, and
 fields—require one of:
 
 - same-module access;
-- exposure by the owning module plus a direct dependency or public API route;
+- exposure by the owning module plus a direct dependency or module-exposure route;
 - an authorized shared-kernel relationship;
 - an authorized event or published-query contract.
 
-From outside all modules or across bounded contexts, the full public exposure
+From outside all modules or across bounded contexts, the full module-exposure
 chain is required. An identifier value object named by `mirrors` is the explicit
 exception and may be module-private. The mirror must match the source fields and
 be backed by a customer-supplier, partnership, or shared-kernel relationship.
@@ -106,9 +106,9 @@ be backed by a customer-supplier, partnership, or shared-kernel relationship.
 | Path segment | Requirement |
 | --- | --- |
 | Structural container (context, map, kernel, aggregate, entity, service, projector, factory) | May be traversed without exposing the segment. |
-| Module | Must be accessible through the public module API or a direct dependency; a cross-context contract path may reach a private nested module only when authorized. |
-| Method used as a non-terminal segment | Must be exposed by its owning module unless the source is in that module; context-level methods are public within their context. |
-| Data-bearing non-terminal (value object, data object, read model, enum, field) | Must be exposed by its owning module and reachable through the same module, a direct dependency or exposing ancestor, the public API, an authorized shared kernel, or an authorized event or query contract. |
+| Module | Must be accessible through the module-exposure route or a direct dependency; a cross-context contract path may reach a private nested module only when authorized. |
+| Method used as a non-terminal segment | Must be exposed by its owning module unless the source is in that module; context-level methods are context-visible. |
+| Data-bearing non-terminal (value object, data object, read model, enum, field) | Must be exposed by its owning module and reachable through the same module, a direct dependency or exposing ancestor, the module-exposure route, an authorized shared kernel, or an authorized event or query contract. |
 | Terminal declaration | Must satisfy the declaration, contract, or journey visibility rule that applies to it. |
 
 For module and cross-context details, see

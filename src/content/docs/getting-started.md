@@ -25,7 +25,9 @@ code --install-extension thinai-lang.vscode-thinai --pre-release
 
 You can also search for **Thinai** in the Extensions view and select **Install
 Pre-Release Version**. The extension provides diagnostics, completion,
-navigation, formatting, and import quick fixes for `.tni` files.
+navigation, references, document symbols, hover, rename, call hierarchy,
+formatting, clickable imports, automatic import updates on file moves, and
+import/dependency/exposure quick fixes for `.tni` files.
 
 For editors that use Open VSX, such as VSCodium, Gitpod, and Eclipse Che,
 install the same extension from the

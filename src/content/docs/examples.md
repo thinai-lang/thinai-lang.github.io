@@ -103,7 +103,8 @@ npx thinai-cli@alpha inspect examples/order-fulfillment/shipping.tni --out model
 ```
 
 Open either directory in VS Code with the Thinai extension to exercise
-completion, navigation, diagnostics, quick fixes, and formatting.
+completion, navigation, references, rename, call hierarchy, diagnostics, quick
+fixes, import links, and formatting.
 
 ## See also
 

@@ -6,13 +6,62 @@ description: Organize declarations with modules, exposures, dependencies, nested
 Modules organize declarations inside one bounded context or shared kernel. They
 do not move a declaration into a different context.
 
+## Visibility scopes
+
+Thinai distinguishes four visibility scopes:
+
+| Scope | Meaning |
+| --- | --- |
+| **Aggregate/module-local** | Internal to its aggregate or module; not visible outside unless published |
+| **Context-visible** | Directly usable anywhere in the same bounded context or shared kernel; no `exposes` needed |
+| **Module-exposed** | Published by a module and usable by modules that depend on it |
+| **Contract-published** | Explicitly usable across bounded contexts through an integration event, published query result, shared kernel, or identifier mirror |
+
+Context-visible is not the same as contract-published. A context-level value
+object is visible throughout its bounded context, but another bounded context
+cannot use it as a field, parameter, or return type:
+
+```thinai
+bounded context Alpha
+
+in bounded context Alpha {
+  value object Money {
+    raw: string
+  }
+}
+
+bounded context Beta
+
+in bounded context Beta {
+  data object Price {
+    amount: Alpha.Money // rejected
+  }
+}
+```
+
+Use a local identifier mirror, an IntegrationEvent payload, a shared-kernel
+type, or a published query result contract instead.
+
+Mirrors apply to identifier value objects. Integration events are published
+contracts owned by the producer: reference them directly and map their payload
+into local domain concepts when isolation is needed. Do not mirror an
+IntegrationEvent.
+
 ## Declaring modules
 
 Use `exposes` to publish declarations and `depends on` to declare a module
 dependency. A module declares `exposes` once and `depends on` once; both clauses
-may appear anywhere in the module body and apply to the whole module. A module
-may expose declarations it owns, including methods and members of its own
-aggregates, plus its direct child modules.
+may appear anywhere in the module body and apply to the whole module.
+
+Exposing a container publishes its behavioral members:
+
+- an aggregate publishes its root entity and the root entity's methods;
+- an entity, value object, service, projector, or factory publishes its methods;
+- child entities, nested value objects, and nested enums remain private unless
+  exposed explicitly;
+- fields, parameters, and enum values inherit visibility from their declaration.
+
+Explicit member paths remain valid when precise control is needed.
 
 ```thinai
 bounded context Shipping
@@ -36,23 +85,19 @@ in bounded context Shipping {
 }
 ```
 
-Visibility depends on where the source and target live:
+Context-level declarations are context-visible within their bounded context or
+shared kernel. A context-level declaration may reference a module declaration
+only when the owning module and every enclosing module expose the path.
 
-- Context-level declarations are public within their bounded context or shared
-  kernel.
-- A context-level declaration may reference a module declaration only when the
-  owning module and every enclosing module expose the path.
-- A declaration in another module requires exposure by its owning module and a
-  route to that module: a direct dependency, a dependency on an exposing
-  ancestor, or the source module's own public API.
-- A parent module that exposes a child module may use the child's public API
-  without a redundant dependency. Sibling modules require both exposure and
-  `depends on`.
-- A direct dependency on a nested module is valid even when its parent does not
-  expose it, provided that nested module exposes the declaration.
-- `depends on` is not a re-export.
-- A method used as a non-terminal path segment must be exposed when the source
-  is outside its module, just like a terminal method reference.
+A declaration in another module requires exposure by its owning module and a
+route to that module: a direct dependency, a dependency on an exposing ancestor,
+or the source module's own public API. A parent module that exposes a child
+module may use the child's public API without a redundant dependency. Sibling
+modules require both exposure and `depends on`.
+
+A direct dependency on a nested module is valid even when its parent does not
+expose it, provided that nested module exposes the declaration. `depends on` is
+not a re-export.
 
 ### Visibility at a glance
 
@@ -60,13 +105,15 @@ Within one bounded context or shared kernel:
 
 | Target declaration | From its own module | From another module | From outside all modules |
 | --- | --- | --- | --- |
-| Context-level declaration | ✓ | ✓ | ✓ |
+| Context-visible declaration | ✓ | ✓ | ✓ |
 | Declaration in a top-level module | ✓ | exposure + `depends on` | exposure |
 | Declaration in a nested module | ✓ | exposure by its owning module plus a dependency or exposing-ancestor route | exposure at each level |
 
 From outside all modules, every enclosing module must expose the next segment.
-Across bounded contexts, and across different shared kernels, the full public
-exposure chain is always required.
+Across bounded contexts, and across different shared kernels, the full
+module-exposure chain is always required. Module exposure and context-level
+visibility make a declaration available inside the bounded context; they do not
+by themselves publish it to another bounded context.
 
 ## Nested modules and re-exports
 
@@ -142,33 +189,41 @@ in bounded context PrivateModules {
 `PrivateOuter` does not expose `PrivateInner`, but `DirectConsumer` depends
 directly on `PrivateInner`, and `InnerValue` is exposed there.
 
-## Exposed methods and services
+## Exposed containers and services
 
 Modules may expose any declaration they own that the grammar permits, including
 aggregates, entities, value objects, data objects, read models, enums, events,
 services, projectors, repositories, factories, methods, and direct child
-modules. Exposing a method publishes that operation through the module's API.
+modules.
+
+Exposing a container publishes its behavioral members, so an aggregate exposes
+its root entity and root-entity methods, and a service exposes its methods:
 
 ```thinai
 bounded context CommandsTour
 
 in bounded context CommandsTour {
-  module Api {
-    exposes Handler.run
+  module Domain {
+    exposes OrderAggregate
 
-    application service Handler {
-      method run() {}
+    aggregate OrderAggregate {
+      value object OrderId {
+        raw: string
+      }
+      root entity Order {
+        identifier id: OrderId
+        method place() {}
+      }
     }
   }
 
-  module Consumer {
-    depends on Api
+  module Api {
+    depends on Domain
+    exposes Handler
 
-    event Triggered
-
-    application service UsesApi {
-      method onTriggered(source: Triggered) {
-        invokes Api.Handler.run
+    application service Handler {
+      method run() {
+        invokes Domain.OrderAggregate.Order.place
       }
     }
   }
@@ -199,9 +254,11 @@ shared kernel Common {
 
 ## Published query contracts
 
-Exposing a query service publishes only operations whose results are primitives
-or public DataObjects. A published query contract exposes the nested DataObject,
-value-object, and enum shape of each published result, including enum values.
+Exposing a query service publishes its methods under the normal container
+exposure rules. A published query contract exposes only operations whose results
+are primitives or context-visible or module-exposed DataObjects. It exposes the
+nested DataObject, value-object, and enum shape of each published result,
+including enum values.
 
 Operations returning read models, value objects, enums, or module-nested
 DataObjects that are not exposed remain local to the context. A context-level
@@ -235,12 +292,16 @@ query. Shared-kernel relationships do not authorize query reads.
 - A declaration outside a module may reference a module declaration only when
   the module and every enclosing module expose it.
 - A module-to-module reference in one context requires exposure by the owning
-  module plus a dependency or public re-export route. A direct dependency on a
+  module plus a dependency or module-exposure route. A direct dependency on a
   nested module is enough when that module exposes the declaration.
-- A method used as a path segment requires method exposure outside its own
-  module.
-- Exposing a declaration makes it part of a published contract; it does not make
-  the declaration a directly reusable signature type in another bounded context.
+- Another bounded context cannot directly use a value object, data object, read
+  model, or enum as a field, parameter, or return type.
+- Integration events are published contracts. Reference them directly with an
+  authorized relationship; map their payloads into local domain concepts when
+  isolation is needed. Do not mirror an integration event.
+- Identifier mirrors are the explicit exception for identifiers: the mirror may
+  name a module-private identifier and must be backed by a customer-supplier,
+  partnership, or shared-kernel relationship.
 - Integration-event payloads may use exposed value objects or enums from a
   sibling module when the event's module depends on the payload module and every
   enclosing module exposes the payload type.
