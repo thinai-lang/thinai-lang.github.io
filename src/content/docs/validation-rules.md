@@ -95,8 +95,12 @@ most common errors, not a replacement for the grammar or the language server.
 - Application-service methods must not return entities.
 - Projectors do not read query repositories and do not call application
   services or change aggregates.
-- A query repository serves a read model and may list aggregate table sources
-  with `reads from`.
+- A query repository serves a read model. With `reads from`, it reads
+  aggregate-owned write-model tables directly. Without `reads from`, it serves a
+  read model maintained by a projector. A repository may intentionally use both
+  forms, but the examples keep them separate.
+- A projector method handles exactly one domain or integration event; a
+  projector may declare methods for both kinds.
 - Query-service and application-service methods may use a descriptive
   `reads from ... when ...` guard.
 

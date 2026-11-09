@@ -38,6 +38,28 @@ application-service handlers:
 5. `ShipmentApplication.dispatchShipment` is the actor-initiated fulfillment
    step used by the Warehouse journey.
 
+The Shipping `ShipmentProjector` also demonstrates a projector with methods for
+both event kinds: `onOrderPlaced` handles the integration event
+`OrderPlacedV1`, while `onShipmentStarted` handles the domain event
+`ShipmentStarted`.
+
+## Query repository paths
+
+The example keeps the two query-side paths separate:
+
+- `OrderLookupRepository` serves `OrderLookup` and declares
+  `reads from Order, Customer`. It reads the write-model tables directly.
+- `OrderSummaryRepository`, `CustomerSummaryRepository`, and
+  `OrderAuditSummaryRepository` serve projector-maintained read models and
+  declare no `reads from`.
+- In Shipping, `ShipmentSummaryRepository` reads directly from `Shipment`,
+  while `ShipmentRequestRepository` and `ShipmentTrackingRepository` serve
+  projector-maintained views.
+- `OrderQueries` and `ShipmentQueries` use both repository kinds.
+
+A repository may intentionally mix both paths, but the example keeps them
+separate so the tradeoff is explicit.
+
 ## Journey query steps
 
 Journeys remain command-led. Each actor block must contain at least one command
@@ -70,6 +92,10 @@ timeline bindings.
 | Published query DataObject with nested DataObject and enum shape | `shipping.tni`, `../language-tour/sharing.tni` |
 | Authorized cross-context query read | `../language-tour/sharing.tni` |
 | Composed read models and nested read-model paths | `ordering-events.tni` |
+| Direct aggregate-backed query repository with `reads from` | `ordering-events.tni`, `shipping.tni` |
+| Projector-backed query repository without `reads from` | `ordering-events.tni`, `shipping.tni` |
+| Query service using both direct and projector-backed repositories | `ordering-events.tni`, `shipping.tni` |
+| Projector with methods for both domain and integration events | `shipping.tni` |
 | Query-service composition and primitive/DataObject/read-model/value-object/enum/collection results | `ordering-events.tni` |
 | Command-led journeys with optional query steps | `ordering-events.tni`, `cross-context-journey.tni`, `../language-tour/sharing.tni` |
 | Prior command and query result links in a journey | `ordering-events.tni`, `cross-context-journey.tni` |
@@ -98,4 +124,4 @@ npx thinai-cli@alpha validate examples/order-fulfillment/shipping.tni
 npx thinai-cli@alpha inspect examples/order-fulfillment/shipping.tni --out model.json
 ```
 
-The example uses a private `OrderPlaced` domain event and maps it to the separate `OrderPlacedV1` integration contract. Shipping imports both the producer context and context map, consumes only the IntegrationEvent, and creates a pending shipment that the Warehouse journey dispatches. The same example also demonstrates a published query contract and command-led journeys with query read steps.
+The example uses a private `OrderPlaced` domain event and maps it to the separate `OrderPlacedV1` integration contract. Shipping imports both the producer context and context map, consumes only the IntegrationEvent, and creates a pending shipment that the Warehouse journey dispatches. The same example also demonstrates a published query contract, direct and projector-backed query repositories, a projector with both domain- and integration-event methods, and command-led journeys with query read steps.

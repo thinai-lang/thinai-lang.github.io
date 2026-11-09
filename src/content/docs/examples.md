@@ -39,6 +39,10 @@ types, and a context map. It demonstrates:
 | Rich event payloads with value objects, enums, and collections | `ordering.tni`, `ordering-events.tni` |
 | Published query DataObject with nested DataObject and enum shape | `shipping.tni` |
 | Composed read models and nested read-model paths | `ordering-events.tni` |
+| Direct aggregate-backed query repository with `reads from` | `ordering-events.tni`, `shipping.tni` |
+| Projector-backed query repository without `reads from` | `ordering-events.tni`, `shipping.tni` |
+| Query service using both direct and projector-backed repositories | `ordering-events.tni`, `shipping.tni` |
+| Projector with methods for both domain and integration events | `shipping.tni` |
 | Query-service composition and primitive/DataObject/read-model/value-object/enum/collection results | `ordering-events.tni` |
 | Multiple actor blocks, `with`/`when` journey prose, query steps, and prior command/query result links | `ordering-events.tni`, `cross-context-journey.tni` |
 | Cross-context journey with query and command steps | `cross-context-journey.tni` |
@@ -85,7 +89,7 @@ Repository: [`examples/language-tour`](https://github.com/thinai-lang/thinai-lan
 | Domain-service method | `sharing.tni`, `../order-fulfillment/shipping.tni` |
 | Application-service method | `syntax.tni`, `modules.tni`, `sharing.tni` |
 | Query-service method | `sharing.tni`, `../order-fulfillment/ordering-events.tni` |
-| Projector method | `../order-fulfillment/ordering-events.tni` |
+| Projector method | `../order-fulfillment/ordering-events.tni`, `../order-fulfillment/shipping.tni` |
 
 ### Visibility coverage
 

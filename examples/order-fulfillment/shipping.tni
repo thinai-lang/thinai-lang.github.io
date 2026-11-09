@@ -62,6 +62,38 @@ in bounded context Shipping {
     reads from Shipment
   }
 
+  read model ShipmentRequestView {
+    orderId: string
+    lineCount: integer
+  }
+
+  query repository ShipmentRequestRepository {
+    serves ShipmentRequestView
+  }
+
+  read model ShipmentTracking {
+    shipmentId: ShipmentId
+    orderId: OrderId
+    status: ShipmentStatus
+    routing: RoutingCode
+  }
+
+  query repository ShipmentTrackingRepository {
+    serves ShipmentTracking
+  }
+
+  projector ShipmentProjector {
+    method onOrderPlaced(source: Ordering.Contracts.OrderPlacedV1) {
+      projects ShipmentRequestView
+      behavior "Project [[Ordering.Contracts.OrderPlacedV1.orderId]] and [[Ordering.Contracts.OrderPlacedV1.lines.sku]] into [[ShipmentRequestView]]."
+    }
+
+    method onShipmentStarted(source: ShipmentStarted) {
+      projects ShipmentTracking
+      behavior "Project the started shipment into [[ShipmentTracking]]."
+    }
+  }
+
   domain service Authorization {
     method authorize(role: Common.Role, action: string) returns boolean {
       precondition "The role and requested action are known."
@@ -116,6 +148,18 @@ in bounded context Shipping {
         reads from ShipmentSummaryRepository
         behavior "Return the pending shipments for [[region]] with their status and routing."
         postcondition "The result contains published shipment lookups."
+      }
+
+      method findRequest(orderId: string) returns ShipmentRequestView {
+        reads from ShipmentRequestRepository
+        behavior "Read the projector-maintained shipment request view for [[orderId]]."
+        postcondition "The result is the current shipped-request projection."
+      }
+
+      method findTracking(shipmentId: ShipmentId) returns ShipmentTracking {
+        reads from ShipmentTrackingRepository
+        behavior "Read the projector-maintained tracking view for [[shipmentId]]."
+        postcondition "The result is the current shipment-tracking projection."
       }
     }
   }

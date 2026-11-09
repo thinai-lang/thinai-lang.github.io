@@ -90,6 +90,17 @@ in bounded context Ordering {
 
   query repository OrderSummaryRepository {
     serves OrderSummary
+  }
+
+  read model OrderLookup {
+    orderId: OrderId
+    customerId: CustomerId
+    owner: string
+    status: OrderStatus
+  }
+
+  query repository OrderLookupRepository {
+    serves OrderLookup
     reads from Order, Customer
   }
 
@@ -110,33 +121,31 @@ in bounded context Ordering {
 
   query repository CustomerSummaryRepository {
     serves CustomerSummary
-    reads from Customer
   }
   query repository OrderAuditSummaryRepository {
     serves OrderAuditSummary
-    reads from Order
   }
 
   projector OrderSummaryProjector {
     method onOrderPlaced(source: OrderPlaced) {
       projects OrderSummary, OrderAuditSummary
-      behavior "Project [[OrderPlaced.orderId]], [[OrderPlaced.customerId]], and [[OrderPlaced.status]] into [[OrderSummary.orderId]], [[OrderSummary.customerId]], and [[OrderSummary.status]] in [[OrderSummaryRepository]], then record [[OrderAuditSummary.status]]."
+      behavior "Project [[OrderPlaced.orderId]], [[OrderPlaced.customerId]], and [[OrderPlaced.status]] into [[OrderSummary.orderId]], [[OrderSummary.customerId]], and [[OrderSummary.status]], then record [[OrderAuditSummary.status]]."
     }
   }
 
   projector CustomerSummaryProjector {
     method onCustomerRegistered(source: CustomerRegistered) {
       projects CustomerSummary
-      behavior "Project [[CustomerRegistered.customerId]] and [[CustomerRegistered.name]] into [[CustomerSummary.customerId]] and [[CustomerSummary.name]] in [[CustomerSummaryRepository]]."
+      behavior "Project [[CustomerRegistered.customerId]] and [[CustomerRegistered.name]] into [[CustomerSummary.customerId]] and [[CustomerSummary.name]]."
     }
   }
 
   query service OrderQueries {
     method canPlaceOrder(orderId: OrderId) returns OrderEligibilityResult {
-      reads from OrderSummaryRepository
-        when "The order summary is available for eligibility checks."
+      reads from OrderLookupRepository
+        when "The write-model lookup is available for eligibility checks."
       precondition "The identified order exists."
-      behavior "Read [[OrderSummaryRepository]] for [[orderId]] and return whether [[result.eligible]] is true."
+      behavior "Read [[OrderLookupRepository]] for [[orderId]] and return whether [[OrderLookup.status]] permits placement."
       postcondition "The result reports whether the order is eligible for placement."
     }
 
@@ -159,10 +168,10 @@ in bounded context Ordering {
       postcondition "The result contains the customer summary and the customer's order summaries."
     }
 
-    method findOrderHistory(customerId: CustomerId) returns List<OrderSummary> {
-      reads from OrderSummaryRepository
-      behavior "Return the order history for the selected customer."
-      postcondition "The result is a collection of order summaries."
+    method findOrderHistory(customerId: CustomerId) returns List<OrderLookup> {
+      reads from OrderLookupRepository
+      behavior "Return the direct write-model order history for the selected customer."
+      postcondition "The result is a collection of order lookups."
     }
 
     method findCustomerName(customerId: CustomerId) returns string {
@@ -172,9 +181,15 @@ in bounded context Ordering {
     }
 
     method findOrderId(customerId: CustomerId) returns OrderId {
-      reads from OrderSummaryRepository
-      behavior "Return [[OrderSummary.orderId]] for the selected customer's first order."
+      reads from OrderLookupRepository
+      behavior "Return [[OrderLookup.orderId]] for the selected customer's first order."
       postcondition "The result is an order identifier."
+    }
+
+    method findAudit(orderId: OrderId) returns OrderAuditSummary {
+      reads from OrderAuditSummaryRepository
+      behavior "Read the projector-maintained audit summary for [[orderId]]."
+      postcondition "The result is the current audit summary."
     }
   }
 
@@ -209,6 +224,10 @@ journey PlaceOrder {
     invoke Ordering.OrderApplication.placeOrder
       with "input.orderId from the selected draft order and input.items from the selected order lines"
       when "The eligibility result [[Ordering.OrderQueries.canPlaceOrder.result.eligible]] is true."
+
+    invoke Ordering.OrderQueries.findSummary
+      with "the order just placed"
+      when "The order summary projection is available."
   }
 }
 

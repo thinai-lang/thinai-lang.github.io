@@ -17,6 +17,10 @@ journey FulfillPlacedOrder {
     invoke Ordering.OrderApplication.placeOrder
       with "orderId from the selected draft order and items from the requested order lines"
       when "The eligibility result [[Ordering.OrderQueries.canPlaceOrder.result.eligible]] permits placement."
+
+    invoke Ordering.OrderQueries.findSummary
+      with "the order placed by the customer [[Ordering.OrderApplication.placeOrder.result.orderId]]"
+      when "The order summary projection is available."
   }
 
   by Warehouse {
@@ -24,9 +28,17 @@ journey FulfillPlacedOrder {
       with "the region assigned to the warehouse operator"
       when "The operator is assigned to the fulfillment queue."
 
+    invoke Shipping.Operations.ShipmentQueries.findRequest
+      with "the order placed by the customer [[Ordering.OrderApplication.placeOrder.result.orderId]]"
+      when "The shipment-request projection is available."
+
     invoke Shipping.ShipmentApplication.dispatchShipment
       with "the shipment selected from [[Shipping.Operations.ShipmentQueries.findPendingShipments.result.shipmentId]]"
       when "The selected shipment is still pending."
+
+    invoke Shipping.Operations.ShipmentQueries.findTracking
+      with "the dispatched shipment [[Shipping.Operations.ShipmentQueries.findPendingShipments.result.shipmentId]]"
+      when "The shipment-tracking projection is available."
   }
 
   by OrderManager {

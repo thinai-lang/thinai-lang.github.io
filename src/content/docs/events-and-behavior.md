@@ -135,13 +135,21 @@ module dependencies.
 
 For CQRS reads, a `read model` is an optional query-result shape, not necessarily
 a materialized projection or separate database. A `query repository` is an
-optional logical read boundary and may query the same physical tables as the
-write side. `reads from` may name one or more aggregate tables, or a published
-query-service operation, and may carry a descriptive `when` guard. A `projector`
-is needed only when the model uses an event-driven projection. Query services may
-read through query repositories, which may source aggregate tables, and must
-return data, not entity instances. Projectors do not call application services or
-change aggregates:
+optional logical read boundary and has two distinct forms:
+
+- A repository with `reads from` reads aggregate-owned write-model tables
+  directly. It may join multiple aggregates and form the served read model
+  without a projector.
+- A repository without `reads from` serves a read model maintained by a
+  projector. The read model is updated from domain or integration events.
+
+A repository may intentionally mix both forms, but the examples keep them
+separate so the consistency and coupling tradeoffs are explicit. A `projector`
+is needed only when the model uses an event-driven projection. A projector
+method handles exactly one domain or integration event; a projector may declare
+methods for both kinds. Query services may read through either repository form
+and must return data, not entity instances. Projectors do not call application
+services or change aggregates:
 
 ```thinai
 bounded context Ordering
@@ -163,8 +171,23 @@ in bounded context Ordering {
   projector OrderSummaryProjector {
     method onOrderPlaced(source: OrderPlaced) {
       projects OrderSummary
-      behavior "Copy [[OrderPlaced.orderId]] into [[OrderSummary.orderId]] via [[OrderSummaryRepository]]."
+      behavior "Copy [[OrderPlaced.orderId]] into [[OrderSummary.orderId]]."
     }
+  }
+}
+```
+
+A projector may declare methods for both event kinds:
+
+<!-- thinai-fragment -->
+```thinai
+projector ShipmentProjector {
+  method onOrderPlaced(source: Ordering.Contracts.OrderPlacedV1) {
+    projects ShipmentRequestView
+  }
+
+  method onShipmentStarted(source: ShipmentStarted) {
+    projects ShipmentTracking
   }
 }
 ```
