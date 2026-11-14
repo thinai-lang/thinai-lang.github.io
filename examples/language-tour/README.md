@@ -15,8 +15,8 @@ Thinai source and is validated by the repository test suite.
   qualified exposure paths, explicit method exposure, a direct dependency on an
   unexposed nested module, module-nested domain-service invocation, an
   event-triggered command dispatched to a method published by another
-  application service, and a local identifier mirror that names a
-  module-private identifier.
+  application service, and a consumer aggregate whose identifier is a local
+  mirror of a module-private identifier.
 - `sharing.tni` demonstrates a shared kernel with a domain service, a
   same-document context map, a shared-kernel service invocation, a
   module-exposed query service with a nested DataObject result, an authorized
@@ -38,7 +38,7 @@ Thinai source and is validated by the repository test suite.
 | Direct dependency on an unexposed nested module | `modules.tni` |
 | Module-nested domain-service exposure and invocation | `modules.tni` |
 | Event-triggered cross-service dispatch | `modules.tni` |
-| Local identifier mirror of a module-private identifier | `modules.tni` |
+| Local identifier mirror used as a consumer aggregate identifier | `modules.tni` |
 | Shared-kernel value objects and domain services | `sharing.tni` |
 | Same-document context map and shared-kernel relationship | `sharing.tni` |
 | Module-exposed query service with a nested DataObject result | `sharing.tni` |

@@ -1,5 +1,5 @@
 // Module tour: nested modules, re-exports, dependencies, published methods,
-// and a local mirror of a module-private identifier.
+// and a local mirror of a module-private identifier used by a consumer aggregate.
 bounded context ModulesTour
 
 in bounded context ModulesTour {
@@ -85,6 +85,7 @@ in bounded context ModulesTour {
 
     application service Handler {
       method run() {}
+
       method audit() {}
     }
   }
@@ -102,16 +103,34 @@ in bounded context ModulesTour {
   }
 }
 
-bounded context MirrorTour
+bounded context ModuleConsumer
 
-in bounded context MirrorTour {
-  // A local identifier mirror may name a module-private identifier in another
-  // bounded context; this is the sanctioned cross-context identifier use.
-  value object MirroredRequestId mirrors ModulesTour.Outer.Inner.Request.RequestId {
-    raw: string
+in bounded context ModuleConsumer {
+  // The archive uses the mirrored request identity as its own identifier.
+  aggregate RequestArchive {
+    root entity ArchivedRequest {
+      identifier id: MirroredRequestId
+
+      method archive() {
+        behavior "Archive the request using its ModulesTour identity."
+      }
+    }
+
+    // A local identifier mirror may name a module-private identifier in another
+    // bounded context; this is the sanctioned cross-context identifier use.
+    value object MirroredRequestId mirrors ModulesTour.Outer.Inner.Request.RequestId {
+      raw: string
+    }
+  }
+
+  application service RequestArchiveService {
+    method archive(id: MirroredRequestId) {
+      invokes RequestArchive.ArchivedRequest.archive
+      behavior "Archive the request identified by [[id]]."
+    }
   }
 }
 
-context map Mirroring {
-  customer MirrorTour -> supplier ModulesTour
+context map ModuleRelations {
+  customer ModuleConsumer -> supplier ModulesTour
 }

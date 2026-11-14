@@ -68,7 +68,7 @@ Repository: [`examples/language-tour`](https://github.com/thinai-lang/thinai-lan
 | Direct dependency on an unexposed nested module | `modules.tni` |
 | Module-nested domain-service exposure and invocation | `modules.tni` |
 | Event-triggered cross-service dispatch | `modules.tni` |
-| Local identifier mirror of a module-private identifier | `modules.tni` |
+| Local identifier mirror used as a consumer aggregate identifier | `modules.tni` |
 | Shared-kernel value objects and domain services | `sharing.tni` |
 | Same-document context map and shared-kernel relationship | `sharing.tni` |
 | Module-exposed query service with a nested DataObject result | `sharing.tni` |
