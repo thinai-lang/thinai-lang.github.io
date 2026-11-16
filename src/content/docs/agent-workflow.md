@@ -11,8 +11,8 @@ conventions. There is no code generator.
 
 Use whichever interface is available:
 
-- **LSP** — diagnostics, completion, definitions, references, document symbols,
-  hover, formatting, and code actions.
+- **LSP** — diagnostics, completion, definitions, references, document symbols
+  with bounded-context breadcrumbs, hover, formatting, and code actions.
 - **CLI** — model export, context slices, impact, validation, and an MCP server.
 - **MCP** — structured model queries for agents that support tool calling.
 

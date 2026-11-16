@@ -15,6 +15,11 @@ alpha; syntax and language-service behavior may still change between releases.
 The editor extension bundles the language server. You do not need a separate
 language-server installation to use Thinai in VS Code.
 
+The editor provides diagnostics, completion, navigation, references, document
+symbols, the bounded-context breadcrumb, hover, rename, call hierarchy,
+formatting, clickable imports, automatic import updates on file moves, and
+import/dependency/exposure quick fixes for `.tni` files.
+
 ## Install the editor extension
 
 Install the pre-release version from the Visual Studio Marketplace:

@@ -42,7 +42,7 @@ types, and a context map. It demonstrates:
 | Direct aggregate-backed query repository with `reads from` | `ordering-events.tni`, `shipping.tni` |
 | Projector-backed query repository without `reads from` | `ordering-events.tni`, `shipping.tni` |
 | Query service using both direct and projector-backed repositories | `ordering-events.tni`, `shipping.tni` |
-| Projector with methods for both domain and integration events | `shipping.tni` |
+| Projector with a local domain event and an authorized cross-context integration event | `shipping.tni` |
 | Query-service composition and primitive/DataObject/read-model/value-object/enum/collection results | `ordering-events.tni` |
 | Multiple actor blocks, `with`/`when` journey prose, query steps, and prior command/query result links | `ordering-events.tni`, `cross-context-journey.tni` |
 | Cross-context journey with query and command steps | `cross-context-journey.tni` |

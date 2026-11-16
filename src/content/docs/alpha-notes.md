@@ -4,12 +4,18 @@ description: What to expect from the Thinai alpha, how to install it, and which 
 ---
 
 Thinai is in alpha. The current language, CLI, and extension source release is
-`0.1.6-alpha.6`; the VS Code Marketplace version is `0.1.6` (published as a
+`0.1.7-alpha.7`; the VS Code Marketplace version is `0.1.7` (published as a
 pre-release). The first release was `0.1.0-alpha.1`. `0.1.5-alpha.5` was
-withdrawn from Open VSX after a metadata error; `0.1.6-alpha.6` supersedes it.
+withdrawn from Open VSX after a metadata error; `0.1.7-alpha.7` supersedes it.
 Syntax and language-service behavior may still change between releases. The
 examples, grammar, and validation rules in this documentation describe the
 current alpha behavior.
+
+`0.1.7-alpha.7` adds path-aware completion for qualified and abbreviated
+references, smart selection, `[[...]]` auto-closing, document symbols that
+include the bounded-context breadcrumb, and clearer role-aware context-map
+guidance. It also restricts integration-event handlers to consumer bounded
+contexts; local reactions use domain events.
 
 ## Installing the alpha
 
@@ -53,10 +59,11 @@ reason. Same-context contribution quick fixes are supported.
 ## Known editor limitations
 
 The current extension focuses on core language support. It provides diagnostics,
-completion, definitions, find-all-references, document symbols, hover, rename,
-call hierarchy, import links, automatic import updates on file moves,
-formatting, and code actions. Rename supports declarations, references, and
-import aliases, and validates new names and collisions.
+completion, definitions, find-all-references, document symbols with
+bounded-context breadcrumbs, hover, rename, call hierarchy, import links,
+automatic import updates on file moves, formatting, and code actions. Rename
+supports declarations, references, and import aliases, and validates new names
+and collisions.
 
 Type hierarchy, inlay hints, code lens, and signature help are not provided yet.
 Thinai has containment and mirrors but no inheritance/subtyping, so a type

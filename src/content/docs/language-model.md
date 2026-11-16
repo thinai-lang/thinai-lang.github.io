@@ -119,8 +119,10 @@ Each endpoint may list its own `integrationPatterns`: `Conformist` and
 `OpenHostService` and `PublishedLanguage` describe the upstream side. These are
 quoted labels from a predefined set, recorded as descriptive metadata. They do
 not assert that an implementation conforms to a pattern or affect event
-authorization. Only their spelling and uniqueness are validated; unknown and
-duplicate labels are rejected.
+authorization. Unknown and duplicate labels are rejected; a pattern on the
+opposite customer/supplier side produces a warning, and completion offers only
+the patterns valid for that endpoint. Partnership endpoints may use any
+pattern.
 
 `partner ... <-> partner ...` expresses a symmetric partnership. An imported
 customer-supplier relationship authorizes the customer to consume the

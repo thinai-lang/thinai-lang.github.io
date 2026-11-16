@@ -120,9 +120,10 @@ journey step is separate and describes a condition for invoking the command.
 
 ## Integration Events and Event-Triggered Methods
 
-Domain events are private to their bounded context. To publish a fact across a
-context boundary, an application-service method can receive a domain event and
-emit one or more integration events. The integration-event declaration defines
+Domain events are private to their bounded context. An integration event is
+handled only outside its owning bounded context; same-context reactions use the
+domain event. To publish a fact across a context boundary, an application-service
+method can receive a domain event and emit one or more integration events. The integration-event declaration defines
 the public schema; the method's behavior text describes any payload mapping.
 Event payloads carry stable value data rather than entity instances or other
 aggregate-owned types. Validation includes collection element and value types and
@@ -146,10 +147,11 @@ optional logical read boundary and has two distinct forms:
 A repository may intentionally mix both forms, but the examples keep them
 separate so the consistency and coupling tradeoffs are explicit. A `projector`
 is needed only when the model uses an event-driven projection. A projector
-method handles exactly one domain or integration event; a projector may declare
-methods for both kinds. Query services may read through either repository form
-and must return data, not entity instances. Projectors do not call application
-services or change aggregates:
+method handles exactly one domain or integration event. A projector in the
+event's owning bounded context handles the domain event; an integration event
+is handled only by a consumer context. Query services may read through either
+repository form and must return data, not entity instances. Projectors do not
+call application services or change aggregates:
 
 ```thinai
 bounded context Ordering
@@ -177,7 +179,8 @@ in bounded context Ordering {
 }
 ```
 
-A projector may declare methods for both event kinds:
+A consumer-context projector may declare methods for both a local domain event
+and an authorized integration event from another bounded context:
 
 <!-- thinai-fragment -->
 ```thinai

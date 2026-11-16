@@ -74,7 +74,8 @@ most common errors, not a replacement for the grammar or the language server.
 - Domain events are private to their bounded context.
 - Domain events are emitted by aggregate-root behavior.
 - Integration events are emitted by application-service methods reacting to a
-  local DomainEvent.
+  local DomainEvent. An integration event can be handled only outside its
+  owning bounded context; same-context reactions use the domain event.
 - Event handlers have exactly one event-typed parameter and no additional
   parameters.
 - Projector methods handle exactly one domain or integration event.
@@ -99,8 +100,9 @@ most common errors, not a replacement for the grammar or the language server.
   aggregate-owned write-model tables directly. Without `reads from`, it serves a
   read model maintained by a projector. A repository may intentionally use both
   forms, but the examples keep them separate.
-- A projector method handles exactly one domain or integration event; a
-  projector may declare methods for both kinds.
+- A projector method handles exactly one domain or integration event. A
+  projector in a consumer context may handle an authorized integration event;
+  a projector in the owning context uses the domain event.
 - Query-service and application-service methods may use a descriptive
   `reads from ... when ...` guard.
 
@@ -147,6 +149,11 @@ most common errors, not a replacement for the grammar or the language server.
   supplier.
 - Integration patterns are quoted descriptive labels; they do not affect
   authorization.
+- `Conformist` and `AntiCorruptionLayer` are customer-side patterns;
+  `OpenHostService` and `PublishedLanguage` are supplier-side patterns. A
+  pattern on the opposite side produces a warning, and completion offers only
+  the patterns valid for that endpoint. Partnership patterns may appear on
+  either side.
 - Separate-ways does not authorize event consumption or queries.
 - Shared-kernel relationships do not authorize event consumption or query reads.
 - Cross-context IntegrationEvent handling requires an explicit import of the

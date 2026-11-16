@@ -138,7 +138,7 @@ Method and constructor signatures follow these rules:
 | Domain-service method | Entity or aggregate-root entity parameters and domain values; no DataObjects, events, or read models | Domain values; no entities, DataObjects, or read models |
 | Application-service method | Domain values and DataObjects; no entities or read models; event handlers have exactly one event parameter and no other parameters | Domain values and DataObjects; no entities or read models |
 | Query-service method | Domain values and DataObjects; no entities, read models, or events | Domain values, DataObjects, and read models; no entities |
-| Projector method | Exactly one domain or integration event | No return; only `projects` targets |
+| Projector method | Exactly one domain or integration event; local reactions use domain events | No return; only `projects` targets |
 
 “Domain values” means primitives, enums, value objects, identifiers, and
 collections of those values. DataObjects belong at application-service and
@@ -356,7 +356,8 @@ in bounded context Ordering {
 Repository links in specification text are descriptive references, not storage
 instructions. Each projector method declares one or more logical targets with
 `projects ReadModel`; behavior text can link a specific query repository when
-that routing matters.
+that routing matters. A projector in the event's owning bounded context handles
+the domain event; an integration event is handled only by a consumer context.
 
 ## Modules
 
