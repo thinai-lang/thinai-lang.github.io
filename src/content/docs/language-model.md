@@ -124,9 +124,6 @@ opposite customer/supplier side produces a warning, and completion offers only
 the patterns valid for that endpoint. Partnership endpoints may use any
 pattern.
 
-Role-aware warnings and role-filtered completion are in the current source and
-ship in the next alpha; `0.1.7-alpha.7` does not emit them.
-
 `partner ... <-> partner ...` expresses a symmetric partnership. An imported
 customer-supplier relationship authorizes the customer to consume the
 supplier's IntegrationEvents; an imported partnership authorizes consumption

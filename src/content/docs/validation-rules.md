@@ -153,8 +153,7 @@ most common errors, not a replacement for the grammar or the language server.
   `OpenHostService` and `PublishedLanguage` are supplier-side patterns. A
   pattern on the opposite side produces a warning, and completion offers only
   the patterns valid for that endpoint. Partnership patterns may appear on
-  either side. Role-aware warnings and completion ship in the next alpha;
-  `0.1.7-alpha.7` does not emit them.
+  either side.
 - Separate-ways does not authorize event consumption or queries.
 - Shared-kernel relationships do not authorize event consumption or query reads.
 - Cross-context IntegrationEvent handling requires an explicit import of the
