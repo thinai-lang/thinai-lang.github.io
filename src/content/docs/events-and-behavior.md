@@ -335,7 +335,7 @@ Journey timeline rules:
 - Reusing the same query is allowed because it names the same public query
   contract.
 
-See [references and paths](references-and-paths.md) for path and quoting rules.
+See [references and paths](/references-and-paths/) for path and quoting rules.
 
 See the [Order Fulfillment example](https://github.com/thinai-lang/thinai-lang.github.io/blob/main/examples/order-fulfillment/README.md)
 for a multi-file model with an integration-event consumer.

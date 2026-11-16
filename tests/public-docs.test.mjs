@@ -51,6 +51,15 @@ test('public pages do not document the removed generation command', async () => 
   }
 });
 
+test('documentation pages use absolute routes for internal links', async () => {
+  const relativeDocLink = /\]\((?!https?:|#|mailto:)[^)]*\.md(?:#[^)]*)?\)/g;
+  for (const page of await listMarkdown(docs)) {
+    const text = await readFile(page, 'utf8');
+    const links = [...text.matchAll(relativeDocLink)].map((match) => match[0]);
+    assert.deepEqual(links, [], `${page} uses relative .md links`);
+  }
+});
+
 test('public pages link to mirrored examples that exist', async () => {
   const link = /thinai-lang\.github\.io\/(?:blob|tree)\/main\/(examples\/[^\s)#]+)/g;
   for (const page of pages) {

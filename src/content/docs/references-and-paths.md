@@ -112,7 +112,7 @@ be backed by a customer-supplier, partnership, or shared-kernel relationship.
 | Terminal declaration | Must satisfy the declaration, contract, or journey visibility rule that applies to it. |
 
 For module and cross-context details, see
-[modules and visibility](modules-and-visibility.md).
+[modules and visibility](/modules-and-visibility/).
 
 ## Journey references
 
@@ -205,4 +205,4 @@ If a reference does not resolve, check:
    same journey? For a query result, is the query service context-level or
    module-exposed?
 
-See [validation rules](validation-rules.md) for the corresponding constraints.
+See [validation rules](/validation-rules/) for the corresponding constraints.

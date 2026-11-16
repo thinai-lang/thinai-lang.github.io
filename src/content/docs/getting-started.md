@@ -85,7 +85,7 @@ discover separate files that import the source file. Use the VS Code extension
 or another workspace-aware client when you need to validate the complete
 import-connected model, including importers.
 
-See [agent workflow](agent-workflow.md) for the model-first workflow and MCP
+See [agent workflow](/agent-workflow/) for the model-first workflow and MCP
 tools.
 
 ## Use the language package
@@ -111,11 +111,11 @@ The Thinai source repository is private during the alpha. Report bugs and
 feature requests in the public
 [issue tracker](https://github.com/thinai-lang/issues). Report security issues
 privately to `security@thinai-lang.dev`. See
-[alpha notes and limitations](alpha-notes.md) before relying on the extension
+[alpha notes and limitations](/alpha-notes/) before relying on the extension
 for production work.
 
 ## Learn the language
 
-Start with the [language model](language-model.md) for strategic DDD concepts,
-then read [tactical modeling](tactical-modeling.md) and
-[events and behavior](events-and-behavior.md).
+Start with the [language model](/language-model/) for strategic DDD concepts,
+then read [tactical modeling](/tactical-modeling/) and
+[events and behavior](/events-and-behavior/).

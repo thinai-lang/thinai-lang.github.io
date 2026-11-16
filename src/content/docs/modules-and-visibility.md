@@ -310,4 +310,4 @@ query. Shared-kernel relationships do not authorize query reads.
   enclosing module exposes the payload type.
 
 For path syntax and reference visibility, see
-[references and paths](references-and-paths.md).
+[references and paths](/references-and-paths/).

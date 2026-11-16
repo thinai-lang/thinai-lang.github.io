@@ -5,7 +5,7 @@ description: Lexical rules, identifiers, strings, collections, line layout, and 
 
 This page is the compact reference for Thinai's surface syntax. For strategic
 and tactical modeling concepts, start with the
-[language model](language-model.md) and [tactical modeling](tactical-modeling.md).
+[language model](/language-model/) and [tactical modeling](/tactical-modeling/).
 Some later snippets are declaration fragments; only complete models need an
 enclosing bounded context or shared kernel.
 
@@ -202,5 +202,5 @@ Selective imports are available when you need only some components from a file
 that declares multiple bounded contexts, context maps, or shared kernels. A bare
 import brings in all components. Strategic declarations such as actors and
 journeys are brought in with a bare import. See
-[the language model](language-model.md#working-across-files) for the full file
+[the language model](/language-model/#working-across-files) for the full file
 model and visibility rules.

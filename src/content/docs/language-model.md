@@ -10,7 +10,7 @@ Separate sibling declarations and statements with line breaks, both at model
 scope and inside brace-delimited bodies. A single declaration or comma-separated
 list may wrap across lines, but the next sibling starts on a new line. Commas
 are required between enum values, and reserved-word identifiers use backticks.
-See [syntax and formatting](syntax-and-formatting.md) for the lexical rules.
+See [syntax and formatting](/syntax-and-formatting/) for the lexical rules.
 
 ## A Small Model
 

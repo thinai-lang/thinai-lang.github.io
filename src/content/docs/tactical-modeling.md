@@ -5,7 +5,7 @@ description: Model aggregates, entities, value objects, operations, and modules 
 
 Thinai models aggregates, entities, value objects, and related tactical DDD
 declarations. For application services, events, and descriptive domain behavior, see
-[Events and behavior](events-and-behavior.md).
+[Events and behavior](/events-and-behavior/).
 
 ## Aggregates, Entities, and Value Objects
 
@@ -209,7 +209,7 @@ do not invoke domain services. Application services coordinate both directly,
 so aggregate behavior remains explicit in the use-case invocation paths. A
 domain service may invoke another domain service only when the call chain does
 not reach aggregate-owned behavior. Behavior specifications are explained in
-[Events and behavior](events-and-behavior.md).
+[Events and behavior](/events-and-behavior/).
 
 Root and child entities can both own state and declare transitions, but each
 transition must target an enum field declared on that entity. Application
@@ -281,7 +281,7 @@ result shape; it need not be materialized or backed by a separate database.
 Read models may compose other read models, but not data objects. Published query
 contracts expose only primitive or context-visible or module-exposed DataObject
 results; see
-[modules and visibility](modules-and-visibility.md#published-query-contracts).
+[modules and visibility](/modules-and-visibility/#published-query-contracts).
 Projectors are optional event-driven projections. A query service reads through
 query repositories, which may source the same relational tables as the write
 side; it does not read aggregate repositories directly. Query-service methods can
@@ -381,7 +381,7 @@ expose it. A parent that exposes a child module needs no redundant dependency.
 `depends on` is not a re-export.
 
 Exposing a nested module re-exports its public API through the enclosing module;
-see [modules and visibility](modules-and-visibility.md) for visibility scopes,
+see [modules and visibility](/modules-and-visibility/) for visibility scopes,
 nested re-exports, container exposure, and published query contracts.
 
 ```thinai

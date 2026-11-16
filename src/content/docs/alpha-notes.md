@@ -36,7 +36,7 @@ npm install thinai-language@alpha
 ```
 
 The Thinai source repository is private during the alpha. See
-[Getting started](getting-started.md) for installation details and CLI usage.
+[Getting started](/getting-started/) for installation details and CLI usage.
 
 ## Design rules, not limitations
 
@@ -45,7 +45,7 @@ object, data object, read model, or enum as a field, parameter, or return type.
 Cross-context collaboration must be explicit: a mirror, shared kernel,
 integration event, or published query contract. This enforces bounded-context
 autonomy rather than restricting the language; see
-[cross-context restrictions](modules-and-visibility.md#cross-context-restrictions).
+[cross-context restrictions](/modules-and-visibility/#cross-context-restrictions).
 
 Cross-context contribution quick fixes are intentionally absent for the same
 reason. Same-context contribution quick fixes are supported.

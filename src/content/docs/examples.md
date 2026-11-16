@@ -126,7 +126,7 @@ fixes, import links, and formatting.
 
 ## See also
 
-- [Syntax and formatting](syntax-and-formatting.md)
-- [Modules and visibility](modules-and-visibility.md)
-- [References and paths](references-and-paths.md)
-- [Validation rules](validation-rules.md)
+- [Syntax and formatting](/syntax-and-formatting/)
+- [Modules and visibility](/modules-and-visibility/)
+- [References and paths](/references-and-paths/)
+- [Validation rules](/validation-rules/)
