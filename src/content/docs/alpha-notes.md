@@ -13,9 +13,9 @@ current alpha behavior.
 
 `0.1.7-alpha.7` adds path-aware completion for qualified and abbreviated
 references, smart selection, `[[...]]` auto-closing, document symbols that
-include the bounded-context breadcrumb, and clearer role-aware context-map
-guidance. It also restricts integration-event handlers to consumer bounded
-contexts; local reactions use domain events.
+include the bounded-context breadcrumb, and the integration-event ownership
+rule for handlers. Role-aware context-map pattern warnings and completion are
+in the current source for the next alpha release.
 
 ## Installing the alpha
 
