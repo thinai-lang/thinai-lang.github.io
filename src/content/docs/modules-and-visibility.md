@@ -21,6 +21,7 @@ Context-visible is not the same as contract-published. A context-level value
 object is visible throughout its bounded context, but another bounded context
 cannot use it as a field, parameter, or return type:
 
+<!-- thinai-invalid -->
 ```thinai
 bounded context Alpha
 

@@ -17,6 +17,7 @@ Verify both mirrors without writing:
 
 ```bash
 npm run check:examples
+npm run check:grammar
 ```
 
 Set `THINAI_REPO` to point at a different checkout location.
@@ -25,7 +26,7 @@ Code block token colors come from Shiki themes matched against Thinai's TextMate
 
 ## Local preview
 
-Use Node.js 22.12 or later. Install the locked dependencies and run the lexer tests:
+Use Node.js 22.12 or later. Install the locked dependencies and run the tests:
 
 ```bash
 npm ci
@@ -42,5 +43,6 @@ Open <http://localhost:4321/>. To verify the production build, run:
 
 ```bash
 npm run build
+npm run check:links
 npm run preview
 ```

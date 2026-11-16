@@ -193,6 +193,7 @@ and validation still work on unformatted source.
 Imports are relative to the importing `.tni` file. A bare import makes the whole
 file part of the model; a selective import brings in named components.
 
+<!-- thinai-fragment -->
 ```thinai
 import "./common-types.tni"
 import { Ordering as Orders, Shipping } from "./contexts.tni"

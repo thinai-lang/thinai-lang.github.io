@@ -57,7 +57,7 @@ The example keeps the two query-side paths separate:
   projector-maintained views.
 - `OrderQueries` and `ShipmentQueries` use both repository kinds.
 
-A repository may intentionally mix both paths, but the example keeps them
+A bounded context may use both paths, but the example keeps them
 separate so the tradeoff is explicit.
 
 ## Journey query steps
@@ -84,7 +84,7 @@ timeline bindings.
 | Context-level value-object constructor and method | `../language-tour/syntax.tni` |
 | Entity and aggregate-owned value-object constructors and methods, and factory methods | `ordering.tni`, `shipping.tni` |
 | Application-, domain-, query-, and projector method kinds | `ordering.tni`, `ordering-events.tni`, `shipping.tni`, `../language-tour/sharing.tni` |
-| Authorized cross-context integration-event consumption | `shipping.tni`, `ordering-events.tni` |
+| Authorized cross-context integration-event consumption | `shipping.tni` |
 | Same-context domain-event handler integrating another local aggregate | `ordering-events.tni` |
 | Domain-to-integration-event translation with a rich payload | `ordering-events.tni` |
 | Cross-context integration-event handler creating a local aggregate | `shipping.tni` |

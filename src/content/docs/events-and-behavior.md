@@ -144,8 +144,8 @@ optional logical read boundary and has two distinct forms:
 - A repository without `reads from` serves a read model maintained by a
   projector. The read model is updated from domain or integration events.
 
-A repository may intentionally mix both forms, but the examples keep them
-separate so the consistency and coupling tradeoffs are explicit. A `projector`
+A bounded context may use both forms, but the examples keep them separate so
+the consistency and coupling tradeoffs are explicit. A `projector`
 is needed only when the model uses an event-driven projection. A projector
 method handles exactly one domain or integration event. A projector in the
 event's owning bounded context handles the domain event; an integration event
@@ -243,6 +243,7 @@ event and invoke a local command method. Only an event handler may dispatch to a
 command in another application service; an ordinary command method does not call
 another application service's command.
 
+<!-- thinai-fragment -->
 ```thinai
 bounded context Shipping
 
@@ -295,6 +296,7 @@ service. Optional `with` input descriptions and `when` guards are linked prose,
 not executable data flow or conditions; each command must still enforce its own
 invariant:
 
+<!-- thinai-fragment -->
 ```thinai
 actor Customer
 

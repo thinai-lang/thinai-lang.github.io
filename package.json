@@ -11,13 +11,17 @@
     "build": "astro build",
     "preview": "astro preview",
     "test": "node --test",
+    "check:grammar": "node scripts/sync-grammar.mjs --check",
+    "check:examples": "node scripts/sync-examples.mjs --check",
+    "check:links": "node scripts/check-links.mjs",
     "sync:grammar": "node scripts/sync-grammar.mjs",
-    "sync:examples": "node scripts/sync-examples.mjs",
-    "check:examples": "node scripts/sync-examples.mjs --check"
+    "sync:examples": "node scripts/sync-examples.mjs"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.42.6",
-    "astro": "^7.3.8",
+    "astro": "^7.3.8"
+  },
+  "devDependencies": {
     "shiki": "^4.5.0"
   },
   "overrides": {

@@ -4,6 +4,7 @@ bounded context Ordering realizes OrderManagement, SharedCapabilities
 
 bounded context Shipping realizes Fulfillment
 
+// This context is intentionally strategic-only; no tactical body is modeled.
 bounded context Billing realizes Payments
 
 // This context is intentionally not classified under a subdomain yet.

@@ -1,6 +1,6 @@
 ---
 title: Examples
-description: Complete Thinai models and a feature coverage index.
+description: Complete Thinai models and where to find their feature coverage indexes.
 ---
 
 Two example locations complement each other:
@@ -17,95 +17,26 @@ Both examples are validated by the Thinai test suite.
 Repository: [`examples/order-fulfillment`](https://github.com/thinai-lang/thinai-lang.github.io/tree/main/examples/order-fulfillment)
 
 The model spans Ordering, Shipping, Billing, Customer Support, shared-kernel
-types, and a context map. It demonstrates:
+types, and a context map. It demonstrates subdomains and bounded contexts,
+customer-supplier and partnership relationships, shared kernels, modules and
+visibility, aggregates and events, event-driven projectors, direct and
+projector-backed query repositories, published query contracts, and
+cross-context journeys.
 
-| Feature | File |
-| --- | --- |
-| All subdomain kinds, an unclassified subdomain, and zero/one/multiple context realizations | `strategic.tni`, `context-catalog.tni` |
-| Bare and selective imports, aliases, and qualified references | several files |
-| Customer-supplier, partnership, separate-ways, and shared-kernel relationships; all integration patterns | `context-map.tni` |
-| Shared-kernel values, enum, domain service, nested modules, and nested-module re-export | `common-types.tni` |
-| Primitive and nested collection types | `ordering.tni`, `ordering-events.tni` |
-| Backtick-quoted identifiers, triple-quoted specifications, and escaped markers | `ordering.tni` |
-| Shared-kernel domain-service invocation | `ordering.tni` |
-| Guarded multi-event emissions and guarded `reads from` | `ordering-events.tni` |
-| Nested data objects, optional fields/parameters, identifiers, initial enum states, constructors, and mirrors | several files |
-| Application/domain/query services, repositories, factories, projectors, read models, events, and exposed integration contracts | several files |
-| Entity and aggregate-owned value-object constructors/methods, factory methods, and application/domain/query/projector method kinds | `ordering.tni`, `ordering-events.tni`, `shipping.tni` |
-| Module exposure, dependency, nested re-export, and local identifier mirroring | `shipping.tni`, `common-types.tni` |
-| Authorized cross-context integration-event consumption | `shipping.tni`, `ordering-events.tni` |
-| Same-context domain-event handler integrating another local aggregate | `ordering-events.tni` |
-| Domain-to-integration-event translation with a rich payload | `ordering-events.tni` |
-| Rich event payloads with value objects, enums, and collections | `ordering.tni`, `ordering-events.tni` |
-| Published query DataObject with nested DataObject and enum shape | `shipping.tni` |
-| Composed read models and nested read-model paths | `ordering-events.tni` |
-| Direct aggregate-backed query repository with `reads from` | `ordering-events.tni`, `shipping.tni` |
-| Projector-backed query repository without `reads from` | `ordering-events.tni`, `shipping.tni` |
-| Query service using both direct and projector-backed repositories | `ordering-events.tni`, `shipping.tni` |
-| Projector with a local domain event and an authorized cross-context integration event | `shipping.tni` |
-| Query-service composition and primitive/DataObject/read-model/value-object/enum/collection results | `ordering-events.tni` |
-| Multiple actor blocks, `with`/`when` journey prose, query steps, and prior command/query result links | `ordering-events.tni`, `cross-context-journey.tni` |
-| Cross-context journey with query and command steps | `cross-context-journey.tni` |
-
-Start with the
+For the full feature coverage index and file map, see the
 [Order Fulfillment README](https://github.com/thinai-lang/thinai-lang.github.io/blob/main/examples/order-fulfillment/README.md).
 
 ## Language Tour
 
 Repository: [`examples/language-tour`](https://github.com/thinai-lang/thinai-lang.github.io/tree/main/examples/language-tour)
 
-| Feature | File |
-| --- | --- |
-| Backtick-quoted reserved identifiers and references | `syntax.tni` |
-| Triple-quoted specifications and escaped `\[[` markers | `syntax.tni` |
-| Line and block comments | `syntax.tni` |
-| Optional fields and optional method parameters | `syntax.tni` |
-| Primitive types including `integer` and `decimal`, value objects, and nested `List`/`Set`/`Map` types | `syntax.tni` |
-| Context-level value-object constructor and method | `syntax.tni` |
-| Nested modules and nested-module re-exports | `modules.tni` |
-| Module dependencies and qualified exposure paths | `modules.tni` |
-| Explicit method exposure and container-published methods | `modules.tni` |
-| Direct dependency on an unexposed nested module | `modules.tni` |
-| Module-nested domain-service exposure and invocation | `modules.tni` |
-| Event-triggered cross-service dispatch | `modules.tni` |
-| Local identifier mirror used as a consumer aggregate identifier | `modules.tni` |
-| Shared-kernel value objects and domain services | `sharing.tni` |
-| Same-document context map and shared-kernel relationship | `sharing.tni` |
-| Module-exposed query service with a nested DataObject result | `sharing.tni` |
-| Authorized cross-context query read | `sharing.tni` |
-| Command-led journey with a query read step | `sharing.tni` |
+The language tour covers syntax, quoted identifiers and strings, optional
+markers, collections, nested modules and re-exports, module dependencies,
+explicit method exposure, mirrored identifiers, shared kernels, published query
+contracts, cross-context query reads, and command-led journeys.
 
-### Method and constructor coverage
-
-| Method or constructor | Location |
-| --- | --- |
-| Entity constructor | `../order-fulfillment/ordering.tni` |
-| Context-level value-object constructor | `syntax.tni` |
-| Aggregate-owned value-object constructor | `../order-fulfillment/ordering.tni` |
-| Entity method | `../order-fulfillment/ordering.tni` |
-| Aggregate-owned value-object method | `../order-fulfillment/ordering.tni` |
-| Context-level value-object method | `syntax.tni` |
-| Factory method | `../order-fulfillment/ordering.tni`, `../order-fulfillment/shipping.tni` |
-| Domain-service method | `sharing.tni`, `../order-fulfillment/shipping.tni` |
-| Application-service method | `syntax.tni`, `modules.tni`, `sharing.tni` |
-| Query-service method | `sharing.tni`, `../order-fulfillment/ordering-events.tni` |
-| Projector method | `../order-fulfillment/ordering-events.tni`, `../order-fulfillment/shipping.tni` |
-
-### Visibility coverage
-
-| Visibility route | Location |
-| --- | --- |
-| Context-level and same-module access | `syntax.tni`, `modules.tni` |
-| Sibling-module exposure and `depends on` | `modules.tni`, `../order-fulfillment/shipping.tni` |
-| Nested-module re-export through an exposed parent | `modules.tni`, `../order-fulfillment/common-types.tni` |
-| Explicit method exposure | `modules.tni` |
-| Direct dependency on an unexposed nested module | `modules.tni` |
-| Module-nested domain-service exposure | `modules.tni` |
-| Module-private identifier `mirrors` | `modules.tni` |
-| Shared-kernel type and service with a `sharedKernel` relationship | `sharing.tni` |
-| Authorized cross-context query result | `sharing.tni` |
-| Authorized cross-context IntegrationEvent | `../order-fulfillment/shipping.tni`, `../order-fulfillment/ordering-events.tni` |
-| Command-led journey with query and command steps | `sharing.tni`, `../order-fulfillment/cross-context-journey.tni` |
+For the full feature coverage index and file map, see the
+[Language Tour README](https://github.com/thinai-lang/thinai-lang.github.io/blob/main/examples/language-tour/README.md).
 
 ## Running the examples
 

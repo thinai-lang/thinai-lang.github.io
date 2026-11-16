@@ -98,8 +98,6 @@ customer-supplier, partnership, or shared-kernel relationship in a context map:
 import "./context-catalog.tni"
 import "./ordering.tni"
 
-bounded context Shipping
-
 in bounded context Shipping {
   value object OrderId mirrors Ordering.Order.OrderId {
     raw: string

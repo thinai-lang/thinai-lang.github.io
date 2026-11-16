@@ -98,8 +98,8 @@ most common errors, not a replacement for the grammar or the language server.
   services or change aggregates.
 - A query repository serves a read model. With `reads from`, it reads
   aggregate-owned write-model tables directly. Without `reads from`, it serves a
-  read model maintained by a projector. A repository may intentionally use both
-  forms, but the examples keep them separate.
+  read model maintained by a projector. A bounded context may use both forms,
+  but the examples keep them separate.
 - A projector method handles exactly one domain or integration event. A
   projector in a consumer context may handle an authorized integration event;
   a projector in the owning context uses the domain event.
@@ -153,7 +153,8 @@ most common errors, not a replacement for the grammar or the language server.
   `OpenHostService` and `PublishedLanguage` are supplier-side patterns. A
   pattern on the opposite side produces a warning, and completion offers only
   the patterns valid for that endpoint. Partnership patterns may appear on
-  either side.
+  either side. Role-aware warnings and completion ship in the next alpha;
+  `0.1.7-alpha.7` does not emit them.
 - Separate-ways does not authorize event consumption or queries.
 - Shared-kernel relationships do not authorize event consumption or query reads.
 - Cross-context IntegrationEvent handling requires an explicit import of the

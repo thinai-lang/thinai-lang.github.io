@@ -1,7 +1,7 @@
 import { cp, readdir, readFile, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { join, relative, resolve } from 'node:path';
+import { join, relative, resolve, sep } from 'node:path';
 
 const check = process.argv.includes('--check');
 const thinaiRepo = process.env.THINAI_REPO ?? resolve(fileURLToPath(new URL('../..', import.meta.url)), 'thinai');
@@ -12,6 +12,13 @@ if (!existsSync(source)) {
   console.error(`Thinai examples not found at ${source}. Set THINAI_REPO to the repository checkout.`);
   process.exit(1);
 }
+
+if (source === target || target.startsWith(`${source}${sep}`) || source.startsWith(`${target}${sep}`)) {
+  console.error(`Refusing to sync overlapping paths: ${source} and ${target}`);
+  process.exit(1);
+}
+
+const supported = (file) => file.endsWith('.tni') || file.endsWith('.md');
 
 const listFiles = async (directory) => {
   const entries = await readdir(directory, { recursive: true, withFileTypes: true });
@@ -28,6 +35,7 @@ if (check) {
   }
   const expected = await listFiles(source);
   const actual = await listFiles(target);
+  const unsupported = expected.filter((file) => !supported(file));
   const missing = expected.filter((file) => !actual.includes(file));
   const extra = actual.filter((file) => !expected.includes(file));
   const changed = [];
@@ -43,7 +51,8 @@ if (check) {
       changed.push(file);
     }
   }
-  if (missing.length || extra.length || changed.length) {
+  if (unsupported.length || missing.length || extra.length || changed.length) {
+    for (const file of unsupported) console.error(`unsupported: ${file}`);
     for (const file of missing) console.error(`missing: ${file}`);
     for (const file of extra) console.error(`unexpected: ${file}`);
     for (const file of changed) console.error(`outdated: ${file}`);
@@ -52,6 +61,12 @@ if (check) {
   }
   console.log(`Public examples mirror is up to date (${expected.length} files).`);
 } else {
+  const unsupported = (await listFiles(source)).filter((file) => !supported(file));
+  if (unsupported.length) {
+    for (const file of unsupported) console.error(`unsupported: ${file}`);
+    console.error('Public examples may contain only .tni and .md files.');
+    process.exit(1);
+  }
   await rm(target, { recursive: true, force: true });
   await cp(source, target, { recursive: true });
   const files = await listFiles(target);

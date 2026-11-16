@@ -129,6 +129,7 @@ Journey `with` and `when` text follows the journey timeline:
 
 Use the command's qualified result path for a prior invocation:
 
+<!-- thinai-fragment -->
 ```thinai
 actor Customer
 
@@ -150,6 +151,7 @@ into the same model.
 A journey may also include a query read step. The query result is a public
 contract link, so it can be referenced from later steps:
 
+<!-- thinai-fragment -->
 ```thinai
 actor Customer
 

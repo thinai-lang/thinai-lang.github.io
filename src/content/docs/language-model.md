@@ -124,6 +124,9 @@ opposite customer/supplier side produces a warning, and completion offers only
 the patterns valid for that endpoint. Partnership endpoints may use any
 pattern.
 
+Role-aware warnings and role-filtered completion are in the current source and
+ship in the next alpha; `0.1.7-alpha.7` does not emit them.
+
 `partner ... <-> partner ...` expresses a symmetric partnership. An imported
 customer-supplier relationship authorizes the customer to consume the
 supplier's IntegrationEvents; an imported partnership authorizes consumption
@@ -204,8 +207,6 @@ in bounded context Ordering {
       invokes Order.Order.place
     }
   }
-
-  event OrderPlaced
 }
 ```
 
@@ -215,6 +216,7 @@ bare import to bring in all components. A context map can also be selected and
 imported when a cross-context IntegrationEvent is consumed. An alias applies to
 the selected component:
 
+<!-- thinai-fragment -->
 ```thinai
 import { Ordering as Orders, Shipping } from "./contexts.tni"
 ```
