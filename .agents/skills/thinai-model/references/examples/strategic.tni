@@ -1,0 +1,13 @@
+subdomain Sales kind core
+subdomain Fulfillment kind supporting
+
+bounded context Ordering realizes Sales
+bounded context Shipping realizes Fulfillment
+
+context map FulfillmentMap {
+  customer Shipping {
+    integrationPatterns: ["AntiCorruptionLayer"]
+  } -> supplier Ordering {
+    integrationPatterns: ["OpenHostService", "PublishedLanguage"]
+  }
+}

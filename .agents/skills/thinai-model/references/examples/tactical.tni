@@ -1,0 +1,44 @@
+bounded context Ordering
+
+in bounded context Ordering {
+  aggregate Order {
+    root entity Order {
+      method place() {
+        transition status from Draft to Placed
+        emits OrderPlaced
+      }
+
+      identifier id: OrderId
+      status: OrderStatus initial Draft
+    }
+
+    value object OrderId {
+      raw: string
+    }
+
+    enum OrderStatus {
+      Draft,
+      Placed
+    }
+  }
+
+  event OrderPlaced {
+    orderId: OrderId
+  }
+
+  read model OrderSummary {
+    orderId: OrderId
+    status: OrderStatus
+  }
+
+  query repository OrderSummaryRepository {
+    serves OrderSummary
+  }
+
+  projector OrderSummaryProjector {
+    method onOrderPlaced(source: OrderPlaced) {
+      projects OrderSummary
+      behavior "Project [[OrderPlaced.orderId]] into [[OrderSummary.orderId]]."
+    }
+  }
+}

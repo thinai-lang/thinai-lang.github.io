@@ -1,0 +1,14 @@
+import "./producer.tni"
+
+in bounded context Shipping {
+  application service ShipmentApplication {
+    method createShipment(orderId: string) {
+      behavior "Prepare a shipment for the supplied order."
+    }
+
+    method onPaymentCaptured(source: Billing.Contracts.PaymentCapturedV1) {
+      invokes createShipment
+      behavior "Create a shipment for [[Billing.Contracts.PaymentCapturedV1.orderId]]."
+    }
+  }
+}

@@ -18,6 +18,22 @@ Use whichever interface is available:
 
 All three read the same model. The model remains the source of truth.
 
+## Agent skill
+
+The public repository includes a Thinai skill for agent harnesses at
+[`.agents/skills/thinai-model`](https://github.com/thinai-lang/thinai-lang.github.io/tree/main/.agents/skills/thinai-model).
+Copy that directory into an agent’s skill directory when the harness supports
+`SKILL.md` folders.
+
+The skill has a thin entry point plus on-demand references:
+
+- `references/authoring.md` — condensed language and authoring guide;
+- `references/validation.md` — validation checklist;
+- `references/examples/` — small validated models.
+
+Load the references for design or authoring work. For model consumption, the
+entry point and the MCP/CLI tools are enough.
+
 Install the CLI with `npm install -g thinai-cli@alpha` or run it with
 `npx thinai-cli@alpha`. The commands below assume `thinai-cli` is on `PATH`.
 
@@ -133,7 +149,12 @@ agent navigation.
 - Cross-context use requires a mirror, shared kernel, integration event, or
   published query contract.
 - Domain events are context-private; integration events are cross-context
-  contracts.
+  contracts. An integration event is handled only outside its owning context.
+- Put `Conformist`/`AntiCorruptionLayer` on customer endpoints and
+  `OpenHostService`/`PublishedLanguage` on supplier endpoints. A wrong-side
+  pattern is a warning.
+- A query repository uses either `reads from` or a projector-maintained read
+  model; prefer separate repositories instead of mixing forms.
 - Data objects are boundary shapes, not domain state.
 - Primitives are `string`, `boolean`, `integer`, `decimal`, `date`, `time`, and
   `instant`.

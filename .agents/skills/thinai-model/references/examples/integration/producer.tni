@@ -1,0 +1,27 @@
+bounded context Billing
+bounded context Shipping
+
+context map BillingShipping {
+  partner Billing <-> partner Shipping
+}
+
+in bounded context Billing {
+  event PaymentCaptured {
+    orderId: string
+  }
+
+  module Contracts {
+    exposes PaymentCapturedV1
+
+    integration event PaymentCapturedV1 {
+      orderId: string
+    }
+  }
+
+  application service BillingApplication {
+    method publishPaymentCaptured(source: PaymentCaptured) {
+      emits Contracts.PaymentCapturedV1
+      behavior "Publish the captured payment for [[PaymentCaptured.orderId]] as a public contract."
+    }
+  }
+}
