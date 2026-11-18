@@ -25,6 +25,17 @@ The public repository includes a Thinai skill for agent harnesses at
 Copy that directory into an agent’s skill directory when the harness supports
 `SKILL.md` folders.
 
+With the CLI installed, you can install the bundled copy into the current
+project:
+
+```bash
+thinai-cli skill --copy
+```
+
+That writes `.agents/skills/thinai-model`, including the references and
+validated examples. Use `--out` to choose another directory and `--force` to
+replace an existing copy.
+
 The skill has a thin entry point plus on-demand references:
 
 - `references/authoring.md` — condensed language and authoring guide;
