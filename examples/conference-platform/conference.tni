@@ -1,0 +1,471 @@
+import { Shared as Kernel } from "./shared.tni"
+
+// Plain file import without an alias.
+import "./extra.tni"
+
+subdomain ProgramManagement kind core
+
+subdomain VenueOperations kind supporting
+
+subdomain TicketSales kind generic
+
+subdomain AudienceExperience
+
+bounded context Program realizes ProgramManagement
+
+bounded context Venue realizes VenueOperations
+
+bounded context Ticketing realizes TicketSales, AudienceExperience
+
+actor Attendee
+
+actor Organizer
+
+/* All four relationship forms in one map. */
+context map ConferenceMap {
+  customer Venue {
+    integrationPatterns: ["AntiCorruptionLayer"]
+  } -> supplier Program {
+    integrationPatterns: ["OpenHostService", "PublishedLanguage"]
+  }
+
+  partner Program {
+    integrationPatterns: ["Conformist"]
+  } <-> partner Ticketing {
+    integrationPatterns: ["AntiCorruptionLayer"]
+  }
+
+  separateWays Venue -x- Ticketing
+
+  sharedKernel Kernel {
+    participants: [Program, Ticketing]
+  }
+
+  sharedKernel Extra {
+    participants: [Program, Venue]
+  }
+}
+
+in bounded context Program {
+  module Domain {
+    aggregate SessionAggregate {
+      enum SessionStatus {
+        Draft,
+        Scheduled,
+        Published
+      }
+
+      enum SessionVisibility {
+        Hidden,
+        Visible
+      }
+
+      value object SessionId {
+        constructor(raw: string) {
+          invariant "The raw identifier is not blank."
+          behavior "Normalize the identifier."
+        }
+
+        raw: string
+
+        method format() returns string {
+          behavior "Return [[raw]]."
+        }
+      }
+
+      invariant "Every session has a title."
+
+      root entity Session {
+        constructor(title: string, tags?: Set<string>) {
+          invariant "The session identity is unique."
+          precondition "The title is not blank."
+          behavior "Create a draft session with optional tags."
+          postcondition "The session is Draft."
+        }
+
+        identifier id: SessionId
+        title: string
+        speaker: string
+        status: SessionStatus initial Draft
+        visibility: SessionVisibility initial Hidden
+        tags: Set<string>
+        metadata: Map<string, List<Set<integer>>>
+        startsAt: instant
+        duration: time
+        publishedOn: date
+        capacity: integer
+        price: Kernel.Types.Money
+        active: boolean
+        note?: string
+
+        method schedule() {
+          invariant "A scheduled session has a room."
+          precondition "The session is Draft."
+          transition status from Draft to Scheduled,
+                     visibility from Hidden to Visible
+            when "the room is confirmed"
+          emits SessionScheduled
+            when "the room is confirmed"
+          behavior "Schedule the session and publish [[SessionScheduled]]."
+          postcondition "The session is Scheduled."
+        }
+      }
+    }
+
+    event SessionScheduled {
+      sessionId: SessionAggregate.SessionId
+      at: instant
+    }
+
+    exposes SessionAggregate, SessionAggregate.SessionId, SessionAggregate.SessionStatus, SessionScheduled
+  }
+
+  module Policies {
+    depends on Domain
+
+    domain service SessionPolicy {
+      method canPublish(status: Domain.SessionAggregate.SessionStatus) returns boolean {
+        behavior "Allow publication from [[status]]."
+      }
+    }
+
+    exposes SessionPolicy
+  }
+
+  integration event SessionPublished {
+    sessionId: string
+    title: string
+    price: decimal
+  }
+
+  repository SessionRepository {
+    manages Domain.SessionAggregate.Session
+  }
+
+  factory SessionFactory {
+    method create(title: string) returns Domain.SessionAggregate.Session {
+      behavior "Create a session."
+    }
+  }
+
+  module Api {
+    depends on Domain, Policies
+
+    data object SessionInput {
+      title: string
+      note: Extra.Note
+      capacity: integer
+    }
+
+    application service ProgramApplication {
+      method scheduleSession(input: SessionInput, note?: string) returns string {
+        reads from SessionRepository
+        invokes SessionFactory.create
+        invokes Domain.SessionAggregate.Session.schedule
+          when "the input is valid"
+        behavior 'Schedule "[[input.title]]" for [[input.capacity]] attendees.'
+        postcondition "The session is scheduled."
+      }
+
+      method publishSession(source: Domain.SessionScheduled) {
+        invokes Kernel.Pricing.convert
+        invokes Policies.SessionPolicy.canPublish
+        emits SessionPublished
+        behavior "Publish [[Domain.SessionScheduled.sessionId]] when [[Domain.SessionAggregate.SessionStatus.Scheduled]]."
+      }
+    }
+
+    read model SessionSummary {
+      id: Domain.SessionAggregate.SessionId
+      title: string
+      status: Domain.SessionAggregate.SessionStatus
+      startsAt: instant
+    }
+
+    read model SessionAudit {
+      id: Domain.SessionAggregate.SessionId
+      title: string
+    }
+
+    query repository SessionSummaryRepository {
+      serves SessionSummary
+      reads from Domain.SessionAggregate
+    }
+
+    query repository SessionAuditRepository {
+      serves SessionAudit
+    }
+
+    query service SessionQueries {
+      method find(id: string) returns SessionSummary {
+        reads from SessionSummaryRepository, SessionAuditRepository
+          when "the session is published"
+        behavior "Return [[result.id]] and [[result.title]]."
+      }
+
+      method findPrice(id: string) returns decimal {
+        invokes find
+        behavior "Return [[SessionSummary.id]] and [[SessionSummary.title]]."
+      }
+    }
+
+    exposes ProgramApplication.scheduleSession,
+      ProgramApplication.publishSession,
+      SessionQueries,
+      SessionSummary,
+      SessionInput
+  }
+}
+
+in bounded context Venue {
+  module Operations {
+    module Internal {
+      value object RoomNote {
+        raw: string
+      }
+
+      exposes RoomNote
+    }
+
+    aggregate RoomAggregate {
+      enum RoomStatus {
+        Available,
+        Reserved
+      }
+
+      value object RoomId {
+        raw: string
+      }
+
+      invariant "A room has a capacity."
+
+      root entity Room {
+        identifier id: RoomId
+        name: string
+        capacity: integer
+        status: RoomStatus initial Available
+
+        method reserve() {
+          transition status from Available to Reserved
+            when "the session is confirmed"
+          emits RoomReserved
+            when "the session is confirmed"
+          behavior "Reserve the room for the published session."
+        }
+      }
+    }
+
+    aggregate RoomUsageAggregate {
+      value object RoomUsageId {
+        raw: string
+      }
+
+      root entity RoomUsage {
+        identifier id: RoomUsageId
+        reservations: integer
+
+        method record() {
+          behavior "Record a room reservation."
+        }
+      }
+    }
+
+    event RoomReserved
+
+    read model RoomAvailability {
+      id: RoomAggregate.RoomId
+      name: string
+      capacity: integer
+      status: RoomAggregate.RoomStatus
+    }
+
+    query repository RoomAvailabilityRepository {
+      serves RoomAvailability
+      reads from RoomAggregate
+    }
+
+    read model PublishedSessionView {
+      sessionId: string
+      title: string
+      price: decimal
+    }
+
+    query repository PublishedSessionViewRepository {
+      serves PublishedSessionView
+    }
+
+    query service RoomQueries {
+      method findAvailable(capacity: integer) returns List<RoomAvailability> {
+        reads from RoomAvailabilityRepository
+      }
+
+      method findPublished(id: string) returns PublishedSessionView {
+        reads from PublishedSessionViewRepository
+      }
+    }
+
+    application service RoomBookings {
+      method onSessionPublished(source: Program.SessionPublished) {
+        invokes RoomAggregate.Room.reserve
+        behavior "Reserve a room for [[Program.SessionPublished.title]]."
+      }
+    }
+
+    application service RoomUsageUpdater {
+      method onRoomReserved(source: RoomReserved) {
+        invokes RoomUsageAggregate.RoomUsage.record
+        behavior "Update room usage for [[RoomReserved]]."
+      }
+    }
+
+    projector PublishedSessionProjector {
+      method onSessionPublished(source: Program.SessionPublished) {
+        projects PublishedSessionView
+      }
+    }
+
+    exposes RoomQueries, RoomAvailability, RoomBookings, PublishedSessionView
+  }
+
+  module Backoffice {
+    depends on Operations.Internal
+
+    data object RoomNoteView {
+      note: Operations.Internal.RoomNote
+    }
+  }
+}
+
+in bounded context Ticketing {
+  // Partnership plus the shared kernel authorize this mirror.
+  value object SessionId mirrors Program.Domain.SessionAggregate.SessionId {
+    raw: string
+  }
+
+  module Sales {
+    aggregate TicketOrderAggregate {
+      enum TicketStatus {
+        Pending,
+        Confirmed,
+        Cancelled
+      }
+
+      value object TicketId {
+        raw: string
+      }
+
+      value object TicketLineId {
+        raw: string
+      }
+
+      entity TicketLine {
+        identifier id: TicketLineId
+        seat: string
+
+        method assign() {
+          behavior "Assign a seat to the ticket line."
+        }
+      }
+
+      invariant "An order has at least one ticket."
+
+      root entity TicketOrder {
+        identifier id: TicketId
+        sessionId: SessionId
+        attendee: string
+        quantity: integer
+        lines: List<TicketLine>
+        total: Kernel.Types.Money
+        status: TicketStatus initial Pending
+
+        method confirm() {
+          transition status from Pending to Confirmed
+            when "payment is captured"
+          emits TicketIssued
+            when "payment is captured"
+          behavior "Confirm the order."
+        }
+      }
+    }
+
+    event TicketIssued {
+      ticketId: TicketOrderAggregate.TicketId
+      sessionId: SessionId
+      at: instant
+    }
+
+    repository TicketOrderRepository {
+      manages TicketOrderAggregate.TicketOrder
+    }
+
+    read model TicketSummary {
+      id: TicketOrderAggregate.TicketId
+      sessionId: SessionId
+      status: TicketOrderAggregate.TicketStatus
+    }
+
+    read model TicketAudit {
+      ticketId: TicketOrderAggregate.TicketId
+      status: TicketOrderAggregate.TicketStatus
+    }
+
+    query repository TicketSummaryRepository {
+      serves TicketSummary
+    }
+
+    query repository TicketAuditRepository {
+      serves TicketAudit
+    }
+
+    query service TicketQueries {
+      method find(id: string) returns TicketSummary {
+        reads from TicketSummaryRepository
+      }
+
+      method findAudit(id: string) returns TicketAudit {
+        reads from TicketAuditRepository
+      }
+    }
+
+    application service TicketSales {
+      method placeOrder(sessionId: SessionId, attendee: string, seats: List<string>) returns string {
+        reads from TicketOrderRepository
+        behavior "Place an order for [[attendee]] in session [[sessionId]]."
+      }
+    }
+
+    projector TicketProjector {
+      method onIssued(source: TicketIssued) {
+        projects TicketSummary, TicketAudit
+      }
+    }
+
+    exposes TicketSales.placeOrder, TicketQueries, TicketSummary, TicketAudit
+  }
+}
+
+journey AttendConference {
+  by Attendee {
+    invoke Program.Api.SessionQueries.find
+      with "the session selected by the attendee"
+      when "The session is published."
+
+    invoke Ticketing.Sales.TicketSales.placeOrder
+      with "the session id [[Program.Api.SessionQueries.find.result.id]]"
+      when "The session still has capacity."
+
+    invoke Ticketing.Sales.TicketQueries.find
+      with "the ticket issued by [[Ticketing.Sales.TicketSales.placeOrder.result]]"
+      when "The ticket order is confirmed."
+  }
+
+  by Organizer {
+    invoke Program.Api.ProgramApplication.scheduleSession
+      with "the session details from the program"
+      when "The room is confirmed."
+
+    invoke Venue.Operations.RoomQueries.findAvailable
+      with "the expected attendance"
+      when "The program still needs a room."
+  }
+}

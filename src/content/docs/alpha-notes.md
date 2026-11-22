@@ -3,22 +3,19 @@ title: Alpha Notes and Limitations
 description: What to expect from the Thinai alpha, how to install it, and which limitations are intentional.
 ---
 
-Thinai is in alpha. The current language, CLI, and extension source release is
-`0.1.9-alpha.1`; the VS Code Marketplace version is `0.1.9` (published as a
-pre-release). The first release was `0.1.0-alpha.1`. `0.1.5-alpha.5` was
-withdrawn from Open VSX after a metadata error; `0.1.9-alpha.1` supersedes it.
-Syntax and language-service behavior may still change between releases. The
-examples, grammar, and validation rules in this documentation describe the
-current alpha behavior.
+Thinai is in alpha. The current alpha release is `0.1.9-alpha.1`; the VS Code
+Marketplace version is `0.1.9` (published as a pre-release). Older alpha releases
+are superseded. Syntax and language-service behavior may still change between
+releases. The examples, grammar, and validation rules in this documentation
+describe the current alpha behavior.
 
 `0.1.7-alpha.7` added path-aware completion for qualified and abbreviated
 references, smart selection, `[[...]]` auto-closing, document symbols that
 include the bounded-context breadcrumb, and the integration-event ownership
 rule for handlers. `0.1.8-alpha.8` added role-aware context-map pattern
-warnings and role-filtered completion, and validated public documentation
-snippets and mirrors in CI. `0.1.9-alpha.1` adds first-class multi-file bounded
-contexts, root/part import quick fixes, a shared context-name warning, and a
-video walkthrough page.
+warnings and role-filtered completion. `0.1.9-alpha.1` adds first-class
+multi-file bounded contexts, root/part import quick fixes, a shared
+context-name warning, and a video walkthrough page.
 
 ## Installing the alpha
 

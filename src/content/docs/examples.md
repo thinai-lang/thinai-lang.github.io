@@ -3,17 +3,30 @@ title: Examples
 description: Complete Thinai models and where to find their feature coverage indexes.
 ---
 
-Two example locations complement each other:
+Three example locations complement each other:
 
+- **Conference Platform** is the completed model from the walkthrough video.
 - **Order Fulfillment** is a realistic multi-file model with strategic design,
   aggregates, services, events, modules, context maps, and journeys.
 - **Language Tour** is a compact syntax and visibility tour for features that
   are easier to read outside the main domain model.
 
-Both examples are validated by the Thinai test suite.
-
 Watch the [Conference Platform walkthrough](/demos/) for a video tour of the
 language.
+
+## Conference Platform
+
+Repository: [`examples/conference-platform`](https://github.com/thinai-lang/thinai-lang.github.io/tree/main/examples/conference-platform)
+
+The completed model from the [Conference Platform walkthrough](/demos/). It uses
+three bounded contexts in one root file with inline `in bounded context` parts,
+plus two shared kernels. The walkthrough covers strategic contexts and
+subdomains, aggregates and value objects, modules, domain and integration
+events, all four context-map relationship forms, query contracts, projectors,
+and journeys.
+
+The multi-file [Language Tour](/examples/#language-tour) example separately
+demonstrates root and part files.
 
 ## Order Fulfillment
 
@@ -44,8 +57,8 @@ For the full feature coverage index and file map, see the
 
 ## Running the examples
 
-The examples are mirrored in this repository under `examples/`. Install the CLI
-first, then run it against a copied checkout:
+The examples are available under `examples/`. Install the CLI first, then run
+it against a copied checkout:
 
 ```bash
 git clone https://github.com/thinai-lang/thinai-lang.github.io.git

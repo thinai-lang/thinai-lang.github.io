@@ -31,10 +31,7 @@ code --install-extension thinai-lang.vscode-thinai --pre-release
 ```
 
 You can also search for **Thinai** in the Extensions view and select **Install
-Pre-Release Version**. The extension provides diagnostics, completion,
-navigation, references, document symbols, hover, rename, call hierarchy,
-formatting, clickable imports, automatic import updates on file moves, and
-import/dependency/exposure quick fixes for `.tni` files.
+Pre-Release Version**.
 
 For editors that use Open VSX, such as VSCodium, Gitpod, and Eclipse Che,
 install the same extension from the
@@ -97,8 +94,7 @@ tools.
 npm install thinai-language@alpha
 ```
 
-The package exports the language services used by the CLI and the editor
-extension.
+Use `thinai-language` to embed the language services in your own tooling.
 
 ## Examples
 
@@ -110,8 +106,7 @@ is a compact syntax and visibility tour.
 
 ## Source and support
 
-The Thinai source repository is private during the alpha. Report bugs and
-feature requests in the public
+Report bugs and feature requests in the public
 [issue tracker](https://github.com/thinai-lang/issues). Report security issues
 privately to `security@thinai-lang.dev`. See
 [alpha notes and limitations](/alpha-notes/) before relying on the extension

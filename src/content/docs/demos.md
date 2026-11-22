@@ -18,11 +18,16 @@ A silent 47-minute alpha walkthrough of the Conference Platform model:
 strategic contexts, aggregates and value objects, modules, events, context maps,
 query contracts, and journeys.
 
-The recording is unlisted and may lag the current release. Use the public
-examples for the current syntax:
+The completed model is available in the
+[Conference Platform example](https://github.com/thinai-lang/thinai-lang.github.io/tree/main/examples/conference-platform);
+use the public examples for the current syntax.
 
+- [Conference Platform recording script](/demos/conference-platform.pdf)
 - [Order Fulfillment](/examples/#order-fulfillment)
 - [Language Tour](/examples/#language-tour)
 
-The walkthrough is intentionally silent. Follow along with the public examples,
-and use the [issue tracker](https://github.com/thinai-lang/issues) for feedback.
+The multi-file follow-up uses the
+[multi-file Language Tour example](https://github.com/thinai-lang/thinai-lang.github.io/tree/main/examples/language-tour/multi-file)
+and has its own [recording script](/demos/multi-file.pdf).
+
+Use the [issue tracker](https://github.com/thinai-lang/issues) for feedback.

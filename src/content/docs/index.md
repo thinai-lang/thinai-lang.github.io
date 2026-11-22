@@ -26,7 +26,7 @@ guides to learn the language and model a domain by topic:
 - [References and paths](/references-and-paths/) — specification links,
   qualified paths, parameters, results, and journey timelines.
 - [Validation rules](/validation-rules/) — the rules behind common diagnostics.
-- [Examples](/examples/) — the Order Fulfillment model and the Language Tour.
+- [Examples](/examples/) — Conference Platform, Order Fulfillment, and Language Tour.
 - [Video walkthroughs](/demos/) — the Conference Platform walkthrough.
 - [Alpha notes](/alpha-notes/) — installation, known limitations, and issue
   reporting.
@@ -35,5 +35,3 @@ guides to learn the language and model a domain by topic:
 
 For a complete multi-file model, see the
 [Order Fulfillment example](https://github.com/thinai-lang/thinai-lang.github.io/tree/main/examples/order-fulfillment).
-The [language guides](/language-model/) describe the language precisely; the
-[alpha notes](/alpha-notes/) describe installation and current limitations.

@@ -1,0 +1,33 @@
+// Shared contracts for Program and Ticketing.
+shared kernel Shared {
+  module Types {
+    enum Currency {
+      USD,
+      EUR,
+      INR
+    }
+
+    // Scalar, Unicode, and backticked fields.
+    value object Money {
+      amount: decimal
+      currency: Currency
+      `display name`: string
+      précio: decimal
+
+      method label() returns string {
+        behavior "Return [[`display name`]] and [[précio]]."
+      }
+    }
+
+    exposes Money, Currency
+  }
+
+  domain service Pricing {
+    method convert(amount: decimal, rate: decimal) returns decimal {
+      behavior """
+        Convert [[amount]] at [[rate]].
+        The literal sequence \[[ is plain text.
+      """
+    }
+  }
+}
