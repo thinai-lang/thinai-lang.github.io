@@ -270,6 +270,9 @@ The root/part rules are:
 - Module `depends on`, `exposes`, and cycle rules still apply across parts.
 - A context map declared in the root applies to every part of that unit.
 - External contexts import the root, never a part.
+- Disconnected model units may reuse a context name; a non-blocking warning
+  points at the other declaration. Composing both roots in one import-connected
+  model makes the duplicate name an error.
 
 See the [multi-file language-tour example](https://github.com/thinai-lang/thinai-lang.github.io/tree/main/examples/language-tour/multi-file)
 for a complete root and two-part model.

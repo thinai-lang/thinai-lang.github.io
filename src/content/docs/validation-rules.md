@@ -17,6 +17,9 @@ most common errors, not a replacement for the grammar or the language server.
 - Parts of one context share a context scope, but module `depends on`,
   `exposes`, and cycle rules still apply across parts.
 - A context map declared in the root applies to every part of that unit.
+- Disconnected roots may declare the same context name. This produces a
+  non-blocking warning, not an error. If both roots are composed in one
+  import-connected model, the duplicate becomes an error.
 
 ## Aggregates and entities
 
@@ -216,6 +219,7 @@ most common errors, not a replacement for the grammar or the language server.
 | `Start each sibling declaration or statement on a new line` | Split the declarations or statements onto separate lines |
 | `Reserved word ... must be backtick-quoted` | Add backticks around the reference segment |
 | `Duplicate declaration` | Rename the declaration or check the import-connected model |
+| `Bounded context ... is also declared in ...` | Keep the names if the models are independent; rename when composing them |
 | `A module may declare 'exposes' at most once.` | Merge the clauses into a single export list |
 | `A module may declare 'depends on' at most once.` | Merge the clauses into a single dependency clause |
 | `A repository must manage an aggregate-root entity` | Point `manages` at the root entity |
