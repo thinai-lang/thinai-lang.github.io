@@ -38,7 +38,7 @@ export default defineConfig({
             'validation-rules',
           ],
         },
-        { label: 'Examples', items: ['examples'] },
+        { label: 'Examples', items: ['examples', 'demos'] },
         { label: 'Alpha notes', items: ['alpha-notes'] },
         {
           label: 'Order Fulfillment repository',

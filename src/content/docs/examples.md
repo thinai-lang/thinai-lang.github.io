@@ -12,6 +12,9 @@ Two example locations complement each other:
 
 Both examples are validated by the Thinai test suite.
 
+Watch the [Conference Platform walkthrough](/demos/) for a video tour of the
+language.
+
 ## Order Fulfillment
 
 Repository: [`examples/order-fulfillment`](https://github.com/thinai-lang/thinai-lang.github.io/tree/main/examples/order-fulfillment)

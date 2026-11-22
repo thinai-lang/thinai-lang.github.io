@@ -27,6 +27,7 @@ guides to learn the language and model a domain by topic:
   qualified paths, parameters, results, and journey timelines.
 - [Validation rules](/validation-rules/) — the rules behind common diagnostics.
 - [Examples](/examples/) — the Order Fulfillment model and the Language Tour.
+- [Video walkthroughs](/demos/) — the Conference Platform walkthrough.
 - [Alpha notes](/alpha-notes/) — installation, known limitations, and issue
   reporting.
 - [Implementation](/implementation/) — how the language and its tooling are

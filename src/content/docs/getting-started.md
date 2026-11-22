@@ -7,6 +7,8 @@ Thinai is a domain-specific modeling language for domain-driven design. The
 guides on this site introduce the language and its current syntax. Thinai is in
 alpha; syntax and language-service behavior may still change between releases.
 
+Prefer a walkthrough? Watch the [Conference Platform walkthrough](/demos/).
+
 ## Requirements
 
 - Visual Studio Code 1.91 or newer for the editor extension
