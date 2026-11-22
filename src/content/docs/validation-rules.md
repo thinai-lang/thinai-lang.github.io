@@ -18,7 +18,8 @@ most common errors, not a replacement for the grammar or the language server.
   `exposes`, and cycle rules still apply across parts.
 - A context map declared in the root applies to every part of that unit.
 - A part with no root is an error, not a warning. Use the create-root or
-  add-to-root quick fix, or validate the root instead.
+  add-to-root quick fix, or validate the root instead. In VS Code, the
+  create-root and create-part actions ask for the filename and location.
 - Disconnected roots may declare the same context name. This produces a
   non-blocking warning, not an error. If both roots are composed in one
   import-connected model, the duplicate becomes an error.
