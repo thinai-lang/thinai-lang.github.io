@@ -1,6 +1,6 @@
 ---
-title: Video walkthroughs
-description: Watch Thinai walkthroughs and follow the public examples.
+title: Video walkthrough
+description: Watch the Thinai walkthrough and follow the public examples.
 ---
 
 ## Conference Platform walkthrough
@@ -22,12 +22,10 @@ The completed model is available in the
 [Conference Platform example](https://github.com/thinai-lang/thinai-lang.github.io/tree/main/examples/conference-platform);
 use the public examples for the current syntax.
 
-- [Conference Platform recording script](/demos/conference-platform.pdf)
 - [Order Fulfillment](/examples/#order-fulfillment)
 - [Language Tour](/examples/#language-tour)
 
-The multi-file follow-up uses the
-[multi-file Language Tour example](https://github.com/thinai-lang/thinai-lang.github.io/tree/main/examples/language-tour/multi-file)
-and has its own [recording script](/demos/multi-file.pdf).
+For multi-file composition, see the
+[multi-file Language Tour example](https://github.com/thinai-lang/thinai-lang.github.io/tree/main/examples/language-tour/multi-file).
 
 Use the [issue tracker](https://github.com/thinai-lang/issues) for feedback.

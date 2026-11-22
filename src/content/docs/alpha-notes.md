@@ -35,8 +35,7 @@ npm install -g thinai-cli@alpha
 npm install thinai-language@alpha
 ```
 
-The Thinai source repository is private during the alpha. See
-[Getting started](/getting-started/) for installation details and CLI usage.
+See [Getting started](/getting-started/) for installation details and CLI usage.
 
 ## Design rules, not limitations
 

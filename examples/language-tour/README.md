@@ -2,7 +2,7 @@
 
 These files are a compact syntax tour that complements the realistic
 [Order Fulfillment](../order-fulfillment/README.md) model. Every file is valid
-Thinai source and is validated by the repository test suite.
+Thinai source.
 
 ## Files
 
