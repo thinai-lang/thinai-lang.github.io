@@ -1,0 +1,25 @@
+in bounded context Program {
+  module Domain {
+    exposes Session, SessionId, SessionScheduled, SessionScheduledV1
+
+    aggregate Session {
+      root entity Session {
+        identifier id: SessionId
+
+        method schedule() {
+          emits SessionScheduled
+        }
+      }
+
+      value object SessionId {
+        raw: string
+      }
+    }
+
+    event SessionScheduled
+
+    integration event SessionScheduledV1 {
+      sessionId: string
+    }
+  }
+}

@@ -190,8 +190,10 @@ and validation still work on unformatted source.
 
 ## Imports and aliases
 
-Imports are relative to the importing `.tni` file. A bare import makes the whole
-file part of the model; a selective import brings in named components.
+Imports are relative to the importing `.tni` file. A bare import makes the
+imported root unit part of the model, including its part files; a selective
+import brings in named components. Import a bounded-context root, not one of its
+parts.
 
 <!-- thinai-fragment -->
 ```thinai

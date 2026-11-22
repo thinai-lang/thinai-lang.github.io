@@ -48,6 +48,19 @@ contracts owned by the producer: reference them directly and map their payload
 into local domain concepts when isolation is needed. Do not mirror an
 IntegrationEvent.
 
+## Multi-file contexts
+
+A bounded context may be split across a root file and part files. Parts do not
+import each other, but they share the context-visible scope: a context-level
+declaration in one part is visible in a peer part. This does not relax module
+boundaries.
+
+- Context-visible declarations in a peer part are visible throughout the unit.
+- A declaration inside a module still requires `depends on` and `exposes`.
+- A peer part does not inherit the external imports of another part.
+- A context map declared in the root applies to the whole unit.
+- Module dependency cycles are still errors across parts.
+
 ## Declaring modules
 
 Use `exposes` to publish declarations and `depends on` to declare a module

@@ -1,0 +1,20 @@
+// Another context imports the root, never a part file.
+import "./program.tni"
+
+bounded context Ticketing
+
+context map TicketingProgram {
+  customer Ticketing -> supplier Program
+}
+
+in bounded context Ticketing {
+  read model SalesView {
+    sessionId: string
+  }
+
+  projector SalesProjector {
+    method onScheduled(source: Program.Domain.SessionScheduledV1) {
+      projects SalesView
+    }
+  }
+}

@@ -1,0 +1,16 @@
+// No import of program-domain.tni: peer parts share the context scope.
+in bounded context Program {
+  module Api {
+    depends on Domain
+
+    application service ProgramApplication {
+      method schedule(id: SessionId) {
+        invokes Session.Session.schedule
+      }
+
+      method publishScheduled(source: SessionScheduled) {
+        emits Domain.SessionScheduledV1
+      }
+    }
+  }
+}

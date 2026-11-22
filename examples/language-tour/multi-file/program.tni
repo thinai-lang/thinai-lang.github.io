@@ -1,0 +1,7 @@
+// Root: the canonical context and the parts that contribute to it.
+import "./program-domain.tni"
+import "./program-api.tni"
+
+subdomain ProgramManagement kind core
+
+bounded context Program realizes ProgramManagement

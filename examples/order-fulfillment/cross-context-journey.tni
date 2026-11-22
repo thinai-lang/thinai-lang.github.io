@@ -1,6 +1,6 @@
-import "./context-catalog.tni"
-import "./ordering-events.tni"
+import "./ordering.tni"
 import "./shipping.tni"
+
 
 actor Warehouse
 

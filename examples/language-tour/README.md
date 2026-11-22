@@ -21,6 +21,9 @@ Thinai source and is validated by the repository test suite.
   same-document context map, a shared-kernel service invocation, a
   module-exposed query service with a nested DataObject result, an authorized
   cross-context query read, and a command-led journey with a query step.
+- `multi-file/` demonstrates a bounded context split into a root and two parts,
+  peer references without peer imports, a root-only import from another context,
+  and an authorized integration-event consumer.
 
 ## Feature coverage
 
@@ -44,6 +47,9 @@ Thinai source and is validated by the repository test suite.
 | Module-exposed query service with a nested DataObject result | `sharing.tni` |
 | Authorized cross-context query read | `sharing.tni` |
 | Command-led journey with a query read step | `sharing.tni` |
+| Multi-file bounded-context root and parts | `multi-file/program.tni`, `multi-file/program-domain.tni`, `multi-file/program-api.tni` |
+| Peer part reference without a peer import | `multi-file/program-api.tni` |
+| Import only the context root from another context | `multi-file/ticketing.tni` |
 
 ## Method and constructor coverage
 

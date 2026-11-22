@@ -6,6 +6,18 @@ description: A practical checklist of Thinai's structural, visibility, CQRS, eve
 This page summarizes the rules behind Thinai diagnostics. It is a guide to the
 most common errors, not a replacement for the grammar or the language server.
 
+## Bounded-context roots and parts
+
+- A bounded-context root declares the canonical `bounded context` and directly
+  imports every part that contributes to it.
+- A part contains an `in bounded context` block and must be imported by exactly
+  one root that declares that context.
+- A part must not import its root or another part of the same context.
+- Another bounded context imports only the root, never a part file.
+- Parts of one context share a context scope, but module `depends on`,
+  `exposes`, and cycle rules still apply across parts.
+- A context map declared in the root applies to every part of that unit.
+
 ## Aggregates and entities
 
 - An aggregate has exactly one root entity.
@@ -195,6 +207,11 @@ most common errors, not a replacement for the grammar or the language server.
 | Diagnostic | Usual fix |
 | --- | --- |
 | `Could not resolve reference` | Import the file or component; check module exposure and path spelling |
+| `This bounded-context part is not included by a bounded-context root` | Import the part from the file that declares its context |
+| `This bounded-context part is included by more than one root` | Keep exactly one root importing the part |
+| `A bounded-context part must not import its root` | Remove the part-to-root import |
+| `A bounded-context part must not import another part` | Remove the peer import; use the shared context scope |
+| `Import the bounded-context root instead of one of its parts` | Change the import path to the context root |
 | `Start the first statement on a new line after the opening brace` | Put the first statement after `{` on its own line |
 | `Start each sibling declaration or statement on a new line` | Split the declarations or statements onto separate lines |
 | `Reserved word ... must be backtick-quoted` | Add backticks around the reference segment |

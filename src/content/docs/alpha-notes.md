@@ -48,14 +48,15 @@ integration event, or published query contract. This enforces bounded-context
 autonomy rather than restricting the language; see
 [cross-context restrictions](/modules-and-visibility/#cross-context-restrictions).
 
-Cross-context contribution quick fixes are intentionally absent for the same
-reason. Same-context contribution quick fixes are supported.
+Quick fixes that would import a context part directly are intentionally absent;
+import the context root instead.
 
 ## Known CLI limitations
 
 - The CLI validates the source file and its transitive imports, not files that
-  import the source file. Use the language server for the full import-connected
-  model.
+  import the source file. For a multi-file bounded context, validate the root;
+  validating a part reports an unrooted-part diagnostic. Use the language server
+  for the full model unit.
 
 ## Known editor limitations
 

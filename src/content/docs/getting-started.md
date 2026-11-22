@@ -80,10 +80,11 @@ thinai-cli validate path/to/model.tni
 thinai-cli mcp path/to/model.tni
 ```
 
-The CLI validates the source file and its transitive imports. It does not
-discover separate files that import the source file. Use the VS Code extension
-or another workspace-aware client when you need to validate the complete
-import-connected model, including importers.
+The CLI validates the source file and its transitive imports. For a multi-file
+bounded context, validate the root so its parts are included; validating a part
+reports an unrooted-part diagnostic. The CLI does not discover files that import
+the source file. Use the VS Code extension or another workspace-aware client
+when you need to validate the complete model unit, including importers.
 
 See [agent workflow](/agent-workflow/) for the model-first workflow and MCP
 tools.

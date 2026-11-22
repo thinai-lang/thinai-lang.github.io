@@ -33,7 +33,8 @@ Repository: [`examples/language-tour`](https://github.com/thinai-lang/thinai-lan
 The language tour covers syntax, quoted identifiers and strings, optional
 markers, collections, nested modules and re-exports, module dependencies,
 explicit method exposure, mirrored identifiers, shared kernels, published query
-contracts, cross-context query reads, and command-led journeys.
+contracts, cross-context query reads, command-led journeys, and a bounded
+context split across a root and two parts.
 
 For the full feature coverage index and file map, see the
 [Language Tour README](https://github.com/thinai-lang/thinai-lang.github.io/blob/main/examples/language-tour/README.md).
@@ -48,6 +49,7 @@ git clone https://github.com/thinai-lang/thinai-lang.github.io.git
 cd thinai-lang.github.io
 npx thinai-cli@alpha validate examples/order-fulfillment/shipping.tni
 npx thinai-cli@alpha validate examples/language-tour/sharing.tni
+npx thinai-cli@alpha validate examples/language-tour/multi-file/program.tni
 npx thinai-cli@alpha inspect examples/order-fulfillment/shipping.tni --out model.json
 ```
 

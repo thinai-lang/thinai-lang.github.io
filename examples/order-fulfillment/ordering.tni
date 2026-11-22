@@ -1,6 +1,16 @@
-import './context-catalog.tni'
-import { CommonTypes as Common } from "./common-types.tni"
-import { FulfillmentMap } from "./context-map.tni"
+import "./strategic.tni"
+import "./ordering-events.tni"
+import "./context-catalog.tni"
+import { CommonTypes } from "./common-types.tni"
+
+bounded context Ordering realizes OrderManagement, SharedCapabilities
+
+context map OrderingSharedKernel {
+  sharedKernel CommonTypes {
+    participants: [Ordering, Billing]
+  }
+}
+
 
 in bounded context Ordering {
   value object DeliveryAddress {
@@ -80,7 +90,7 @@ in bounded context Ordering {
 
       identifier id: OrderId
       owner: string
-      currency: Common.Currency
+      currency: CommonTypes.Currency
       customerId: CustomerId
       delivery: DeliveryAddress
       status: OrderStatus initial Draft
@@ -91,7 +101,7 @@ in bounded context Ordering {
       quantities: Map<string, integer>
       characteristics: Map<string, List<Set<string>>>
       createdAt: instant
-      externalReference?: Common.SharedContracts.Identifiers.ExternalId
+      externalReference?: CommonTypes.SharedContracts.Identifiers.ExternalId
     }
 
     value object OrderId {
@@ -166,7 +176,7 @@ in bounded context Ordering {
   domain service OrderPricing {
     method calculateTotal(amount: decimal, adjustments?: List<PriceAdjustment>) returns decimal {
       precondition "The amount is non-negative."
-      invokes Common.CurrencyConversion.convert
+      invokes CommonTypes.CurrencyConversion.convert
       behavior "Apply each [[PriceAdjustment.`value`]] adjustment, then calculate the total."
       postcondition "The returned total includes all adjustments."
     }
@@ -216,7 +226,7 @@ in bounded context Ordering {
   }
 
   domain service Authorization {
-    method authorize(role: Common.Role, action: string) returns boolean {
+    method authorize(role: CommonTypes.Role, action: string) returns boolean {
       precondition "The role and requested action are known."
       behavior "Allow the action only when the supplied role is authorized for it."
       postcondition "The result indicates whether the role is authorized for the action."

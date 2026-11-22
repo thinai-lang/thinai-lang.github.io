@@ -76,9 +76,11 @@ in bounded context Shipping {
 }
 ```
 
-Declare a bounded context canonically once, without braces. Put its members in
-one or more `in bounded context Name { ... }` blocks. A contribution in another
-file must directly import the file containing the canonical declaration.
+Declare a bounded context canonically once, without braces, in its root file.
+Put its members in one or more `in bounded context Name { ... }` blocks in the
+root or in part files that the root directly imports. A part must not import its
+root or a peer part. Another bounded context imports only the root, never a
+part file.
 
 ## Context Maps and Shared Kernels
 
@@ -188,16 +190,45 @@ consumption or cross-context query reads by themselves.
 
 ## Working Across Files
 
-Imports are explicit, direct, and relative to the importing `.tni` file. A
-declaration in an unrelated workspace file is not automatically visible. A
-later file can contribute to a bounded context by importing the file that
-declares it and using an `in bounded context` block:
+A model unit is one bounded-context root plus the part files it directly
+imports. Imports are explicit, direct, and relative to the importing `.tni`
+file. A declaration in an unrelated workspace file is not automatically visible.
 
+The root declares the canonical bounded context and lists its parts:
+
+<!-- thinai-fragment -->
 ```thinai
-// ordering-events.tni
-import "./context-catalog.tni"
-import "./ordering.tni"
+// ordering.tni
+import "./ordering-domain.tni"
+import "./ordering-api.tni"
 
+subdomain OrderManagement kind core
+
+bounded context Ordering realizes OrderManagement
+```
+
+Each part contributes members with `in bounded context` and does not import the
+root or a peer part:
+
+<!-- thinai-fragment -->
+```thinai
+// ordering-domain.tni
+in bounded context Ordering {
+  aggregate Order {
+    root entity Order {
+      method place()
+      identifier id: OrderId
+    }
+    value object OrderId {
+      raw: string
+    }
+  }
+}
+```
+
+<!-- thinai-fragment -->
+```thinai
+// ordering-api.tni
 in bounded context Ordering {
   application service OrderApplication {
     method placeOrder(id: OrderId) {
@@ -206,6 +237,42 @@ in bounded context Ordering {
   }
 }
 ```
+
+`ordering-api.tni` references `OrderId` and `Order.Order.place` from its peer
+part without importing it. Parts of one context share a context scope; their own
+external imports remain local to each part.
+
+Other contexts import only the root:
+
+<!-- thinai-fragment -->
+```thinai
+// shipping.tni
+import "./ordering.tni"
+
+bounded context Shipping
+in bounded context Shipping {
+  application service ShipmentApplication {
+    method openDispatch()
+  }
+}
+```
+
+Do not import `ordering-domain.tni` or `ordering-api.tni` directly. Importing a
+part reports `Import the bounded-context root instead of one of its parts.`
+
+The root/part rules are:
+
+- A root directly imports every part that contributes to its context.
+- A part must be imported by exactly one root that declares its context.
+- A part must not import its root or another part of the same context.
+- A part's external imports are local to that part and are not visible to peers.
+- Inline `in bounded context` blocks in the root need no import.
+- Module `depends on`, `exposes`, and cycle rules still apply across parts.
+- A context map declared in the root applies to every part of that unit.
+- External contexts import the root, never a part.
+
+See the [multi-file language-tour example](https://github.com/thinai-lang/thinai-lang.github.io/tree/main/examples/language-tour/multi-file)
+for a complete root and two-part model.
 
 When an imported file declares several bounded contexts, context maps, or shared
 kernels, you can select the components needed by the importing file, or use a

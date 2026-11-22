@@ -1,11 +1,5 @@
 import "./strategic.tni"
 
-bounded context Ordering realizes OrderManagement, SharedCapabilities
-
-bounded context Shipping realizes Fulfillment
-
-// This context is intentionally strategic-only; no tactical body is modeled.
+// These contexts are intentionally strategic-only; no tactical body is modeled yet.
 bounded context Billing realizes Payments
-
-// This context is intentionally not classified under a subdomain yet.
 bounded context CustomerSupport

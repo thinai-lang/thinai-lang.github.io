@@ -97,9 +97,10 @@ assuming the report is complete.
 thinai-cli validate path/to/model.tni
 ```
 
-The CLI validates the source file and its transitive imports. It does not
-discover separate files that import the source file. Use a workspace-aware
-client for the complete import-connected model.
+The CLI validates the source file and its transitive imports. For a multi-file
+bounded context, validate the root so its parts are included; validating a part
+reports an unrooted-part diagnostic. The CLI does not discover files that import
+the source file. Use a workspace-aware client for the complete model unit.
 
 ## MCP server
 

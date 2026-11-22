@@ -95,8 +95,9 @@ optionality as the source, and the two contexts must be connected by a
 customer-supplier, partnership, or shared-kernel relationship in a context map:
 
 ```thinai
-import "./context-catalog.tni"
 import "./ordering.tni"
+
+bounded context Shipping
 
 in bounded context Shipping {
   value object OrderId mirrors Ordering.Order.OrderId {
