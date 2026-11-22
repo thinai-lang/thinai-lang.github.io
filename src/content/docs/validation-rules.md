@@ -17,6 +17,8 @@ most common errors, not a replacement for the grammar or the language server.
 - Parts of one context share a context scope, but module `depends on`,
   `exposes`, and cycle rules still apply across parts.
 - A context map declared in the root applies to every part of that unit.
+- A part with no root is an error, not a warning. Use the create-root or
+  add-to-root quick fix, or validate the root instead.
 - Disconnected roots may declare the same context name. This produces a
   non-blocking warning, not an error. If both roots are composed in one
   import-connected model, the duplicate becomes an error.
@@ -213,6 +215,7 @@ most common errors, not a replacement for the grammar or the language server.
 | `This bounded-context part is not included by a bounded-context root` | Import the part from the file that declares its context |
 | `This bounded-context part is included by more than one root` | Keep exactly one root importing the part |
 | `A bounded-context part must not import its root` | Remove the part-to-root import |
+| `This file is a bounded-context part` | Validate the root that declares the context |
 | `A bounded-context part must not import another part` | Remove the peer import; use the shared context scope |
 | `Import the bounded-context root instead of one of its parts` | Change the import path to the context root |
 | `Start the first statement on a new line after the opening brace` | Put the first statement after `{` on its own line |
