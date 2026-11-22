@@ -9,13 +9,8 @@ language-service behavior may still change between releases. The examples,
 grammar, and validation rules in this documentation describe the current
 behavior.
 
-`0.1.7-alpha.7` added path-aware completion for qualified and abbreviated
-references, smart selection, `[[...]]` auto-closing, document symbols that
-include the bounded-context breadcrumb, and the integration-event ownership
-rule for handlers. `0.1.8-alpha.8` added role-aware context-map pattern
-warnings and role-filtered completion. `0.1.9-alpha.1` adds first-class
-multi-file bounded contexts, root/part import quick fixes, a shared
-context-name warning, and a video walkthrough page.
+`0.1.9-alpha.1` adds first-class multi-file bounded contexts and their import
+quick fixes.
 
 ## Installing the alpha
 
