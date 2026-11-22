@@ -3,11 +3,11 @@ title: Alpha Notes and Limitations
 description: What to expect from the Thinai alpha, how to install it, and which limitations are intentional.
 ---
 
-Thinai is in alpha. The current alpha release is `0.1.9-alpha.1`; the VS Code
-Marketplace version is `0.1.9` (published as a pre-release). Older alpha releases
-are superseded. Syntax and language-service behavior may still change between
-releases. The examples, grammar, and validation rules in this documentation
-describe the current alpha behavior.
+The current release is `0.1.9-alpha.1`; the VS Code Marketplace version is
+`0.1.9` (published as a pre-release). Older releases are superseded. Syntax and
+language-service behavior may still change between releases. The examples,
+grammar, and validation rules in this documentation describe the current
+behavior.
 
 `0.1.7-alpha.7` added path-aware completion for qualified and abbreviated
 references, smart selection, `[[...]]` auto-closing, document symbols that

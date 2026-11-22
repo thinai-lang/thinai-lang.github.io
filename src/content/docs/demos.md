@@ -14,7 +14,7 @@ description: Watch Thinai walkthroughs and follow the public examples.
   style="width: 100%; aspect-ratio: 16 / 9; border: 0;"
 ></iframe>
 
-A silent 47-minute alpha walkthrough of the Conference Platform model:
+A 47-minute walkthrough of the Conference Platform model, with no audio:
 strategic contexts, aggregates and value objects, modules, events, context maps,
 query contracts, and journeys.
 

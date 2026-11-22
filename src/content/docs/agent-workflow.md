@@ -172,4 +172,4 @@ agent navigation.
   `instant`.
 
 A deterministic conformance manifest and `thinai verify` workflow are planned
-after the first alpha.
+for a future release.
