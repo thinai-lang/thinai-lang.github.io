@@ -3,9 +3,9 @@ title: Getting Started
 description: Install the Thinai alpha editor extension, CLI, and language package.
 ---
 
-Thinai is a domain-specific modeling language for domain-driven design. The
-guides on this site introduce the language and its current syntax. Thinai is
-pre-release; syntax and language-service behavior may change between releases.
+Thinai is a modeling language for domain-driven design (DDD). The guides on
+this site introduce the language and its current syntax. Thinai is pre-release;
+syntax and language-service behavior may change between releases.
 
 Prefer a walkthrough? Watch the [Conference Platform walkthrough](/demos/).
 

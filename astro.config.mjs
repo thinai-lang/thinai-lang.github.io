@@ -14,7 +14,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'Thinai',
-      description: 'A domain-specific modeling language for domain-driven design.',
+      description: 'A modeling language for domain-driven design (DDD).',
       logo: {
         light: './src/assets/thinai-light.svg',
         dark: './src/assets/thinai-dark.svg',
