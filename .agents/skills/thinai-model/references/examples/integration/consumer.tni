@@ -1,5 +1,3 @@
-import "./producer.tni"
-
 in bounded context Shipping {
   application service ShipmentApplication {
     method createShipment(orderId: string) {

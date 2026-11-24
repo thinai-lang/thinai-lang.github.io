@@ -19,9 +19,11 @@ every edit with `thinai-cli validate` or MCP `validate_model`.
 - `subdomain Name kind core|supporting|generic`. A subdomain may omit `kind`
   while unclassified.
 - `bounded context Name realizes Subdomain, ...`. Declare the canonical context
-  once without braces; put members in `in bounded context Name { ... }` blocks.
-- A contribution in another file must directly import the file that declares the
-  bounded context.
+  once without braces in a root file; put members in
+  `in bounded context Name { ... }` blocks.
+- A root file imports its context part files. A part never imports its root or
+  a peer part; peer declarations are in scope through the shared unit.
+- Another bounded context imports only the root, never a part file.
 - A context may realize zero, one, or several subdomains.
 - `shared kernel Name { ... }` contains value objects, enums, modules, and
   domain services. It does not contain data objects or entities.

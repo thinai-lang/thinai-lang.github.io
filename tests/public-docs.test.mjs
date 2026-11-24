@@ -16,18 +16,6 @@ const listMarkdown = async (directory) => {
 
 const pages = [...await listMarkdown(docs), ...await listMarkdown(examples)];
 
-test('public pages do not link to the private source repository', async () => {
-  const privateLink = /github\.com\/thinai-lang\/thinai(?![\w-])/;
-  for (const page of pages) {
-    const text = await readFile(page, 'utf8');
-    assert.doesNotMatch(text, privateLink, `${page} links to the private repository`);
-  }
-  for (const file of ['README.md', 'astro.config.mjs']) {
-    const text = await readFile(new URL(file, root), 'utf8');
-    assert.doesNotMatch(text, privateLink, `${file} links to the private repository`);
-  }
-});
-
 test('public pages do not use source-checkout commands', async () => {
   const sourceCommands = [
     /npm run build/,

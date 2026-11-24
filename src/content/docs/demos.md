@@ -28,4 +28,4 @@ use the public examples for the current syntax.
 For multi-file composition, see the
 [multi-file Language Tour example](https://github.com/thinai-lang/thinai-lang.github.io/tree/main/examples/language-tour/multi-file).
 
-Use the [issue tracker](https://github.com/thinai-lang/issues) for feedback.
+Use the [issue tracker](https://github.com/thinai-lang/thinai/issues) for feedback.

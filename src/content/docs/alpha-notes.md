@@ -3,14 +3,14 @@ title: Alpha Notes and Limitations
 description: What to expect from the Thinai alpha, how to install it, and which limitations are intentional.
 ---
 
-The current release is `0.1.9-alpha.1`; the VS Code Marketplace version is
-`0.1.9` (published as a pre-release). Older releases are superseded. Syntax and
+The current release is `0.1.10-alpha.1`; the VS Code Marketplace version is
+`0.1.10` (published as a pre-release). Older releases are superseded. Syntax and
 language-service behavior may still change between releases. The examples,
 grammar, and validation rules in this documentation describe the current
 behavior.
 
-`0.1.9-alpha.1` adds first-class multi-file bounded contexts and their import
-quick fixes.
+`0.1.10-alpha.1` adds quick fixes for creating bounded-context roots and parts,
+and publishes the project under the Apache License 2.0.
 
 ## Installing the alpha
 
@@ -75,7 +75,7 @@ implemented.
 
 ## Reporting issues
 
-Use the [public issue tracker](https://github.com/thinai-lang/issues) and include:
+Use the [public issue tracker](https://github.com/thinai-lang/thinai/issues) and include:
 
 - the smallest `.tni` source that reproduces the issue;
 - the expected and actual result;
