@@ -11,10 +11,13 @@ description: Guides to Thinai, a modeling language for domain-driven design (DDD
 Thinai is a modeling language for domain-driven design (DDD). It expresses DDD
 structures, relationships, and behavioral intent in a shared, navigable model.
 
-Thinai makes model structure checkable rather than merely documented.
-Aggregates, modules, events, context maps, imports, and cross-context
-dependencies are validated as you type and in the CLI — see
-[validation rules](/validation-rules/).
+Thinai makes the whole DDD picture
+[checkable rather than merely documented](/validation-rules/). It lets you model
+bounded contexts, context maps, aggregates, events, services, queries, modules,
+and journeys in one shared model that is validated as you type and in the CLI. A
+context consuming an event no context declares — or a transition on a field the
+entity does not declare — is an error, not something that quietly goes wrong in
+the document.
 
 Use these guides to learn the language and model a domain by topic:
 
