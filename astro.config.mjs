@@ -22,6 +22,9 @@ export default defineConfig({
       },
       favicon: '/assets/thinai-light.svg',
       customCss: ['./src/styles/brand.css'],
+      social: [
+        { icon: 'github', label: 'GitHub', href: 'https://github.com/thinai-lang/thinai' },
+      ],
       sidebar: [
         { label: 'Home', link: '/' },
         { label: 'Getting started', items: ['getting-started'] },

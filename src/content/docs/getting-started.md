@@ -106,9 +106,11 @@ is a compact syntax and visibility tour.
 
 ## Source and support
 
-Report bugs and feature requests in the public
-[issue tracker](https://github.com/thinai-lang/thinai/issues). Report security issues
-privately to `security@thinai-lang.dev`. See
+The Thinai source is public at
+[github.com/thinai-lang/thinai](https://github.com/thinai-lang/thinai). Report
+bugs and feature requests in the public
+[issue tracker](https://github.com/thinai-lang/thinai/issues). Report security
+issues privately to `security@thinai-lang.dev`. See
 [alpha notes and limitations](/alpha-notes/) before relying on the extension
 for production work.
 
